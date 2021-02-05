@@ -2,6 +2,9 @@
 import json
 import sys
 import os
+print(sys.version)
+if sys.version[0] == '2':
+    from io import open
 
 cpp_headers = \
 """/*
@@ -17,7 +20,7 @@ cpp_headers = \
     "__optional_fields__": [], # Not require to present to .json file, but always in cpp struct
     "__assign_type_fields__": {{"field":"cpp-type"}}, # Assign specal cpp-type of field, but not infer automatically as default.
     "__assign_enum_fields__": {{"field":"enum-type"}}, # Assign specal enum-type of field, but not infer automatically as default.
-                              enum-type need have implemented _toSting() & _fromString() functions.
+                              enum-type need have implemented <enum-type>_toSting() & <enum-type>_fromString() functions.
     "__assign_set_lists__": [], # Take list in .json file as std::set<>, but not std::vector<> as default
     "__comment__xxx":"", # Add comment line
     "__sqlite_capable__":"", # enable sqlite tableIO autogen
@@ -56,6 +59,10 @@ def determin_value_type(value):
     elif isinstance(value, bool):
         return "bool"
     elif isinstance(value, int):
+        if value >= 18446744073709551615:
+            return "uint64_t"
+        if value >= 4294967296 or value < -4294967296:
+            return "int64_t"
         return "int"
     elif isinstance(value, float):
         return "double"
@@ -66,6 +73,10 @@ def determin_default_value(value):
     elif isinstance(value, bool):
         return "true" if value else "false"
     elif isinstance(value, int):
+        if value >= 18446744073709551615:
+            return "%dULL" % value
+        if value >= 4294967296 or value < -4294967296:
+            return "%dLL" % value
         return "%d" % value
     elif isinstance(value, float):
         return "%.f" % value
@@ -464,3 +475,4 @@ if __name__ == "__main__":
             fo.write(output)
 
     print("output cpp .h = {}".format(tgt_cpp))
+    
