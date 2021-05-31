@@ -12,6 +12,7 @@ A股相关工具，version4
 - cmake 3.9
 - python 3.7
 - ~~activeTcl https://www.activestate.com/products/tcl/downloads/~~
+- ~~tushare 开源接口挂了~~
 
 ## 安装 install
 
