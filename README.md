@@ -27,11 +27,18 @@ cd s4
 
 # 
 cd build
+
+#! 首次执行cmake会找不到build下的一些QT的.h文件，此时执行一次"cmake --build ."将自动生成.h，然后再执行一次cmake ..即可
 cmake -A x64 -D_QT_PATH="E:\Qt\5.11.1\msvc2017_64" ..
 # cmake -A x64 -D_QT_PATH="d:\Qt\5.11.2\msvc2017_64" ..
 #cmake -A x64 -D_QT_PATH="G:\Qt\5.11.1\msvc2017_64" ..
-make
-make install
+
+#build：
+cmake --build .
+
+#install：
+cmake --build . --target install --config Release
+
 ```
 
 ## 数据库:sqlite
