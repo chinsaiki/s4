@@ -50,7 +50,11 @@ std::string date_to_str(time_date_t date)
 	int month = date % 10000;
 	int day = month % 100;
 	month = month / 100;
-	sprintf_s(s, 64, "%d_%02d_%02d", year, month, day);
+#ifdef _MSC_VER
+	sprintf_s(s, sizeof(s), "%d_%02d_%02d", year, month, day);
+#else
+	snprintf(s, sizeof(s), "%d_%02d_%02d", year, month, day);
+#endif
 	return std::move(s);
 }
 

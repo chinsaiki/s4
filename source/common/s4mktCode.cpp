@@ -41,10 +41,18 @@ std::string pureCodeInt_to_mktCodeStr(const int pureCode)
 {
 	char c[9];
 	if (pureCode >= SH_CODE_MIN && pureCode <= SH_CODE_MAX) {
+#ifdef _MSC_VER
 		sprintf_s(c, "sh%06d", pureCode);
+#else
+		snprintf(c, sizeof(c), "sh%06d", pureCode);
+#endif
 	}
 	else if (pureCode >= SZ_CODE_MIN && pureCode <= SZ_CODE_MAX) {
+#ifdef _MSC_VER
 		sprintf_s(c, "sz%06d", pureCode);
+#else
+		snprintf(c, sizeof(c), "sz%06d", pureCode);
+#endif
 	}else{
 		throw CodeNameConvertError("unknow market for pureCode:"+ std::to_string(pureCode));
 	}
@@ -56,7 +64,11 @@ std::string pureCodeInt_to_pureCodeStr(const int pureCode)
 	char c[9];
 	if ((pureCode >= SH_CODE_MIN && pureCode <= SH_CODE_MAX) ||
 	    (pureCode >= SZ_CODE_MIN && pureCode <= SZ_CODE_MAX)) {
+#ifdef _MSC_VER
 		sprintf_s(c, "%06d", pureCode);
+#else
+		snprintf(c, sizeof(c), "%06d", pureCode);
+#endif
 	}else{
 		throw CodeNameConvertError("unknow market for pureCode:"+ std::to_string(pureCode));
 	}
@@ -106,11 +118,19 @@ std::string mktCodeInt_to_mktCodeStr(int mktCode)
 	char ch[9];
 	if (mktCode >= SH_PRB && mktCode <= SH_PRB + PRB_MK) {
 		c = mktCode - SH_PRB;
+#ifdef _MSC_VER
 		sprintf_s(ch, "sh%06d", c);
+#else
+		snprintf(ch, sizeof(ch), "sh%06d", c);
+#endif
 	}
 	else if (mktCode >= SZ_PRB && mktCode <= SZ_PRB + PRB_MK) {
 		c = mktCode - SZ_PRB;
+#ifdef _MSC_VER
 		sprintf_s(ch, "sz%06d", c);
+#else
+		snprintf(ch, sizeof(ch), "sz%06d", c);
+#endif
 	}
 	else {
 		throw CodeNameConvertError("unkonw code :" + IntConvertor::convert(mktCode));
@@ -177,7 +197,11 @@ std::string mktCodeInt_to_pureCodeStr(const int mktCode)
 	if (mktCode >= SH_PRB && mktCode <= SH_PRB + PRB_MK) {
 		c = mktCode - SH_PRB;
 		if (c >= SH_CODE_MIN) {
+#ifdef _MSC_VER
 			sprintf_s(ch, "%06d", c);
+#else
+			snprintf(ch, sizeof(ch), "%06d", c);
+#endif
 		}
 		else {
 			throw CodeNameConvertError("sh code error:" + IntConvertor::convert(mktCode));
@@ -186,7 +210,11 @@ std::string mktCodeInt_to_pureCodeStr(const int mktCode)
 	else if (mktCode >= SZ_PRB && mktCode <= SZ_PRB + PRB_MK) {
 		c = mktCode - SZ_PRB;
 		if (c < SH_CODE_MIN) {
+#ifdef _MSC_VER
 			sprintf_s(ch, "%06d", c);
+#else
+			snprintf(ch, sizeof(ch), "%06d", c);
+#endif
 		}
 		else {
 			throw CodeNameConvertError("sz code error:" + IntConvertor::convert(mktCode));

@@ -747,10 +747,18 @@ bool thread_data_if_t::preload(const std::set<std::string>& reqList, const struc
     _nextProcess = _nextReqList.begin();
 
 	char p[1024];
-	sprintf_s(p, "where date <= %u order by date desc limit %u", _nextReqInfo.endDate, reqInfo.nbDay_preEndDate);
+#ifdef _MSC_VER
+	sprintf_s(p, sizeof(p), "where date <= %u order by date desc limit %u", _nextReqInfo.endDate, reqInfo.nbDay_preEndDate);
+#else
+	snprintf(p, sizeof(p), "where date <= %u order by date desc limit %u", _nextReqInfo.endDate, reqInfo.nbDay_preEndDate);
+#endif
 	_nextDayCondition = std::string(p);
 
-	sprintf_s(p, "where time <= %llu order by time desc limit %u", date_to_utc(_nextReqInfo.endMinuDate) + 3600 * 23, reqInfo.nbMinu_preEndMinuDate);
+#ifdef _MSC_VER
+	sprintf_s(p, sizeof(p), "where time <= %llu order by time desc limit %u", date_to_utc(_nextReqInfo.endMinuDate) + 3600 * 23, reqInfo.nbMinu_preEndMinuDate);
+#else
+	snprintf(p, sizeof(p), "where time <= %llu order by time desc limit %u", date_to_utc(_nextReqInfo.endMinuDate) + 3600 * 23, reqInfo.nbMinu_preEndMinuDate);
+#endif
 	_nextMinuCondition = std::string(p);
 
 	return true;
