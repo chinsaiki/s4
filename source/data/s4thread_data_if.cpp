@@ -1,5 +1,4 @@
-﻿#pragma once
-#include "data/s4thread_data_if.h"
+﻿#include "data/s4thread_data_if.h"
 #include "common/s4logger.h"
 
 #define TDX_DATA
@@ -757,7 +756,7 @@ bool thread_data_if_t::preload(const std::set<std::string>& reqList, const struc
 #ifdef _MSC_VER
 	sprintf_s(p, sizeof(p), "where time <= %llu order by time desc limit %u", date_to_utc(_nextReqInfo.endMinuDate) + 3600 * 23, reqInfo.nbMinu_preEndMinuDate);
 #else
-	snprintf(p, sizeof(p), "where time <= %llu order by time desc limit %u", date_to_utc(_nextReqInfo.endMinuDate) + 3600 * 23, reqInfo.nbMinu_preEndMinuDate);
+	snprintf(p, sizeof(p), "where time <= %lu order by time desc limit %u", date_to_utc(_nextReqInfo.endMinuDate) + 3600 * 23, reqInfo.nbMinu_preEndMinuDate);
 #endif
 	_nextMinuCondition = std::string(p);
 
@@ -970,7 +969,7 @@ void thread_data_if_t::getThreadNextRange(std::set<std::string>::const_iterator&
 	}
 	Locker l(_mutex_nextLib);
 	bgn = _nextProcess;
-	for (int i = 0;
+	for (size_t i = 0;
 		i < _MIN_(THREAD_READ_TRUNK, _nextReqList.size() / _nb_thread + 1) && _nextProcess != _nextReqList.end();
 		_nextProcess++, i++
 		);

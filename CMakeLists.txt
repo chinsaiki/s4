@@ -165,10 +165,8 @@ foreach(ui_h ${ui_headers})
   message(STATUS "ui_h = ${ui_h}")
   # message(STATUS "ui_name = ${ui_name}")
   IF(EXISTS "${ui_h}")
-    file(REMOVE "${PROJECT_SOURCE_DIR}/build/S4_autogen/include_Debug/${ui_h}")
-    file(REMOVE "${PROJECT_SOURCE_DIR}/build/S4_autogen/include_Release/${ui_h}")
-    file(COPY "${ui_h}" DESTINATION "${PROJECT_SOURCE_DIR}/build/S4_autogen/include_Debug/")
-    file(COPY "${ui_h}" DESTINATION "${PROJECT_SOURCE_DIR}/build/S4_autogen/include_Release/")
+    file(REMOVE "${PROJECT_SOURCE_DIR}/include/${ui_h}")
+    file(COPY "${ui_h}" DESTINATION "${PROJECT_SOURCE_DIR}/include/")
     # list(APPEND ui_headers_auto "${PROJECT_SOURCE_DIR}/build/S4_autogen/include_Debug/${ui_name}.h")
   else()
     message(STATUS "^^^^^^^^^^^^^^^^^^^^^ missing")
@@ -181,7 +179,7 @@ endforeach()
 message(STATUS "ui_headers_auto = ${ui_headers_auto}")
 
 
-add_library(${PROJECT_NAME} STATIC  ${LIB_HEADER_FILES} ${LIB_INLINE_FILES} ${LIB_SOURCE_FILES} ${UI_FILES})
+add_library(${PROJECT_NAME} STATIC  ${LIB_HEADER_FILES} ${LIB_INLINE_FILES} ${LIB_SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include;")
 
 
@@ -225,6 +223,7 @@ message(STATUS "LINKLIBS = ${LINKLIBS}")
 
 ## copy qt dlls
 list(APPEND qt_dlls qt5core qt5gui qt5qml qt5quick qt5widgets qt5sql)
+if(WIN32)
 foreach(qt_dll ${qt_dlls})
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD        # Adds a post-build event to MyTest
     COMMAND ${CMAKE_COMMAND} -E copy_if_different  # which executes "cmake - E copy_if_different..."
@@ -235,7 +234,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD        # Adds a post-build 
         "${CMAKE_PREFIX_PATH}/bin/${qt_dll}d.dll"      # <--this is in-file
         $<TARGET_FILE_DIR:${PROJECT_NAME}>)                 # <--this is out-file path
 endforeach()
-        
+endif()
 # # E:\work\s4\build\S4_autogen\include_Debug\ui_sqlviewer.h
 # # E:\work\s4\build\S4_autogen\include_Debug\ui_dbconnectdialog.h
 # # E:\work\s4\build\ui_dbconnectdialog.h

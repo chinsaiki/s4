@@ -337,9 +337,10 @@ bool DoubleToStringConverter::ToPrecision(double value,
   return true;
 }
 
-
-#pragma warning( push )
-#pragma warning( disable : 4702 )   //unreachable returen
+#ifdef _MSC_VER
+#  pragma warning( push )
+#  pragma warning( disable : 4702 )   //unreachable returen
+#endif
 
 static BignumDtoaMode DtoaToBignumDtoaMode(
     DoubleToStringConverter::DtoaMode dtoa_mode) {
@@ -357,8 +358,9 @@ static BignumDtoaMode DtoaToBignumDtoaMode(
   return BIGNUM_DTOA_SHORTEST;
 
 }
-
-#pragma warning( pop )
+#ifdef _MSC_VER
+#  pragma warning( pop )
+#endif
 
 void DoubleToStringConverter::DoubleToAscii(double v,
                                             DtoaMode mode,

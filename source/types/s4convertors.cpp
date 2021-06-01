@@ -1,5 +1,5 @@
 #include "types/s4convertors.h"
-
+#include <math.h>
 namespace S4{
 
 //

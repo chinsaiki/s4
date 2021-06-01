@@ -47,7 +47,7 @@ int main(int argc, char** argv)
 	sqlite::DB_t s4_history_db(db_s4_history_path.string());
 	ret = history_trade_to_DB(s4data, s4_history_db, "s3_" + tbl_name + "_" + comment);
 
-	LCL_INFO("s3 db -> s4 : done!");
+	LCL_INFO("s3 db -> s4 : done! {}", ret);
 
 	return 0;
 }

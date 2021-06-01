@@ -1,5 +1,7 @@
-﻿#pragma warning(push)
-# pragma warning(disable: 4189) 
+﻿#ifdef _MSC_VER
+#  pragma warning(push)
+#  pragma warning(disable: 4189) 
+#endif
 
 #include "qt_Kviewer/s4Kviewer.h"
 #include "ui_s4Kviewer.h"
@@ -299,5 +301,6 @@ s4Kviewer::~s4Kviewer()
 
 }
 }
-
-#pragma warning(pop)
+#ifdef _MSC_VER
+#  pragma warning(pop)
+#endif

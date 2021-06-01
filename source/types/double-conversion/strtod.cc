@@ -245,9 +245,11 @@ static bool DoubleStrtod(Vector<const char> trimmed,
   return false;
 }
 
+#ifdef _MSC_VER
+#  pragma warning( push )
+#  pragma warning( disable : 4702 )   //unreachable returen
+#endif
 
-#pragma warning( push )
-#pragma warning( disable : 4702 )   //unreachable returen
 // Returns 10^exponent as an exact DiyFp.
 // The given exponent must be in the range [1; kDecimalExponentDistance[.
 static DiyFp AdjustmentPowerOfTen(int exponent) {
@@ -270,8 +272,9 @@ static DiyFp AdjustmentPowerOfTen(int exponent) {
 
   return DiyFp();
 }
-#pragma warning( pop )
-
+#ifdef _MSC_VER
+#  pragma warning( pop )
+#endif
 
 // If the function returns true then the result is the correct double.
 // Otherwise it is either the correct double or the double that is just below
