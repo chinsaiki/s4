@@ -44,56 +44,6 @@ struct dayK_t
 	uint32_t reserve;		//300etf在20150706时成交量超出uint32最大值，此时此字段最高位为ff，表示volume需乘以100。
 };
 
-struct stk_tdx_quote_t
-{
-	int mktCode;
-	uint16_t active1;			//active1增加1，表示这期间发生过成交。如果没有成交，每次快照给出的时间戳、五档价格和委托量都是可能变动的，但active1不变。如果active1增加1，那么总量，总金额一定会变。
-	int price;
-	int last_close;
-	int open;
-	int high;
-	int low;
-	int reversed_bytes0;
-	timeb timeS;
-	int reversed_bytes1;		//-价格*100
-	int vol;					//总量 手
-	int cur_vol;				//现量 手 index?
-	amount_t amount;
-	int s_vol;
-	int b_vol;
-	int reversed_bytes2;		//市场
-	int reversed_bytes3;
-	int bid1;
-	int ask1;
-	int bid_vol1;
-	int ask_vol1;
-	int bid2;
-	int ask2;
-	int bid_vol2;
-	int ask_vol2;
-	int bid3;
-	int ask3;
-	int bid_vol3;
-	int ask_vol3;
-	int bid4;
-	int ask4;
-	int bid_vol4;
-	int ask_vol4;
-	int bid5;
-	int ask5;
-	int bid_vol5;
-	int ask_vol5;
-	uint16_t reversed_bytes4;
-	int reversed_bytes5;
-	int reversed_bytes6;
-	int reversed_bytes7;
-	int reversed_bytes8;
-	uint16_t reversed_bytes9;	//涨速
-	uint16_t active2;			//活跃度
-	time_t lcl_time;
-
-	std::string toString(void) const;
-};
 
 typedef std::vector<struct gbbd_t> vec_gbbd_t;
 typedef std::vector<struct fhps_t> vec_fhps_t;

@@ -8,65 +8,67 @@
 #include "common/s4string.h"
 #include "common/s4time.h"
 #include "common/s4mktCode.h"
+#include "jsonTypes/tdx_snap_t.h"
 #include <string>
 
 using namespace std;
 
 namespace S4{
 
-string stk_tdx_quote_t::toString() const
+string stk_tdx_snap_toString(const tdx_snap_t& snap)
 {
 	int minu;
-	utc_to_date(timeS.time, &minu);
+	utc_to_date(snap.time, &minu);
 	return move(
-		to_string(minu) + "." + to_string(timeS.millitm) +
-		": mktCode= " + to_string(mktCode) +
-		"; active1= " + to_string(active1) +
-		"; price= " + to_string(price) +
-		"; last_close= " + to_string(last_close) +
-		"; open= " + to_string(open) +
-		"; high= " + to_string(high) +
-		"; low= " + to_string(low) +
-		"; reversed_bytes0= " + to_string(reversed_bytes0) +
-		"; reversed_bytes1= " + to_string(reversed_bytes1) +
-		"; vol= " + to_string(vol) +
-		"; cur_vol= " + to_string(cur_vol) +
-		"; amount= " + to_string(amount) +
-		"; s_vol= " + to_string(s_vol) +
-		"; b_vol= " + to_string(b_vol) +
-		"; reversed_bytes2= " + to_string(reversed_bytes2) +
-		"; reversed_bytes3= " + to_string(reversed_bytes3) +
-		"; bid1= " + to_string(bid1) +
-		"; ask1= " + to_string(ask1) +
-		"; bid_vol1= " + to_string(bid_vol1) +
-		"; ask_vol1= " + to_string(ask_vol1) +
-		"; bid2= " + to_string(bid2) +
-		"; ask2= " + to_string(ask2) +
-		"; bid_vol2= " + to_string(bid_vol2) +
-		"; ask_vol2= " + to_string(ask_vol2) +
-		"; bid3= " + to_string(bid3) +
-		"; ask3= " + to_string(ask3) +
-		"; bid_vol3= " + to_string(bid_vol3) +
-		"; ask_vol3= " + to_string(ask_vol3) +
-		"; bid4= " + to_string(bid4) +
-		"; ask4= " + to_string(ask4) +
-		"; bid_vol4= " + to_string(bid_vol4) +
-		"; ask_vol4= " + to_string(ask_vol4) +
-		"; bid5= " + to_string(bid5) +
-		"; ask5= " + to_string(ask5) +
-		"; bid_vol5= " + to_string(bid_vol5) +
-		"; ask_vol5= " + to_string(ask_vol5) +
-		"; reversed_bytes4= " + to_string(reversed_bytes4) +
-		"; reversed_bytes5= " + to_string(reversed_bytes5) +
-		"; reversed_bytes6= " + to_string(reversed_bytes6) +
-		"; reversed_bytes7= " + to_string(reversed_bytes7) +
-		"; reversed_bytes8= " + to_string(reversed_bytes8) +
-		"; reversed_bytes9= " + to_string(reversed_bytes9) +
-		"; active2= " + to_string(active2) +
+		to_string(minu) + "." + to_string(snap.ms) +
+		": mktCode= " + to_string(snap.mktCode) +
+		"; active1= " + to_string(snap.active1) +
+		"; price= " + to_string(snap.price) +
+		"; last_close= " + to_string(snap.last_close) +
+		"; open= " + to_string(snap.open) +
+		"; high= " + to_string(snap.high) +
+		"; low= " + to_string(snap.low) +
+		"; reversed_bytes0= " + to_string(snap.reversed_bytes0) +
+		"; reversed_bytes1= " + to_string(snap.reversed_bytes1) +
+		"; vol= " + to_string(snap.vol) +
+		"; cur_vol= " + to_string(snap.cur_vol) +
+		"; amount= " + to_string(snap.amount) +
+		"; s_vol= " + to_string(snap.s_vol) +
+		"; b_vol= " + to_string(snap.b_vol) +
+		"; reversed_bytes2= " + to_string(snap.reversed_bytes2) +
+		"; reversed_bytes3= " + to_string(snap.reversed_bytes3) +
+		"; bid1= " + to_string(snap.bid1) +
+		"; ask1= " + to_string(snap.ask1) +
+		"; bid_vol1= " + to_string(snap.bid_vol1) +
+		"; ask_vol1= " + to_string(snap.ask_vol1) +
+		"; bid2= " + to_string(snap.bid2) +
+		"; ask2= " + to_string(snap.ask2) +
+		"; bid_vol2= " + to_string(snap.bid_vol2) +
+		"; ask_vol2= " + to_string(snap.ask_vol2) +
+		"; bid3= " + to_string(snap.bid3) +
+		"; ask3= " + to_string(snap.ask3) +
+		"; bid_vol3= " + to_string(snap.bid_vol3) +
+		"; ask_vol3= " + to_string(snap.ask_vol3) +
+		"; bid4= " + to_string(snap.bid4) +
+		"; ask4= " + to_string(snap.ask4) +
+		"; bid_vol4= " + to_string(snap.bid_vol4) +
+		"; ask_vol4= " + to_string(snap.ask_vol4) +
+		"; bid5= " + to_string(snap.bid5) +
+		"; ask5= " + to_string(snap.ask5) +
+		"; bid_vol5= " + to_string(snap.bid_vol5) +
+		"; ask_vol5= " + to_string(snap.ask_vol5) +
+		"; reversed_bytes4= " + to_string(snap.reversed_bytes4) +
+		"; reversed_bytes5= " + to_string(snap.reversed_bytes5) +
+		"; reversed_bytes6= " + to_string(snap.reversed_bytes6) +
+		"; reversed_bytes7= " + to_string(snap.reversed_bytes7) +
+		"; reversed_bytes8= " + to_string(snap.reversed_bytes8) +
+		"; reversed_bytes9= " + to_string(snap.reversed_bytes9) +
+		"; active2= " + to_string(snap.active2) +
 		"\n");
 }
 
-int cnvStk(const std::string& code)
+static
+int stk_strCode2mktCode(const std::string& code)
 {
 	int ret = static_cast<int>(IntConvertor::convert(code.substr(2)));
 	if (code.substr(0, 2) == "sh")
@@ -81,9 +83,9 @@ int cnvStk(const std::string& code)
 
 const vec_gbbd_t* map_gbbd_t::getStk(const std::string& code) const
 {
-	int icode = cnvStk(code);
+	int icode = stk_strCode2mktCode(code);
 	if(this->count(icode)!=0)
-		return &at(cnvStk(code));
+		return &at(stk_strCode2mktCode(code));
 	else
 		return NULL;
 }
@@ -98,9 +100,9 @@ const vec_gbbd_t* map_gbbd_t::getStk(int icode) const
 
 const vec_fhps_t* map_fhps_t::getStk(const std::string& code) const
 {
-	int icode = cnvStk(code);
+	int icode = stk_strCode2mktCode(code);
 	if(this->count(icode)!=0)
-		return &at(cnvStk(code));
+		return &at(stk_strCode2mktCode(code));
 	else
 		return NULL;
 }
