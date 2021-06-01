@@ -121,9 +121,9 @@ namespace S4 {
 		//resize(size() + K.size());
 		if (!_backIsNew)	//keep order to input
 			doSwap();
-		for (infQ_t<T>::const_iterator i = Q.begin(); i != Q.end(); ++i)
+		for (S4::infQ_t<T>::const_iterator i = Q.begin(); i != Q.end(); ++i)
 		{
-			if(size()==0 || (*i)->_time > (*rbegin())->_time)	//keep back is new
+			if(std::vector<std::shared_ptr<T>>::size()==0 || (*i)->_time > (*rbegin())->_time)	//keep back is new
 				push_back(*i);
 		}
 		if (!_backIsNew)	//keep order to before

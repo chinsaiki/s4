@@ -42,6 +42,9 @@ cmake --build . --target install --config Release
 
 ```
 
+* 若Linux 出现 Failed to find "GL/gl.h" in "/usr/include/libdrm" :
+  sudo yum install mesa-libGL-devel mesa-libGLU-devel
+
 ## 数据库:sqlite
 简单，响应快。
 表的实际列需要比tableIO内实现的列多，暂不支持读取列变少的表。

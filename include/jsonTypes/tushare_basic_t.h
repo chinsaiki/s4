@@ -11,7 +11,7 @@
     "__optional_fields__": [], # Not require to present to .json file, but always in cpp struct
     "__assign_type_fields__": {"field":"cpp-type"}, # Assign specal cpp-type of field, but not infer automatically as default.
     "__assign_enum_fields__": {"field":"enum-type"}, # Assign specal enum-type of field, but not infer automatically as default.
-                              enum-type need have implemented _toSting() & _fromString() functions.
+                              enum-type need have implemented <enum-type>_toSting() & <enum-type>_fromString() functions.
     "__assign_set_lists__": [], # Take list in .json file as std::set<>, but not std::vector<> as default
     "__comment__xxx":"", # Add comment line
     "__sqlite_capable__":"", # enable sqlite tableIO autogen
@@ -281,7 +281,7 @@ struct tushare_basic_t {
         /* Tester */
         inline int tushare_basic_t_tester() {
 
-            //std::ifstream i("G:/E/work/999_s/s4/./json_template/tushare_basic_t.json");
+            //std::ifstream i("G:/work2t/99_s3/s4/./json_template/tushare_basic_t.json");
             std::string i("{    \"__assign_type_fields__\": {        \"code\": \"pureCodeI_t\",        \"timeToMarket\":\"time_date_t\"    },    \"__sqlite_capable__\" : true,    \"__sqlite_primary__\" : \"code\",    \"code\": 600001,    \"name\": \"\",    \"industry\": \"\",    \"area\": \"\",    \"pe\": 0.0,    \"outstanding\": 0.0,    \"totals\": 0.0,    \"totalAssets\": 0.0,    \"liquidAssets\": 0.0,    \"fixedAssets\": 0.0,    \"reserved\": 0.0,    \"reservedPerShare\": 0.0,    \"esp\": 0.0,    \"bvps\": 0.0,    \"pb\": 0.0,    \"timeToMarket\": 0,    \"undp\": 0.0,    \"perundp\": 0.0,    \"rev\": 0.0,    \"profit\": 0.0,    \"gpr\": 0.0,    \"npr\": 0.0,    \"holders\": 0}");
             nlohmann::json json_var;
             //i >> json_var; //from file

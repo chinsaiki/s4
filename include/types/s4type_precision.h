@@ -49,6 +49,9 @@ typedef long long vol_board_t;
 // #define vShare_to_vBoard(x)  ((x)/vBoard_unit)
 #define vBoard_to_vShare(x)  ((x)*vBoard_unit)
 
+//tdx快照 成交量精度
+typedef int32_t vol_tdx_t;
+
 //换手率
 typedef double turnover_t;
 

@@ -11,7 +11,7 @@
     "__optional_fields__": [], # Not require to present to .json file, but always in cpp struct
     "__assign_type_fields__": {"field":"cpp-type"}, # Assign specal cpp-type of field, but not infer automatically as default.
     "__assign_enum_fields__": {"field":"enum-type"}, # Assign specal enum-type of field, but not infer automatically as default.
-                              enum-type need have implemented _toSting() & _fromString() functions.
+                              enum-type need have implemented <enum-type>_toSting() & <enum-type>_fromString() functions.
     "__assign_set_lists__": [], # Take list in .json file as std::set<>, but not std::vector<> as default
     "__comment__xxx":"", # Add comment line
     "__sqlite_capable__":"", # enable sqlite tableIO autogen
@@ -191,7 +191,7 @@ struct s3_order_t {
         /* Tester */
         inline int s3_order_t_tester() {
 
-            //std::ifstream i("G:/E/work/999_s/s4/./json_template/s3_order_t.json");
+            //std::ifstream i("G:/work2t/99_s3/s4/./json_template/s3_order_t.json");
             std::string i("{    \"__sqlite_capable__\" : true,    \"__sqlite_primary__\" : \"ID, time, status\",    \"__assign_type_fields__\": {        \"time\":\"time_utcSec_t\",         \"ID\":\"int64_t\"    },    \"StgName\":\"\",	\"ID\":1,	\"InsName\":\"\",	\"time\":0,	\"optType\":\"\",	\"status\":\"\",	\"open\":-1,	\"take\":-1,	\"stop\":-1,	\"close\":-1,	\"openA\":-1,	\"closeA\":-1,	\"datetime\":\"\"}");
             nlohmann::json json_var;
             //i >> json_var; //from file

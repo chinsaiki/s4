@@ -83,11 +83,11 @@ public:
         if (role != Qt::DisplayRole) return {}; // && role != Qt::EditRole
         const auto& order = m_data[index.row()];
         switch (index.column()) {
-        case 0: return order.id;
+        case 0: return QVariant::fromValue(order.id);
         case 1: return order.date;
         case 2: return order.stgName.c_str();
         case 3: return order.mktCodeStr.c_str();
-        case 4: return order.time_utcSec;
+        case 4: return QVariant::fromValue(order.time_utcSec);
         case 5: return order.datetime.c_str();
         case 6: return trade_opt_t_toString((order.optType)).c_str();
         case 7: return order.position.c_str();
@@ -111,7 +111,7 @@ public:
     }
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override {
         if (orientation != Qt::Horizontal || role != Qt::DisplayRole) return {};
-        if (section >= _title.size()) return {};
+        if ((size_t)section >= _title.size()) return {};
         //switch (section) {
         //case 0: return "Make";
         //case 1: return "Model";

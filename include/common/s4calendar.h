@@ -17,7 +17,7 @@ public:
 	int getDate(int idx) const
 	{
 		if (idx >= 0) {
-			if (idx >= size()) {
+			if ((size_t)idx >= size()) {
 				ERR("calendar getDate({:d}) ovf!\n", idx);
 				return 20840328;
 			}
@@ -25,7 +25,7 @@ public:
 		}
 		else
 		{
-			if (-idx > size()) {
+			if ((size_t)(-idx) > size()) {
 				ERR("calendar getDate({:d}) - ovf!\n", idx);
 				return 0;
 			}

@@ -11,7 +11,7 @@
     "__optional_fields__": [], # Not require to present to .json file, but always in cpp struct
     "__assign_type_fields__": {"field":"cpp-type"}, # Assign specal cpp-type of field, but not infer automatically as default.
     "__assign_enum_fields__": {"field":"enum-type"}, # Assign specal enum-type of field, but not infer automatically as default.
-                              enum-type need have implemented _toSting() & _fromString() functions.
+                              enum-type need have implemented <enum-type>_toSting() & <enum-type>_fromString() functions.
     "__assign_set_lists__": [], # Take list in .json file as std::set<>, but not std::vector<> as default
     "__comment__xxx":"", # Add comment line
     "__sqlite_capable__":"", # enable sqlite tableIO autogen
@@ -265,7 +265,7 @@ struct glb_conf_ctx_t {
         /* Tester */
         inline int glb_conf_ctx_t_tester() {
 
-            //std::ifstream i("G:/E/work/999_s/s4/./json_template/glb_conf_ctx_t.json");
+            //std::ifstream i("G:/work2t/99_s3/s4/./json_template/glb_conf_ctx_t.json");
             std::string i("{    \"logger\":{        \"__assign_type_fields__\": {             \"level\" : \"spdlog::level::level_enum\",            \"max_file_size_MB\" : \"size_t\",            \"max_files\" : \"size_t\"        },        \"__default_value_fields__\": [            \"enable_console\",            \"enable_file_all\",            \"enable_file_all_pure\",            \"enable_file_err\",            \"enable_file_err_pure\",            \"level\",            \"max_file_size_MB\",            \"max_files\",            \"save_path\",            \"file_preamble\"        ],        \"enable_console\" : true,        \"enable_file_all\": false,        \"enable_file_all_pure\":true,        \"enable_file_err\": false,        \"enable_file_err_pure\":true,        \"level\" : 2,        \"max_file_size_MB\" : 9999,        \"max_files\":10,        \"save_path\":\"./logs\",        \"file_preamble\":\"S4\"    },    \"network\":{        \"db_viewer_ip\" : \"127.0.0.1\",        \"db_viewer_port\": \"8980\"    },    \"db\":{        \"root\" : \"../db\",        \"history_broker\": \"s4_history_tdx_xyzq.db\",        \"history_trade\": \"s4_history_trade.db\",        \"tus_basic\": \"tus_basic.db\",        \"s3_root\": \"../../s3/db\",        \"s3_history\" : \"s3orders.db\"    },    \"tdx\":{        \"root\" : \"..\\doc\\tdx_test\"    },    \"snap\":{        \"DB_list\":[            {                \"bgnDate\":0,                \"endDate\":21000000,                \"path\":\"../db/snap/snap_test.db\"            }        ]    }}");
             nlohmann::json json_var;
             //i >> json_var; //from file

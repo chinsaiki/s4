@@ -128,7 +128,7 @@ class DB_group_t {
 public:
 	//DB_group_t(const std::string & path, const int Mode = SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE) ;
 
-	virtual ~DB_group_t() = 0
+	virtual ~DB_group_t()
 	{}
 
 	template <typename T>
@@ -149,7 +149,7 @@ public:
 		if (_dbLib.count(dbName) == 0) {
 			throw SqliteDBError("no such db in lib:" + dbName);
 		}
-		_dbLib.at(dbName)->read_table<dbTble_t>(tableIO, tbl_name, data, condition);
+		_dbLib.at(dbName)->read_table<T>(tableIO, tbl_name, data, condition);
 	}
 
 	virtual const std::string mapTable_to_db(const std::string&) const = 0;

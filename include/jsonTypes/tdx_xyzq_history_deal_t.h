@@ -11,7 +11,7 @@
     "__optional_fields__": [], # Not require to present to .json file, but always in cpp struct
     "__assign_type_fields__": {"field":"cpp-type"}, # Assign specal cpp-type of field, but not infer automatically as default.
     "__assign_enum_fields__": {"field":"enum-type"}, # Assign specal enum-type of field, but not infer automatically as default.
-                              enum-type need have implemented _toSting() & _fromString() functions.
+                              enum-type need have implemented <enum-type>_toSting() & <enum-type>_fromString() functions.
     "__assign_set_lists__": [], # Take list in .json file as std::set<>, but not std::vector<> as default
     "__comment__xxx":"", # Add comment line
     "__sqlite_capable__":"", # enable sqlite tableIO autogen
@@ -209,7 +209,7 @@ struct tdx_xyzq_history_deal_t {
         /* Tester */
         inline int tdx_xyzq_history_deal_t_tester() {
 
-            //std::ifstream i("G:/E/work/999_s/s4/./json_template/tdx_xyzq_history_deal_t.json");
+            //std::ifstream i("G:/work2t/99_s3/s4/./json_template/tdx_xyzq_history_deal_t.json");
             std::string i("{    \"__assign_type_fields__\": {        \"date\":\"time_date_t\",         \"id\":\"int64_t\",         \"time_utcSec\":\"time_utcSec_t\",         \"deal_price\":\"fprice_t\",         \"deal_vol\":\"vol_share_t\",         \"deal_amount\":\"amount_t\",         \"commission\":\"amount_t\",         \"stamp_duty\":\"amount_t\",         \"transfer_fee\":\"amount_t\",         \"other_fees\":\"amount_t\"    },    \"__sqlite_capable__\" : true,    \"date\" : 20200507,    \"time_format\": \"19:55:30\",    \"time_utcSec\": 123,    \"stock_code\": \"002988\",    \"stock_name\": \"豪美新材\",    \"id\":26,    \"opt_type\":\"买入\",    \"deal_price\" : 0.0,    \"deal_vol\" : 27,    \"deal_amount\":0.0,    \"commission\":0.0,    \"stamp_duty\":0.0,    \"transfer_fee\":0.0,    \"other_fees\":0.0,    \"remarks\":\"起始配号:226168906\"}");
             nlohmann::json json_var;
             //i >> json_var; //from file
