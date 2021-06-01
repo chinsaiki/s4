@@ -115,6 +115,96 @@ public:
 		}
 	}
 
+
+	template <typename T>
+	void to_table_v2(T * tableIO, const std::string& tbl_name, const std::vector<typename T::data_t>& data, bool drop_if_exist = true)
+	{
+		const size_t nb_insert = data.size();
+		if (0 == nb_insert)
+			return;
+		
+		tableIO->set_name(tbl_name);
+
+		try
+		{
+			const bool bExists = mDb.tableExists(tbl_name);
+
+			if (bExists) {
+				if (drop_if_exist)
+					mDb.exec("DROP TABLE IF EXISTS " + tbl_name);
+				else {
+					//mDb.exec("ALTER TABLE " + data->get_name() + " ADD COLUMN lcl_time INTEGER");
+					//mDb.exec("ALTER TABLE " + data->get_name() + " ADD COLUMN lcl_time_str TEXT");
+				}
+			}
+
+			if (!bExists || drop_if_exist)
+				mDb.exec(tableIO->get_query_build());
+
+			const std::string query_str = tableIO->get_query_insert();
+
+			//TODO: rollback
+			//int i = 0;
+			//while (i < nb_insert) {
+			//	{
+			//		SQLite::Transaction transaction(mDb);
+			//		for (int j = 0; j < 32768 && i < nb_insert; ++i, ++j) {
+			//			SQLite::Statement   query(mDb, query_str);
+			//			data->bind_query(query, i);
+			//			query.exec();
+			//		}
+			//		transaction.commit();
+			//	}
+			//}
+			SQLite::Transaction transaction(mDb);
+			for (size_t i = 0; i < data.size(); ++i) {
+				SQLite::Statement   query(mDb, query_str);
+				tableIO->bind_query(query, data, i);
+				query.exec();
+			}
+			transaction.commit();
+
+			return;
+
+		}
+		catch (std::exception& e)
+		{
+			FATAL("SQLite {} to_table {} failed: exception: {}", m_name, tbl_name, e.what());
+			// exit(EXIT_FAILURE);//return; // unexpected error : exit the example program
+		}
+	}
+
+	template <typename T>
+    void read_table_v2(T * tableIO, const std::string& tbl_name, std::vector<typename T::data_t>& data,
+			 const std::string & condition="")
+	{
+		if (!mDb.tableExists(tbl_name))
+			return;
+
+		data.clear();
+
+		tableIO->set_name(tbl_name);
+
+		std::string queryStr;
+		if (condition.find("select") > condition.size())
+			queryStr = "select * from " + tbl_name + " " + condition;
+		else
+			queryStr = condition;
+		try {
+			SQLite::Statement   query(mDb, queryStr);
+
+			while (query.executeStep()) {
+				tableIO->load_query(query, data);
+			}
+
+			return;
+		}
+		catch (std::exception& e)
+		{
+			FATAL("SQLite {} read_table {} failed: exception: {}", m_name, tbl_name, e.what());
+			// exit(EXIT_FAILURE);//return; // unexpected error : exit the example program
+		}
+	}
 private:
     SQLite::Database  mDb;
     const std::string m_name;

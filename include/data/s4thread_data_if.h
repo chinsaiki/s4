@@ -215,7 +215,8 @@ public:
 	// void get(int mkCode, stkInfo_t*& info) const;
 	const infK_t* getDay_abs(mktCodeI_t mkCode, time_t t) const;
 
-	//void add_quote(int mkCode, int date, const stk_tdx_quote_t& quote);
+	//L1 snap
+	//void add_snap(int mkCode, int date, const tdx_snap_t& snap);
 	// infSnapQ_t* getSnapQ(int mkCode);
 
 	const stkInfo_t* getMk(const std::string & stkName) const;

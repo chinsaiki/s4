@@ -8,7 +8,6 @@
 #include "common/s4string.h"
 #include "common/s4time.h"
 #include "common/s4mktCode.h"
-#include "jsonTypes/tdx_snap_t.h"
 #include <string>
 
 using namespace std;

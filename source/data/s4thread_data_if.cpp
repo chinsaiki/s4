@@ -654,7 +654,7 @@ const infK_t* stkInfo_lib_t::getDay_abs(mktCodeI_t mkCode, time_t t) const{
 	return NULL;
 }
 
-// void stkInfo_lib_t::add_quote(int mkCode, int date, const stk_tdx_quote_t& quote);
+// void stkInfo_lib_t::add_snap(int mkCode, int date, const tdx_snap_t& snap);
 
 // infSnapQ_t* stkInfo_lib_t::getSnapQ(int mkCode);
 

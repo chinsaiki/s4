@@ -12,6 +12,7 @@
 #include "s4type_time.h"
 #include "common/s4mktCode.h"	//types of code
 
+#include "jsonTypes/tdx_snap_t.h"
 // #include "s3type_future.h"
 
 namespace S4{
@@ -184,6 +185,9 @@ struct horder_t
 	std::string source;
 	std::string toString(void) const;
 };
+
+std::string stk_tdx_snap_toString(const tdx_snap_t& snap);
+
 
 }//namespace S4
 
