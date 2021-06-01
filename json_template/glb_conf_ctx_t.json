@@ -41,7 +41,7 @@
         "s3_history" : "s3orders.db"
     },
     "tdx":{
-        "root" : "..\\doc\\tdx_test"
+        "root" : "../doc/tdx_test"
     },
     "snap":{
         "DB_list":[
