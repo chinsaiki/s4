@@ -1,12 +1,10 @@
 #pragma once
 
 #include <iostream>
-
 #include <set>
-
 #include "common/s4logger.h"
-
 #include "tableIO.h"
+#include "common/s4exceptions.h"
 
 namespace S4{
 namespace sqlite{

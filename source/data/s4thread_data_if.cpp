@@ -141,7 +141,7 @@ const infK_t* stkInfo_t::getDay(int i) const{
 	if (pDayKQ == NULL)
 		return NULL;
 	return pDayKQ->getInfo_ref(i);
-};
+}
 
 int stkInfo_t::getDay_max_high(int bgn, int end)
 {
@@ -298,7 +298,7 @@ const ma_t* stkInfo_t::getMA(int scope, int i) const {
 	if (pMAlib->count(scope) == 0)
 		return NULL;
 	return pMAlib->at(scope)->getInfo_ref(i);
-};
+}
 
 int stkInfo_t::getMA_max(int scope, int bgn, int end)
 {
@@ -367,7 +367,7 @@ const infK_t* stkInfo_t::getMinu(int i) const
 	if (pMinuKQ == NULL)
 		return NULL;
 	return pMinuKQ->getInfo_ref(i);
-};
+}
 /*
 snap
 */

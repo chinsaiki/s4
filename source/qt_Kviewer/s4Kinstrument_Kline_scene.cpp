@@ -117,8 +117,9 @@ QString Kinstrument_Kline_scene::y_to_label_h(qreal y) const
 
 std::shared_ptr<infKQ_t> Kinstrument_Kline_scene::check_data(void) const
 {
-    if (!_data_panel)
+    if (!_data_panel){
         return nullptr;
+    }
 
 	std::shared_ptr<infKQ_t> pInfoKQ;
 	if (_KCtx.timeMode == tDAY) {

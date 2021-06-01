@@ -82,7 +82,7 @@ void infKQ_t::calcFH(const vec_fhps_t* fhps) {
 			}
 		}
 
-		for (int i = 0; i != apply_day; ++i) {
+		for (size_t i = 0; i != apply_day; ++i) {
 			(*this)[i]->_factor *= fct_fh * fct_sg * fct_pg;
 		}
 		if (apply_day >= size())
@@ -102,7 +102,7 @@ void infKQ_t::calcGB(const vec_gbbd_t* gbbd) {
 	hoult = g->houliutong;
 	houz = g->houzong;
 	g++;
-	int i = 0;
+	size_t i = 0;
 	for (; g != gbbd->end() && i < size(); ++g) {
 		if ((uint32_t)(*this)[i]->_date >= g->strDate) {
 			hoult = g->houliutong;

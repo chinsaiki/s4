@@ -6,6 +6,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QMouseEvent>
+#include <memory>
 
 namespace S4 {
 namespace QT {

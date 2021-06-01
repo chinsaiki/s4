@@ -70,8 +70,9 @@ void Kinstrument_Kline_view::slot_next_trade(int next)
 {
 
     QPointF trad_valPos;
-    if (!_scene || !((Kinstrument_Kline_scene*)_scene)->get_trade_valPos(_seq, trad_valPos))
+    if (!_scene || !((Kinstrument_Kline_scene*)_scene)->get_trade_valPos(_seq, trad_valPos)){
         return;
+    }
 
 	qreal scene_x = _scene->val_w_to_x(trad_valPos.x());
 	qreal scene_y = _scene->val_h_to_y(trad_valPos.y());

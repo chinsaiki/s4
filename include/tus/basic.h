@@ -1,6 +1,9 @@
 
 #pragma once
+
+#ifdef _WIN32
 #pragma comment(lib,"ws2_32.lib")
+#endif
 
 #include "jsonTypes/tushare_basic_t.h"
 #include "jsonTypes/tushare_basic_t_dbTbl.h"

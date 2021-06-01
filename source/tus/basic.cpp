@@ -38,8 +38,8 @@ bool downloadBasic(const std::string& date, std::vector<tushare_basic_t>& basicO
 
 	std::shared_ptr<httplib::Response> res =
 		m_tushare.Get(url, [](uint64_t len, uint64_t total) {
-		printf("\r%lld / %lld bytes => %d%% complete",
-			len, total,
+		printf("\r%d / %d bytes => %d%% complete",
+			(int)len, (int)total,
 			(int)((len * 100 / total)));
 		return true; // return 'false' if you want to cancel the request.
 	}

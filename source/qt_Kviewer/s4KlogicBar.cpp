@@ -107,12 +107,12 @@ void KlogicBar_t::mkLabelTxt(void)
     qreal rise = CALC_R_PERCENT(_value.C, _value.O);
     qreal ul = CALC_R_PERCENT(_MAX_(_value.O, _value.C), _value.H);
 	qreal sk = CALC_R_PERCENT(_value.H, _value.L);
-	_label_txt.sprintf("R=%.2f%\nU=%.2f%\nSk=%.2f%", rise, ul, sk);
+	_label_txt.sprintf("R=%.2f%%\nU=%.2f%%\nSk=%.2f%%", rise, ul, sk);
     
     if (avg_valid(_value)) {
 		QString cs_s;
 		qreal ca = CALC_R_PERCENT(_value.C, _value.Avg);
-        cs_s.sprintf("\nCA=%.2f%", ca);
+        cs_s.sprintf("\nCA=%.2f%%", ca);
         _label_txt += cs_s;
     }
 

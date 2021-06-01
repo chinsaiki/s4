@@ -33,7 +33,7 @@ void s4logger::init_file_folder(void) {
 		if (!std::filesystem::is_directory(_file_folder)) {
 			if (!std::filesystem::create_directory(_file_folder)) {
 				std::cerr << "create_directory(" << _file_folder << ") fail!" << std::endl;
-				throw std::exception("logger init fail!");
+				throw std::runtime_error("logger init fail!");
 			}
 		}
 	}
@@ -41,7 +41,7 @@ void s4logger::init_file_folder(void) {
 	{
 		if (!std::filesystem::create_directories(_file_folder)) {
 			std::cerr << "create_directory(" << _file_folder << ") fail!" << std::endl;
-			throw std::exception("logger init fail!");
+			throw std::runtime_error("logger init fail!");
 		}
 	}
 }

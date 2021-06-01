@@ -16,8 +16,8 @@ namespace S4{
 
 string stk_tdx_quote_t::toString() const
 {
-	int day, minu;
-	day = utc_to_date(timeS.time, &minu);
+	int minu;
+	utc_to_date(timeS.time, &minu);
 	return move(
 		to_string(minu) + "." + to_string(timeS.millitm) +
 		": mktCode= " + to_string(mktCode) +

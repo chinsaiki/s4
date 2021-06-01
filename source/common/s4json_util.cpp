@@ -9,7 +9,7 @@ namespace S4{
 bool searchJson(std::string str, int & start, int & stop, int* ec)
 {
     stop = start = (int)str.find('{');
-    if(start > str.size()){
+    if(start > (int)str.size()){
         if(ec){
             *ec = JSON_NO_START;
         }

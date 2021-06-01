@@ -1,5 +1,7 @@
 #include "tdx/tdx_local.h"
-#include <io.h>
+#ifdef _WIN32
+#  include <io.h>
+#endif
 #include <fstream>
 #include "common/s4logger.h"
 #include "common/s4time.h"
@@ -107,6 +109,9 @@ int tdxLocal_t::readDayK_raw(mktCodeI_t mktCode, struct dayK_t *& rawData)
 	}
 
 	bReadFail = fseek(f, 0, SEEK_END);//
+	if (bReadFail < 0){
+		LCL_ERR("fseek to END fail! path={}", path);
+	}
 	size = ftell(f);
 	dataCnt = size / sizeof(struct dayK_t);
 
@@ -117,6 +122,9 @@ int tdxLocal_t::readDayK_raw(mktCodeI_t mktCode, struct dayK_t *& rawData)
 
 	rawData = new struct dayK_t[dataCnt];
 	bReadFail = fseek(f, 0, SEEK_SET);
+	if (bReadFail < 0){
+            LCL_ERR("fseek SET0 fail! path={}", path);
+        }
 
 	fread(rawData, dataCnt, sizeof(struct dayK_t), f);   //¶Áwhole
 

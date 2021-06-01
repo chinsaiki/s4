@@ -97,8 +97,9 @@ std::vector<std::string> string_strip(const std::string& src, const std::string&
         pos1 = pos2 + splitor.size();
         pos2 = src.find(splitor, pos1);
     }
-    if(pos1 != src.length())
+    if(pos1 != src.length()){
         v.push_back(src.substr(pos1));
+    }
 
 	return std::move(v);
 }

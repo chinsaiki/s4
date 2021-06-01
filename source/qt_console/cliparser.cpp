@@ -42,9 +42,10 @@ void cliparser::handlCommand_load(QStringList& split_cmd)
 
 	_stkName = split_cmd[1];
 	std::string mktCodeStr = _stkName.toStdString();
-	S4::mktCodeI_t mktCodeInt;
+	//S4::mktCodeI_t mktCodeInt;
 	try{
-		mktCodeInt = S4::mktCodeStr_to_mktCodeInt(mktCodeStr);
+		//mktCodeInt = 
+		S4::mktCodeStr_to_mktCodeInt(mktCodeStr);
 	}catch(...){
 		try{
 			mktCodeStr = S4::pureCodeStr_to_mktCodeStr(mktCodeStr);

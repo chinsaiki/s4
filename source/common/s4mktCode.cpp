@@ -31,7 +31,7 @@ std::string pureCodeStr_to_mktCodeStr(const std::string& pureCode)
 mktCodeI_t pureCodeStr_to_mktCode(const std::string& pureCode)
 {
 	int c = 0;
-	for (int i = 0; i < pureCode.size(); ++i) {
+	for (size_t i = 0; i < pureCode.size(); ++i) {
 		c = c * 10 + pureCode.c_str()[i] - '0';	//no check format
 	}
 	return pureCodeInt_to_mktCodeInt(c);
@@ -63,8 +63,10 @@ std::string pureCodeInt_to_pureCodeStr(const int pureCode)
 	return move(std::string(c));
 }
 
+#ifdef _MSC_VER
 #pragma warning( push )
 #pragma warning( disable : 4702 )   //unreachable returen
+#endif
 //600997 : 170600997, 1: 330000001
 int pureCodeInt_to_mktCodeInt(const int pureCode)
 {
@@ -77,12 +79,14 @@ int pureCodeInt_to_mktCodeInt(const int pureCode)
 	throw CodeNameConvertError("unknow market for pureCode:"+ std::to_string(pureCode));
 	return pureCode;
 }
+#ifdef _MSC_VER
 #pragma warning( pop )
+#endif
 
 int mktCodeStr_to_mktCodeInt(const std::string& mktCode)
 {
 	int c = 0;
-	for (int i = 2; i < mktCode.size(); ++i) {
+	for (size_t i = 2; i < mktCode.size(); ++i) {
 		c = c * 10 + mktCode.c_str()[i] - '0';
 	}
 	if (mktCode.c_str()[0] == 's' && mktCode.c_str()[1] == 'h') {
@@ -141,7 +145,7 @@ std::string mktCodeStr_to_pureCodeStr(const std::string& mktCode)
 int mktCodeStr_to_pureCodeInt(const std::string& mktCode)
 {
 	int c = 0;
-	for (int i = 2; i < mktCode.size(); ++i) {
+	for (size_t i = 2; i < mktCode.size(); ++i) {
 		c = c * 10 + mktCode.c_str()[i] - '0';
 	}
 	if (mktCode.c_str()[0] == 's' && mktCode.c_str()[1] == 'h') {

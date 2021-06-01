@@ -37,7 +37,7 @@ qreal Kinstrument_indicator_scene::label_w_to_val_w(uint64_t l) const
             return m.second;
     }
     return _label_map_w.end()->second;
-};
+}
 
 QString Kinstrument_indicator_scene::x_to_label_w(qreal x) const 
 {

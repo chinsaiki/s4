@@ -5,6 +5,7 @@
 #include "common/s4exceptions.h"
 #include "types/s4convertors.h"
 #include "types/s4type.h"
+#include "common/s4time.h"
 
 #include <memory>
 
@@ -15,7 +16,7 @@ namespace S4 {
 		virtual std::string& toString() { 
 			str = IntConvertor::convert(_date) + " " + IntConvertor::convert(_MinmuSec);
 			return str; 
-		};
+		}
 
 		time_date_t _date;
 		time_minuSec_t _MinmuSec;
@@ -121,48 +122,48 @@ namespace S4 {
 		//resize(size() + K.size());
 		if (!_backIsNew)	//keep order to input
 			doSwap();
-		for (S4::infQ_t<T>::const_iterator i = Q.begin(); i != Q.end(); ++i)
+		for (typename infQ_t<T>::const_iterator i = Q.begin(); i != Q.end(); ++i)
 		{
-			if(std::vector<std::shared_ptr<T>>::size()==0 || (*i)->_time > (*rbegin())->_time)	//keep back is new
-				push_back(*i);
+			if(infQ_t<T>::size()==0 || (*i)->_time > (*infQ_t<T>::rbegin())->_time)	//keep back is new
+				infQ_t<T>::push_back(*i);
 		}
 		if (!_backIsNew)	//keep order to before
 			doSwap();
-	};
+	}
 
 	template<class T>
 	void S4::infQ_t<T>::addQ(const infQ_t<T>& Q, size_t lmt_size)	//TODO: what about base?
 	{
 		addQ(Q);
-		if (lmt_size * 2 < size())//cut to half
-			dropOld(size() - lmt_size);
+		if (lmt_size * 2 < infQ_t<T>::size())//cut to half
+			dropOld(infQ_t<T>::size() - lmt_size);
 	}
 
 	template<class T>
 	void S4::infQ_t<T>::doSwap(void)	//TODO: what about base?
 	{
-		for (size_t i = 0; i < size() / 2; ++i)
+		for (size_t i = 0; i < infQ_t<T>::size() / 2; ++i)
 		{
-			std::swap((*this)[i], (*this)[size() - 1 - i]);
+			std::swap((*this)[i], (*this)[infQ_t<T>::size() - 1 - i]);
 		}
 	}
 
 	template<class T>
 	void S4::infQ_t<T>::dropOld(size_t nb)	//TODO: what about base?
 	{
-		if (nb >= size()) {
-			clear();
+		if (nb >= infQ_t<T>::size()) {
+			infQ_t<T>::clear();
 			return;
 		}
 
 		if (!_backIsNew)	//keep order to input
 			doSwap();
 
-		std::vector<std::shared_ptr<T>> newQ(begin() + nb, end());
-		clear();
+		std::vector<std::shared_ptr<T>> newQ(infQ_t<T>::begin() + nb, infQ_t<T>::end());
+		infQ_t<T>::clear();
 		
 		for (auto& i : newQ)
-			emplace_back(i);
+			infQ_t<T>::emplace_back(i);
 
 		if (!_backIsNew)	//keep order to before
 			doSwap();
@@ -172,7 +173,7 @@ namespace S4 {
 	template<class T>
 	void infQ_t<T>::setBase(time_t now)
 	{
-		if (size() == 0) {
+		if (infQ_t<T>::size() == 0) {
 			_has_base = false;	//
 			_base = 1;
 			_now = 99999999 + 1;
@@ -182,26 +183,26 @@ namespace S4 {
 			newAtBack();
 
 		if (_otf) {
-			_base = static_cast<int>(size()) - 1;	//
-			_now = back()->_time;
+			_base = static_cast<int>(infQ_t<T>::size()) - 1;	//
+			_now = infQ_t<T>::back()->_time;
 			_has_base = utc_to_date(now) == utc_to_date(_now);	//same day at bgn
 			return;
 		}
 
-		if (now > back()->_time) {
-			_base = size()-1;
-			_now = back()->_time;
+		if (now > infQ_t<T>::back()->_time) {
+			_base = infQ_t<T>::size()-1;
+			_now = infQ_t<T>::back()->_time;
 			_has_base = false;
 			return;
 		}
-		if (now < front()->_time) {
+		if (now < infQ_t<T>::front()->_time) {
 			_base = 0;
 			_now = 0;
 			_has_base = false;
 			return;
 		}
 
-		size_t low = 0, high = size(), mid;
+		size_t low = 0, high = infQ_t<T>::size(), mid;
 		while (low <= high) {
 			mid = low + (high - low) / 2;
 			if (now == (*this)[mid]->_time) {
@@ -245,22 +246,22 @@ namespace S4 {
 	template<class T>
 	bool infQ_t<T>::done(void)
 	{
-		return _base >= size();
+		return _base >= infQ_t<T>::size();
 	}
 
 	template<class T>
 	void infQ_t<T>::nextBase(time_t clk)
 	{
-		if (!size())
+		if (!infQ_t<T>::size())
 			return;
 
 		if (_otf) {
-			if (_now == back()->_time) {//nothing new
+			if (_now == infQ_t<T>::back()->_time) {//nothing new
 				_has_base = false;
 			}
 			else {
-				_base = static_cast<int>(size()) - 1;
-				_now = back()->_time;
+				_base = static_cast<int>(infQ_t<T>::size()) - 1;
+				_now = infQ_t<T>::back()->_time;
 				_has_base = true;	//
 			}
 			return;
@@ -280,7 +281,7 @@ namespace S4 {
 		}
 
 		_base++;
-		if (_base >= size()) {
+		if (_base >= infQ_t<T>::size()) {
 			_base--;//防止一直无法使用最后一个
 			_has_base = false;	//
 			return;
@@ -294,7 +295,7 @@ namespace S4 {
 
 		if ((*this)[_base]->_time < clk) {
 			//WARN("[W] nextBase start at quite less than clk!");
-			for (; _base < size(); ++_base) {
+			for (; _base < infQ_t<T>::size(); ++_base) {
 				if ((*this)[_base]->_time == clk) {	//匹配
 					_now = clk;
 					_has_base = true;
@@ -305,7 +306,7 @@ namespace S4 {
 					break;
 				}
 			}
-			if (_base >= size()) {	//未找到，使用最后一个
+			if (_base >= infQ_t<T>::size()) {	//未找到，使用最后一个
 				_base--;
 			}
 
@@ -340,7 +341,7 @@ namespace S4 {
 			return NULL;
 		}
 
-		if (_base + j >= size()) {	//equals: -i > _base
+		if (_base + j >= infQ_t<T>::size()) {	//equals: -i > _base
 			return NULL;
 		}
 		return (*this)[_base + j].get();
@@ -378,7 +379,7 @@ namespace S4 {
 	template<class T>
 	const T* infQ_t<T>::getInfo_abs(time_t clk) const
 	{
-		if (size() == 0) {
+		if (infQ_t<T>::size() == 0) {
 			return NULL;
 		}
 		//if (!isNewAtBack())
@@ -387,10 +388,10 @@ namespace S4 {
 
 		if ((*this)[0]->_time > clk)
 			return NULL;
-		if (back()->_time < clk)
+		if (infQ_t<T>::back()->_time < clk)
 			return NULL;
 
-		int low = 0, high = static_cast<int>(size()), mid;
+		int low = 0, high = static_cast<int>(infQ_t<T>::size()), mid;
 		while (low <= high) {
 			mid = low + (high - low) / 2;
 			if (clk == (*this)[mid]->_time) {
@@ -411,7 +412,7 @@ namespace S4 {
 	template<class T>
 	const T* infQ_t<T>::getLastInfo(time_t clk) const
 	{
-		if (size() == 0) {
+		if (infQ_t<T>::size() == 0) {
 			return NULL;
 		}
 
@@ -419,14 +420,14 @@ namespace S4 {
 		//	newAtBack();
 		assert(isNewAtBack());
 
-		if (back()->_time < clk) {
-			return back().get();
+		if (infQ_t<T>::back()->_time < clk) {
+			return infQ_t<T>::back().get();
 		}
 
 		if ((*this)[0]->_time > clk)
 			return NULL;
 
-		size_t low = 0, high = size(), mid;
+		size_t low = 0, high = infQ_t<T>::size(), mid;
 		while (low <= high) {
 			mid = low + (high - low) / 2;
 			if (clk == (*this)[mid]->_time) {

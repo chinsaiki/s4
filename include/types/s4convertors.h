@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <string.h>
 #include <assert.h>
 #ifndef ASSERT
 #define ASSERT(condition)         \
