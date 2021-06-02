@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 	std::vector<tdx_snap_t> snaps;
 
 	// snap_db.read_table<S4::sqlite::tdx_snap_t_dbTbl::data_t>(&snap_tbl, dates.back(), snaps);
-	snap_db.read_table_v2(&snap_tbl, dates.back(), snaps);
+	snap_db.read_table_v2(&snap_tbl, dates.back(), snaps, "WHERE minuSec>=91500");
     LCL_INFO("{} snaps has been loaded:", snaps.size());
 
     int nb = 0;

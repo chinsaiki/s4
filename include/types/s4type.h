@@ -89,14 +89,14 @@ public:
 };
 
 
-enum runMode_t
+enum class runMode_t
 {
 	rOTF = 0,
 	rREG,
 	rCap,
 };
 
-enum timeMode_t
+enum class timeMode_t
 {
 	tDAY = 0,
 	tMINU,
@@ -107,7 +107,7 @@ enum timeMode_t
 };
 
 ////////////
-enum trade_opt_t
+enum class trade_opt_t
 {
 	oSEND_OPEN = 0,
 	oCHANGE_CTS,
@@ -126,8 +126,8 @@ trade_opt_t trade_opt_t_fromString(const std::string & str);
 
 
 ////////////
-enum orderType_t {
-	UNKNOW = 0,
+enum class orderType_t {
+	UNKNOW = -1,
 	LIMITED_BUY,
 	LIMITED_SELL,
 	MARKET_BUY,
@@ -146,11 +146,26 @@ orderType_t str2orderType(const std::string & str);
 
 bool isOrderTypeEqual(orderType_t t0, orderType_t t1);
 
+
+////////////
+enum class orderSide_t {
+	UNKNOW = -1,
+	BID,
+	ASK,
+};
+
+std::string orderSideStr(orderSide_t t);
+orderSide_t str2orderSide(const std::string & str);
+
+bool isOrderSideEqual(orderSide_t t0, orderSide_t t1);
+
+
+
 //*:                         AUTO
 //BUY:  dbp / RZ_BUY(first n) |   NORMAL_STOCK
 //SELL: dbp / RQ_SELL(TODO)   |   NORMAL_STOCK
 //CANCEL: RZRQ                |   NORMAL_STOCK
-enum tradeType_t
+enum class tradeType_t
 {
 	AUTO = 0,
 	NORMAL_STOCK,
@@ -163,7 +178,7 @@ enum tradeType_t
 std::string tradeTypeStr(tradeType_t t);
 
 
-enum marketType_t
+enum class marketType_t
 {
 	STOCK_AUTO = 0,
 	STOCK_RZ,
@@ -187,7 +202,12 @@ struct horder_t
 };
 
 std::string stk_tdx_snap_toString(const tdx_snap_t& snap);
-
+struct orderBookLevel_t
+{
+	orderSide_t side = orderSide_t::UNKNOW;
+	price_t price = 0;
+	vol_board_t vol = 0;	//手
+};
 
 }//namespace S4
 

@@ -119,16 +119,16 @@ const vec_fhps_t* map_fhps_t::getStk(int icode) const
 std::string trade_opt_t_toString(trade_opt_t t)
 {
 	std::string s( 
-		t == oSEND_OPEN ? "oSEND_OPEN" :
-		t == oOPEN ? "oOPEN" :
-		t == oABORT_OPEN ? "oABORT_OPEN" :
-		t == oSEND_CLOSE ? "oSEND_CLOSE" :
-		t == oCLOSE ? "oCLOSE" :
-		t == oABORT_CLOSE ? "oABORT_CLOSE" :
-		t == oTAKE ? "oTAKE" :
-		t == oSTOP ? "oSTOP" :
-		t == oCHANGE_OTS ? "oCHANGE_OTS" :
-		t == oCHANGE_CTS ? "oCHANGE_CTS" :
+		t == trade_opt_t::oSEND_OPEN ? "oSEND_OPEN" :
+		t == trade_opt_t::oOPEN ? "oOPEN" :
+		t == trade_opt_t::oABORT_OPEN ? "oABORT_OPEN" :
+		t == trade_opt_t::oSEND_CLOSE ? "oSEND_CLOSE" :
+		t == trade_opt_t::oCLOSE ? "oCLOSE" :
+		t == trade_opt_t::oABORT_CLOSE ? "oABORT_CLOSE" :
+		t == trade_opt_t::oTAKE ? "oTAKE" :
+		t == trade_opt_t::oSTOP ? "oSTOP" :
+		t == trade_opt_t::oCHANGE_OTS ? "oCHANGE_OTS" :
+		t == trade_opt_t::oCHANGE_CTS ? "oCHANGE_CTS" :
 		"oUNKNOWN_OPT"
 	);
 	return move(s);
@@ -136,17 +136,17 @@ std::string trade_opt_t_toString(trade_opt_t t)
 
 trade_opt_t trade_opt_t_fromString(const std::string & str)
 {
-	if (str == "oSEND_OPEN") return oSEND_OPEN;
-	if (str == "oOPEN") return oOPEN;
-	if (str == "oABORT_OPEN") return oABORT_OPEN;
-	if (str == "oSEND_CLOSE") return oSEND_CLOSE;
-	if (str == "oCLOSE") return oCLOSE;
-	if (str == "oABORT_CLOSE") return oABORT_CLOSE;
-	if (str == "oTAKE") return oTAKE;
-	if (str == "oSTOP") return oSTOP;
-	if (str == "oCHANGE_OTS") return oCHANGE_OTS;
-	if (str == "oCHANGE_CTS") return oCHANGE_CTS;
-	if (str == "oUNKNOWN_OPT") return oUNKNOWN_OPT;
+	if (str == "oSEND_OPEN") return trade_opt_t::oSEND_OPEN;
+	if (str == "oOPEN") return trade_opt_t::oOPEN;
+	if (str == "oABORT_OPEN") return trade_opt_t::oABORT_OPEN;
+	if (str == "oSEND_CLOSE") return trade_opt_t::oSEND_CLOSE;
+	if (str == "oCLOSE") return trade_opt_t::oCLOSE;
+	if (str == "oABORT_CLOSE") return trade_opt_t::oABORT_CLOSE;
+	if (str == "oTAKE") return trade_opt_t::oTAKE;
+	if (str == "oSTOP") return trade_opt_t::oSTOP;
+	if (str == "oCHANGE_OTS") return trade_opt_t::oCHANGE_OTS;
+	if (str == "oCHANGE_CTS") return trade_opt_t::oCHANGE_CTS;
+	if (str == "oUNKNOWN_OPT") return trade_opt_t::oUNKNOWN_OPT;
 
 	throw type_Error("trade_opt_t_fromString: illegal str=" + str);
 }
@@ -155,16 +155,16 @@ trade_opt_t trade_opt_t_fromString(const std::string & str)
 std::string orderTypeStr(orderType_t t)
 {
 	std::string s( 
-		t == UNKNOW ? "UNKNOW" :
-		t == LIMITED_BUY ? "LIMITED_BUY" :
-		t == LIMITED_SELL ? "LIMITED_SELL" :
-		t == MARKET_BUY ? "MARKET_BUY" :
-		t == MARKET_SELL ? "MARKET_SELL" :
-		t == BUY ? "BUY" :
-		t == SELL ? "SELL" :
-		t == ANY ? "ANY" :
-		t == CANCEL_BUY ? "CANCEL_BUY" :
-		t == CANCEL_SELL ? "CANCEL_SELL" :
+		t == orderType_t::UNKNOW ? "UNKNOW" :
+		t == orderType_t::LIMITED_BUY ? "LIMITED_BUY" :
+		t == orderType_t::LIMITED_SELL ? "LIMITED_SELL" :
+		t == orderType_t::MARKET_BUY ? "MARKET_BUY" :
+		t == orderType_t::MARKET_SELL ? "MARKET_SELL" :
+		t == orderType_t::BUY ? "BUY" :
+		t == orderType_t::SELL ? "SELL" :
+		t == orderType_t::ANY ? "ANY" :
+		t == orderType_t::CANCEL_BUY ? "CANCEL_BUY" :
+		t == orderType_t::CANCEL_SELL ? "CANCEL_SELL" :
 		"ILLEGAL"
 	);
 	return move(s);
@@ -172,16 +172,16 @@ std::string orderTypeStr(orderType_t t)
 
 orderType_t str2orderType(const std::string & str)
 {
-	if (string_toUpper(str) == "UNKNOW") return UNKNOW;
-	if (string_toUpper(str) == "LIMITED_BUY") return LIMITED_BUY;
-	if (string_toUpper(str) == "LIMITED_SELL") return LIMITED_SELL;
-	if (string_toUpper(str) == "MARKET_BUY") return MARKET_BUY;
-	if (string_toUpper(str) == "MARKET_SELL") return MARKET_SELL;
-	if (string_toUpper(str) == "BUY") return BUY;
-	if (string_toUpper(str) == "SELL") return SELL;
-	if (string_toUpper(str) == "ANY") return ANY;
-	if (string_toUpper(str) == "CANCEL_BUY") return CANCEL_BUY;
-	if (string_toUpper(str) == "CANCEL_SELL") return CANCEL_SELL;
+	if (string_toUpper(str) == "UNKNOW") return orderType_t::UNKNOW;
+	if (string_toUpper(str) == "LIMITED_BUY") return orderType_t::LIMITED_BUY;
+	if (string_toUpper(str) == "LIMITED_SELL") return orderType_t::LIMITED_SELL;
+	if (string_toUpper(str) == "MARKET_BUY") return orderType_t::MARKET_BUY;
+	if (string_toUpper(str) == "MARKET_SELL") return orderType_t::MARKET_SELL;
+	if (string_toUpper(str) == "BUY") return orderType_t::BUY;
+	if (string_toUpper(str) == "SELL") return orderType_t::SELL;
+	if (string_toUpper(str) == "ANY") return orderType_t::ANY;
+	if (string_toUpper(str) == "CANCEL_BUY") return orderType_t::CANCEL_BUY;
+	if (string_toUpper(str) == "CANCEL_SELL") return orderType_t::CANCEL_SELL;
 
 	throw type_Error("str2marketType: illegal str=" + str);
 }
@@ -191,21 +191,44 @@ bool isOrderTypeEqual(orderType_t t0, orderType_t t1) {
 	if (t0 == t1)
 		return true;
 
-	if (t0 == BUY && (t1 == MARKET_BUY || t1 == LIMITED_BUY))
+	if (t0 == orderType_t::BUY && (t1 == orderType_t::MARKET_BUY || t1 == orderType_t::LIMITED_BUY))
 		return true;
-	if (t1 == BUY && (t0 == MARKET_BUY || t0 == LIMITED_BUY))
-		return true;
-
-	if (t0 == SELL && (t1 == MARKET_SELL || t1 == LIMITED_SELL))
-		return true;
-	if (t1 == SELL && (t0 == MARKET_SELL || t0 == LIMITED_SELL))
+	if (t1 == orderType_t::BUY && (t0 == orderType_t::MARKET_BUY || t0 == orderType_t::LIMITED_BUY))
 		return true;
 
-	if (t0 == ANY || t1 == ANY)
+	if (t0 == orderType_t::SELL && (t1 == orderType_t::MARKET_SELL || t1 == orderType_t::LIMITED_SELL))
+		return true;
+	if (t1 == orderType_t::SELL && (t0 == orderType_t::MARKET_SELL || t0 == orderType_t::LIMITED_SELL))
+		return true;
+
+	if (t0 == orderType_t::ANY || t1 == orderType_t::ANY)
 		return true;
 
 	return false;
 }
+
+
+////////////////
+std::string orderSideStr(orderSide_t t)
+{
+	std::string s( 
+		t == orderSide_t::UNKNOW ? "UNKNOW" :
+		t == orderSide_t::BID ? "BID" :
+		t == orderSide_t::ASK ? "ASK" :
+		"ILLEGAL"
+	);
+	return move(s);
+}
+
+orderSide_t str2orderSide(const std::string & str)
+{
+	if (string_toUpper(str) == "UNKNOW") return orderSide_t::UNKNOW;
+	if (string_toUpper(str) == "BID") return orderSide_t::BID;
+	if (string_toUpper(str) == "ASK") return orderSide_t::ASK;
+
+	throw type_Error("str2marketSide: illegal str=" + str);
+}
+
 
 std::string tradeTypeStr(tradeType_t t)
 {
@@ -235,10 +258,10 @@ std::string marketTypeStr(marketType_t t)
 
 marketType_t str2marketType(const std::string & str)
 {
-	if (string_toUpper(str) == "STOCK_AUTO") return STOCK_AUTO;
-	if (string_toUpper(str) == "STOCK_RZ") return STOCK_RZ;
-	if (string_toUpper(str) == "STOCK_DBP") return STOCK_DBP;
-	if (string_toUpper(str) == "STOCK_STK") return STOCK_STK;
+	if (string_toUpper(str) == "STOCK_AUTO") return marketType_t::STOCK_AUTO;
+	if (string_toUpper(str) == "STOCK_RZ") return marketType_t::STOCK_RZ;
+	if (string_toUpper(str) == "STOCK_DBP") return marketType_t::STOCK_DBP;
+	if (string_toUpper(str) == "STOCK_STK") return marketType_t::STOCK_STK;
 	throw type_Error("str2marketType: illegal str=" + str);
 }
 

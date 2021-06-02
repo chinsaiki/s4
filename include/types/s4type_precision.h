@@ -8,20 +8,20 @@ typedef double fprice_t;
 #if iPrice_precision==1000  //A股 通达信存储精度 元*1000
 
 //float price to int price: 15.199999 -> 15.20499 -> 1520
-#define fPrice_to_iPrice(x) ((price_t)(((x)+0.005)*100))
-#define iPrice_to_fPrice(x) ((x)*0.001)
+#  define fPrice_to_iPrice(x) ((price_t)(((x)+0.005)*100))
+#  define iPrice_to_fPrice(x) ((x)*0.001)
 
 //5% 板价格
-#define UP_5p(x) ((price_t)((x)*1.05+0.5))
-#define DN_5p(x) ((price_t)((x)*0.95+0.5))
+#  define UP_5p(x) ((price_t)((x)*1.05+0.5))
+#  define DN_5p(x) ((price_t)((x)*0.95+0.5))
 
 //10% 板价格
-#define UP_10p(x) ((price_t)((x)*1.1+0.5))
-#define DN_10p(x) ((price_t)((x)*0.9+0.5))
+#  define UP_10p(x) ((price_t)((x)*1.1+0.5))
+#  define DN_10p(x) ((price_t)((x)*0.9+0.5))
 
 //20% 板价格
-#define UP_20p(x) ((price_t)((x)*1.2+0.5))
-#define DN_20p(x) ((price_t)((x)*0.8+0.5))
+#  define UP_20p(x) ((price_t)((x)*1.2+0.5))
+#  define DN_20p(x) ((price_t)((x)*0.8+0.5))
 
 //涨幅 %
 #define CALC_R_PERCENT(x,y) ((x) * 100.0 / (y) - 100.0)

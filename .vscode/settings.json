@@ -96,6 +96,11 @@
         "qbrush": "cpp",
         "qsetiterator": "cpp",
         "qtabwidget": "cpp",
-        "qscrollbar": "cpp"
+        "qscrollbar": "cpp",
+        "bit": "cpp",
+        "charconv": "cpp",
+        "compare": "cpp",
+        "coroutine": "cpp",
+        "stop_token": "cpp"
     }
 }
