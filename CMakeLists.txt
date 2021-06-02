@@ -179,7 +179,7 @@ endforeach()
 message(STATUS "ui_headers_auto = ${ui_headers_auto}")
 
 
-add_library(${PROJECT_NAME} STATIC  ${LIB_HEADER_FILES} ${LIB_INLINE_FILES} ${LIB_SOURCE_FILES})
+add_library(${PROJECT_NAME} STATIC  ${LIB_HEADER_FILES} ${LIB_INLINE_FILES} ${LIB_SOURCE_FILES} ${UI_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include;")
 
 
@@ -224,6 +224,7 @@ message(STATUS "LINKLIBS = ${LINKLIBS}")
 ## copy qt dlls
 list(APPEND qt_dlls qt5core qt5gui qt5qml qt5quick qt5widgets qt5sql)
 if(WIN32)
+MESSAGE(STATUS "copy qt dlls")
 foreach(qt_dll ${qt_dlls})
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD        # Adds a post-build event to MyTest
     COMMAND ${CMAKE_COMMAND} -E copy_if_different  # which executes "cmake - E copy_if_different..."
