@@ -1,27 +1,27 @@
 ﻿#pragma once
 
-//整数价格，精度=厘
+//整数价格，精度=分
 typedef int32_t price_t;
 typedef double fprice_t;
-#define iPrice_precision 1000
+#define iPrice_precision 100
 
-#if iPrice_precision==1000  //A股 通达信存储精度 元*1000
 
 //float price to int price: 15.199999 -> 15.20499 -> 1520
-#  define fPrice_to_iPrice(x) ((price_t)(((x)+0.005)*100))
-#  define iPrice_to_fPrice(x) ((x)*0.001)
+#define fPrice_to_iPrice(x) ((price_t)(((x)+0.005)*iPrice_precision))
+#define iPrice_to_fPrice(x) ((x)*(1.0/iPrice_precision))
+
 
 //5% 板价格
-#  define UP_5p(x) ((price_t)((x)*1.05+0.5))
-#  define DN_5p(x) ((price_t)((x)*0.95+0.5))
+#define UP_5p(x) ((price_t)((x)*1.05+0.5))
+#define DN_5p(x) ((price_t)((x)*0.95+0.5))
 
 //10% 板价格
-#  define UP_10p(x) ((price_t)((x)*1.1+0.5))
-#  define DN_10p(x) ((price_t)((x)*0.9+0.5))
+#define UP_10p(x) ((price_t)((x)*1.1+0.5))
+#define DN_10p(x) ((price_t)((x)*0.9+0.5))
 
 //20% 板价格
-#  define UP_20p(x) ((price_t)((x)*1.2+0.5))
-#  define DN_20p(x) ((price_t)((x)*0.8+0.5))
+#define UP_20p(x) ((price_t)((x)*1.2+0.5))
+#define DN_20p(x) ((price_t)((x)*0.8+0.5))
 
 //涨幅 %
 #define CALC_R_PERCENT(x,y) ((x) * 100.0 / (y) - 100.0)
@@ -31,10 +31,6 @@ typedef double fprice_t;
 
 //涨幅 % 整数计算
 #define CALC_R_PERCENT_INT(x,y) ((x) * 100 / (y) - 100)
-
-#else //not yet
-
-#endif
 
 //成交额，精度=元
 typedef float amount_t;

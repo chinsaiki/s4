@@ -8,7 +8,7 @@ void infKQ_t::add_vec_dayK(vec_dayK_t& KQ) {
 	// if (_tMode == tMINU) {
 	// 	throw InfoError("Cannot add dayK to minuK!");
 	// }
-	assert(_tMode == tUNKNOWN || _tMode == tDAY);
+	assert(_tMode == timeMode_t::tUNKNOWN || _tMode == timeMode_t::tDAY);
 	assert(isNewAtBack());
 
 	this->reserve(KQ.size());
@@ -16,14 +16,14 @@ void infKQ_t::add_vec_dayK(vec_dayK_t& KQ) {
 		assert(size()==0 || i->date > back()->_date);
 		emplace_back(std::make_shared<infK_t>(*i));
 	}
-	_tMode = tDAY;
+	_tMode = timeMode_t::tDAY;
 }
 
 void infKQ_t::add_vec_minuK(vec_minuK_t& KQ) {
 	// if (_tMode == tDAY) {
 	// 	throw InfoError("Cannot add minuK to dayK!");
 	// }
-	assert(_tMode == tUNKNOWN || _tMode == tMINU);
+	assert(_tMode == timeMode_t::tUNKNOWN || _tMode == timeMode_t::tMINU);
 	assert(isNewAtBack());
 
 	this->reserve(KQ.size());
@@ -31,7 +31,7 @@ void infKQ_t::add_vec_minuK(vec_minuK_t& KQ) {
 		assert(size() == 0 || i->time > back()->_time);
 		emplace_back(std::make_shared<infK_t>(*i));
 	}
-	_tMode = tMINU;
+	_tMode = timeMode_t::tMINU;
 }
 
 void infKQ_t::calcFQ(const vec_gbbd_t* gbbd, const vec_fhps_t* fhps)

@@ -41,10 +41,10 @@ void Kinstrument_Kline_scene::paint(const KCtx_t& ctx, std::shared_ptr<data_pane
 qreal Kinstrument_Kline_scene::label_w_to_val_w(uint64_t l) const 
 {
     uint64_t _l = l;
-    if (_KCtx.timeMode == tDAY) {
+    if (_KCtx.timeMode == timeMode_t::tDAY) {
         _l = date_to_utc(utc_to_date(l));
     }
-    else if (_KCtx.timeMode == tMINU) {
+    else if (_KCtx.timeMode == timeMode_t::tMINU) {
         time_date_t date;
         time_minuSec_t minu;
         date = utc_to_date(l, &minu);
@@ -89,7 +89,7 @@ QString Kinstrument_Kline_scene::x_to_label_w(qreal x) const
     int val_w = int(x_to_val_w(x) + 0.5);
     QString txt;
     if (_w_map_label.count(val_w)){
-        if (_KCtx.timeMode == tDAY){
+        if (_KCtx.timeMode == timeMode_t::tDAY){
             txt.sprintf("%s", date_to_str(utc_to_date(_w_map_label.at(val_w))).c_str());
         }else{
             txt.sprintf("%s", utc_to_str(_w_map_label.at(val_w)).c_str());
@@ -121,10 +121,10 @@ std::shared_ptr<infKQ_t> Kinstrument_Kline_scene::check_data(void) const
     }
 
 	std::shared_ptr<infKQ_t> pInfoKQ;
-	if (_KCtx.timeMode == tDAY) {
+	if (_KCtx.timeMode == timeMode_t::tDAY) {
 		pInfoKQ = _data_panel->info.pDayKQ;
 	}
-	else if (_KCtx.timeMode == tMINU) {
+	else if (_KCtx.timeMode == timeMode_t::tMINU) {
 		pInfoKQ = _data_panel->info.pMinuKQ;
 	}
 	else {  //TODO

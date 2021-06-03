@@ -31,34 +31,34 @@ bool trans_s3history(const std::vector<s3_order_t>& s3data, std::vector<s4_histo
 		s4order.time_utcSec = s3order.time;
 		s4order.datetime = s3order.datetime;
 		if (s3order.optType == "Send") {
-			s4order.optType = oSEND_OPEN;
+			s4order.optType = trade_opt_t::oSEND_OPEN;
 		}
 		else if (s3order.optType == "Open") {
-			s4order.optType = oOPEN;
+			s4order.optType = trade_opt_t::oOPEN;
 		}
 		else if (s3order.optType == "Take") {
-			s4order.optType = oTAKE;
+			s4order.optType = trade_opt_t::oTAKE;
 		}
 		else if (s3order.optType == "Stop") {
-			s4order.optType = oSTOP;
+			s4order.optType = trade_opt_t::oSTOP;
 		}
 		else if (s3order.optType == "Close") {
-			s4order.optType = oCLOSE;
+			s4order.optType = trade_opt_t::oCLOSE;
 		}
 		else if (s3order.optType == "Abort") {
-			s4order.optType = oABORT_OPEN;
+			s4order.optType = trade_opt_t::oABORT_OPEN;
 		}
 		else if (s3order.optType == "ChangeOpenTS") {
-			s4order.optType = oCHANGE_OTS;
+			s4order.optType = trade_opt_t::oCHANGE_OTS;
 		}
 		else if (s3order.optType == "ChangeTakeStop") {
-			s4order.optType = oCHANGE_CTS;
+			s4order.optType = trade_opt_t::oCHANGE_CTS;
 		}
 		else if (s3order.optType == "ChangeClose") {
-			s4order.optType = oCHANGE_CTS;
+			s4order.optType = trade_opt_t::oCHANGE_CTS;
 		}
 		else if (s3order.optType == "Unknow") {
-			s4order.optType = oUNKNOWN_OPT;
+			s4order.optType = trade_opt_t::oUNKNOWN_OPT;
 		}
 		else {
 			LCL_ERR("unknown s3 opt={:}", s3order.optType);

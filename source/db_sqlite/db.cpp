@@ -24,7 +24,8 @@ DB_t::DB_t(const std::string & name, const int Mode):
 		// std::cout << "SQLite table 'test' exists=" << bExists << "\n";
 	}
 	catch (std::exception & e) {
-		LCL_FATAL("sqlite::DB_t({:}) init fail: {:}", name, e.what());
+		LCL_ERR("sqlite::DB_t({:}) init fail: {:}", name, e.what());
+		throw e;
 	}
 }
 

@@ -272,24 +272,28 @@ public:
     return room_.size();
   }
 
+  void stop() { _stop = true; }
+
 private:
   void do_accept()
   {
     acceptor_.async_accept(
         [this](std::error_code ec, tcp::socket socket)
         {
+          if (_stop) return;
           if (!ec)
           {
             std::cout << "accept" << std::endl;
             std::make_shared<chat_session>(std::move(socket), room_)->start();
           }
-
           do_accept();
         });
   }
 
   tcp::acceptor acceptor_;
   chat_room room_;
+
+  bool _stop = false;
 };
 
 // class tcp_json_server_runner : public thread_runner_t

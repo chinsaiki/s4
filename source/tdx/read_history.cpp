@@ -244,7 +244,7 @@ void merge_history_order(const std::vector<S4::tdx_xyzq_history_order_t>& orders
 		//current status of id: new / aborted / opened
 		if (order.opt_type == "买入") {
 			if (order.delegate_type == "撤单") {
-				data.optType = oABORT_OPEN; //"abort_open";
+				data.optType = trade_opt_t::oABORT_OPEN; //"abort_open";
 				if (order.status == "已成") {
 					data.status = "aborted";
 				}
@@ -253,7 +253,7 @@ void merge_history_order(const std::vector<S4::tdx_xyzq_history_order_t>& orders
 				}
 			}
 			else {
-				data.optType = oSEND_OPEN;//"send_open";
+				data.optType = trade_opt_t::oSEND_OPEN;//"send_open";
 				data.status = "new";	//	new
 			}
 			data.order_open = fPrice_to_iPrice(order.order_price);	//	-1
@@ -262,10 +262,10 @@ void merge_history_order(const std::vector<S4::tdx_xyzq_history_order_t>& orders
 		}
 		else if (order.opt_type == "卖出") {
 			if (order.delegate_type == "撤单") {
-				data.optType = oABORT_CLOSE; //"abort_close";
+				data.optType = trade_opt_t::oABORT_CLOSE; //"abort_close";
 			}
 			else {
-				data.optType = oSEND_CLOSE;// "send_close";
+				data.optType = trade_opt_t::oSEND_CLOSE;// "send_close";
 			}
 			data.status = "opened";
 			data.order_open = -1;	//	-1
@@ -313,13 +313,13 @@ void merge_history_deal(const std::vector<S4::tdx_xyzq_history_deal_t>& deals_rd
 		//current option of id: open / close
 		//current status of id: new->opened / opened->closed
 		if (deal.opt_type == "买入") {
-			data.optType = oOPEN;// "open";
+			data.optType = trade_opt_t::oOPEN;// "open";
 			data.status = "opened";	//	new
 			data.deal_open = fPrice_to_iPrice(deal.deal_price);
 			data.deal_close = -1;	//	-1
 		}
 		else if (deal.opt_type == "卖出") {
-			data.optType = oCLOSE; //"close";
+			data.optType = trade_opt_t::oCLOSE; //"close";
 			data.status = "closed";	//	new
 			data.deal_open = -1;	//	-1
 			data.deal_close = fPrice_to_iPrice(deal.deal_price);

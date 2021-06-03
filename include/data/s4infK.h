@@ -10,7 +10,7 @@ class infK_t : public info_t
 public:
 	infK_t():
 		info_t(),
-		_tMode(tUNKNOWN)
+		_tMode(timeMode_t::tUNKNOWN)
 	{}
 
 	infK_t(const dayK_t& pK) :
@@ -24,7 +24,7 @@ public:
 		_liutong(0),
 		_zong(0),
 		_factor(1.0),
-		_tMode(tDAY),
+		_tMode(timeMode_t::tDAY),
 		_fh_baseTime(0),
 		_turnOver(0)
 	{
@@ -48,7 +48,7 @@ public:
 		_liutong(0),
 		_zong(0),
 		_factor(1.0),
-		_tMode(tMINU),
+		_tMode(timeMode_t::tMINU),
 		_fh_baseTime(0),
 		_turnOver(0)
 	{
@@ -92,7 +92,7 @@ public:
 	int high_fq;
 	int low_fq;
 	int close_fq;*/
-	const enum timeMode_t _tMode;
+	const enum class timeMode_t _tMode;
 	time_t _fh_baseTime;
 
 	infK_t& operator=(const infK_t& pK) {
@@ -151,7 +151,7 @@ public:
 	void calcFQ(const vec_gbbd_t* gbbd, const vec_fhps_t* fhps);
 
 private:
-	timeMode_t _tMode = tUNKNOWN;
+	timeMode_t _tMode = timeMode_t::tUNKNOWN;
 private:
 	void calcFH(const vec_fhps_t* fhps);
 	void calcGB(const vec_gbbd_t* gbbd);

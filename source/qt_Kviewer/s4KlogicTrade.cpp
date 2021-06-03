@@ -235,11 +235,11 @@ void KlogicTrade_t::paint_close(size_t i, trade_opt_t type)
 
 	KlogicTriangle_t* bi = new KlogicTriangle_t(_scene);
 
-	if (type == oCLOSE) {
+	if (type == trade_opt_t::oCLOSE) {
 		bi->setDirect(KlogicTriangle_t::dirMode_t::Tri_LF);
 		bi->setColor(_color_negtive);
 	}
-	else if (type == oTAKE) {
+	else if (type == trade_opt_t::oTAKE) {
 		bi->setDirect(KlogicTriangle_t::dirMode_t::Tri_DN);
 		bi->setColor(_color_positive);
 	}

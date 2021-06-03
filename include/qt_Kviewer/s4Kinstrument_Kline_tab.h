@@ -49,7 +49,7 @@ public slots:
 
 protected:
     std::shared_ptr<data_panel_t> _data_panel;
-    timeMode_t _timeMode = tUNKNOWN;
+    timeMode_t _timeMode = timeMode_t::tUNKNOWN;
 };
 
 

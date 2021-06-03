@@ -60,10 +60,22 @@ namespace S4
             std::vector<orderBookLevel_t> ask;
             std::vector<orderBookLevel_t> bid;
             ask.push_back({ orderSide_t::ASK, snap.ask1, snap.ask_vol1 });
+            ask.push_back({ orderSide_t::ASK, snap.ask2, snap.ask_vol2 });
+            ask.push_back({ orderSide_t::ASK, snap.ask3, snap.ask_vol3 });
+            ask.push_back({ orderSide_t::ASK, snap.ask4, snap.ask_vol4 });
+            ask.push_back({ orderSide_t::ASK, snap.ask5, snap.ask_vol5 });
+            bid.push_back({ orderSide_t::BID, snap.bid1, snap.bid_vol1 });
+            bid.push_back({ orderSide_t::BID, snap.bid2, snap.bid_vol2 });
+            bid.push_back({ orderSide_t::BID, snap.bid3, snap.bid_vol3 });
+            bid.push_back({ orderSide_t::BID, snap.bid4, snap.bid_vol4 });
+            bid.push_back({ orderSide_t::BID, snap.bid5, snap.bid_vol5 });
             //backup
             beginInsertRows({}, 0, _side_levels_nb << 1);
-            m_data.append(order);
+            std::swap(ask, _ask);
+            std::swap(bid, _bid);
             endInsertRows();
+
+            //TODO: 高亮变动
         }
     };
 

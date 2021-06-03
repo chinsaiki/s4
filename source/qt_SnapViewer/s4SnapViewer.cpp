@@ -9,6 +9,7 @@
 #include "qt_common/Utils.h"
 #include "qt_Kviewer/s4Kinstrument.h"
 #include "jsonTypes/nw_load_instrument_t.h"
+#include "jsonTypes/tdx_snap_t_dbTbl.h"
 
 #include <QSplitter>
 #include <QScrollArea>
@@ -33,8 +34,8 @@ s4SnapViewer::s4SnapViewer(QWidget *parent) :
 {   
     ui->setupUi(this);
 	ui->centralwidget->setMouseTracking(true);
-	connect(ui->actionOpen, &QAction::triggered, this, &s4SnapViewer::onOpen);
-	connect(ui->actionCallConsole, &QAction::triggered, this, &s4SnapViewer::onCallConsole);
+	connect(ui->actionOpen_DB, &QAction::triggered, this, &s4SnapViewer::onOpenDB);
+	//connect(ui->actionCallConsole, &QAction::triggered, this, &s4SnapViewer::onCallConsole);
 
 	this->setMouseTracking(true);
 	_instrument_tab = new Kviewer_instrumentTab(this);
@@ -165,32 +166,57 @@ s4SnapViewer::s4SnapViewer(QWidget *parent) :
 	load("sz002810", "", "to20200531");
 }
 
-void s4SnapViewer::onOpen()
+void s4SnapViewer::onOpenDB()
 {
-	QString path = QFileDialog::getOpenFileName(this, tr("Open S4 configure json"), "../worksapce", tr("Json files (*.json)"));
+	QString path = QFileDialog::getOpenFileName(this, tr("Open snap database"), "../db", tr("sqlite db files (*.db)"));
 
 	if (!Utils::fileCanBeOpened(path)) {
 		QMessageBox::warning(NULL, "warning", "file is not readable!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 		return;
 	}
 
-	if (!glb_conf::pInstance()->load(path.toStdString()))
-	{
-		QMessageBox::warning(NULL, "warning", "file format error!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+	try {
+
+		sqlite::DB_t snap_db(path.toStdString());
+
+		std::vector <std::string> dates = snap_db.get_table_list();
+
+		if (dates.size() == 0) {
+			LCL_ERR("No snap to read out!");
+			QMessageBox::warning(NULL, "warning", "snap db is empty!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+			return;
+		}
+		LCL_INFO("Going to load snap of {}", dates.back());
+
+		S4::sqlite::tdx_snap_t_dbTbl snap_tbl;
+		std::vector<tdx_snap_t> snaps;
+
+		// snap_db.read_table<S4::sqlite::tdx_snap_t_dbTbl::data_t>(&snap_tbl, dates.back(), snaps);
+		snap_db.read_table_v2(&snap_tbl, dates.back(), snaps, "WHERE minuSec>=91500");
+		LCL_INFO("{} snaps has been loaded:", snaps.size());
+
+		if (!glb_conf::pInstance()->load(path.toStdString()))
+		{
+			QMessageBox::warning(NULL, "warning", "file format error!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+			return;
+		}
+		ui->statusbar->showMessage(path);
+
+		_data_if = std::make_shared<S4::QT::s4qt_data_if>();
+
+		connect(this, SIGNAL(signal_getInfo(const std::string&, const struct S4::stkInfoReq_t&, class S4::stkInfo_t*&)),
+			_data_if.get(), SLOT(getInfo(const std::string&, const struct S4::stkInfoReq_t&, class S4::stkInfo_t*&)));
+		connect(this, SIGNAL(signal_loadOrdres(const std::string&, const std::string&, const std::string&, std::vector<S4::s4_history_trade_t>&)),
+			_data_if.get(), SLOT(loadOrdres(const std::string&, const std::string&, const std::string&, std::vector<S4::s4_history_trade_t>&)));
+
+		onTcpSetup();
+
+		//onLoadConf();
+	}
+	catch (std::exception& e) {
+		QMessageBox::warning(NULL, "warning", "load snap db error: " + QString::fromStdString(e.what()) + "!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 		return;
 	}
-	ui->statusbar->showMessage(path);
-
-	_data_if = std::make_shared<S4::QT::s4qt_data_if>();
-
-	connect(this, SIGNAL(signal_getInfo(const std::string&, const struct S4::stkInfoReq_t&, class S4::stkInfo_t*&)),
-		_data_if.get(), SLOT(getInfo(const std::string&, const struct S4::stkInfoReq_t&, class S4::stkInfo_t*&)));
-	connect(this, SIGNAL(signal_loadOrdres(const std::string&, const std::string&, const std::string&, std::vector<S4::s4_history_trade_t>&)),
-		_data_if.get(), SLOT(loadOrdres(const std::string&, const std::string&, const std::string&, std::vector<S4::s4_history_trade_t>&)));
-
-	onTcpSetup();
-
-	//onLoadConf();
 }
 
 void s4SnapViewer::onCallConsole()

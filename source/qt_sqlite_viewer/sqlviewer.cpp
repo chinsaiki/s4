@@ -36,6 +36,7 @@ SqlViewer::SqlViewer(QWidget *parent)
 
 SqlViewer::~SqlViewer()
 {
+    _pTcp_json_server->stop();
     delete dbHandler;
     delete ui;
 }
@@ -74,14 +75,14 @@ void SqlViewer::onOpen()
     }
     ui->statusbar->showMessage(path);
 
+    onOpenDBs();
+
     onTcpSetup();
-    onLoadConf();
 }
 
 void SqlViewer::onLoadConf(void)
 {
-    //
-    onOpenDBs();
+    //Not used
 }
 
 void SqlViewer::onOpenDBs(void)

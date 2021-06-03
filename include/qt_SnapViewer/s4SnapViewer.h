@@ -66,7 +66,7 @@ private:
 private:
 	void showData();
 
-	void onOpen();
+	void onOpenDB();
 	void onCallConsole();
 	void onTcpSetup();
 
