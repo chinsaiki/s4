@@ -159,20 +159,22 @@ void s4SnapViewer::openSnapTab(const std::string& db_name, const std::string& ta
 
 		//create new data
 		//QAbstractTableModel
-		snapLevels* levels = new snapLevels(5, this);
 		QTableView* levels_tv = new QTableView(this);
+		snapLevels* levels = new snapLevels(5, levels_tv);
+		tableDelegate* delegate = new tableDelegate(levels_tv);
 		//QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel(this);
 		//proxyModel->setSourceModel(levels);
 		levels_tv->setModel(levels);
+		levels_tv->setItemDelegate(delegate);
 		levels_tv->setSortingEnabled(true);
 		levels_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
-		connect(levels_tv, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(snap_level_doubleClicked(const QModelIndex&)));
+		connect(levels_tv, SIGNAL(clicked(const QModelIndex&)), this, SLOT(snap_level_doubleClicked(const QModelIndex&)));
 
-		int i = ui->tabWidget->addTab(tv, snap_tab_name);
+		int i = ui->tabWidget->addTab(levels_tv, snap_tab_name);
 		ui->tabWidget->setCurrentIndex(i);
 
 		//存储
-		_snap_cargo[snap_tab_name] = { snaps, 0, tv };
+		_snap_cargo[snap_tab_name] = { snaps, 0, levels_tv };
 
 		if (snaps.size()) {
 			levels->refresh(snaps.front());

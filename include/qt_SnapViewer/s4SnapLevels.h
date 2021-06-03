@@ -3,29 +3,55 @@
 #include <QTableView>
 #include "types/s4type.h"
 #include "types/s4convertors.h"
+#include "qt_common/s4qt_tableDelegate.h"
+#include <QDateTime>
+#include <QTimeLine>
+#include <QDebug>
+
 namespace S4
 {
 
     class snapLevels : public QAbstractTableModel
     {
+        Q_OBJECT
+        QMap<int, QVariant> mapTimeout;
+
         std::vector<QString> _title = {"Side", "Price", "Volume"};
         const int _side_levels_nb;
         std::vector<orderBookLevel_t> _ask; //0 is best
         std::vector<orderBookLevel_t> _bid; //0 is best
+        QTimeLine* _timeLine;
     public:
         snapLevels(int side_levels_nb, QObject *parent = {}) : QAbstractTableModel{parent},
                                                                _side_levels_nb(side_levels_nb)
         {
             _ask.resize(side_levels_nb);
-            _bid.resize(side_levels_nb);
-        }
+			_bid.resize(side_levels_nb);
+			_timeLine = new QTimeLine(tableDelegate::update_scope + 200, this);
+            _timeLine->setFrameRange(0, tableDelegate::update_nb);
+            _timeLine->stop();
+			connect(_timeLine, &QTimeLine::frameChanged, this, [=](int ) {
+				beginResetModel();
+				endResetModel();
+			});
+			//connect(_timeLine, &QTimeLine::finished, this, [=]() {
+   //             mapTimeout.clear();
+			//	beginResetModel();
+			//	endResetModel();
+			//});
+		}
 
         int rowCount(const QModelIndex &) const override { return _side_levels_nb << 1; }
         int columnCount(const QModelIndex &) const override { return (int)_title.size(); }
         QVariant data(const QModelIndex &index, int role) const override
         {
-            if (role != Qt::DisplayRole)
-                return {}; // && role != Qt::EditRole
+            if (role == ItemChangeNoticeRole) {
+				QMap<int, QVariant>::const_iterator it = mapTimeout.find(index.row()*100 + index.column());
+				return it == mapTimeout.end() ? QVariant() : it.value();
+            }
+
+			if (role != Qt::DisplayRole)
+				return {}; // && role != Qt::EditRole
             int side_index = index.row() < _side_levels_nb ? _side_levels_nb - index.row() - 1 : index.row() - _side_levels_nb;
             const auto &levle = index.row() < _side_levels_nb ? _ask[side_index] : _bid[side_index];
             const QString side = index.row() < _side_levels_nb ? "BID":"ASK";
@@ -75,7 +101,25 @@ namespace S4
             std::swap(bid, _bid);
             endResetModel();
 
-            //TODO: 高亮变动
+            //高亮变动
+			_timeLine->stop();
+			mapTimeout.clear();
+			for (int i = 0; i < _side_levels_nb; ++i) {
+                if (ask[i].vol != _ask[i].vol) {
+					mapTimeout.insert((_side_levels_nb - 1 - i) * 100 + 2, QDateTime::currentDateTime());
+				}
+				if (bid[i].vol != _bid[i].vol) {
+					mapTimeout.insert((_side_levels_nb + i) * 100 + 2, QDateTime::currentDateTime());
+				}
+				if (ask[i].price != _ask[i].price) {
+					mapTimeout.insert((_side_levels_nb - 1 - i) * 100 + 1, QDateTime::currentDateTime());
+				}
+				if (bid[i].price != _bid[i].price) {
+					mapTimeout.insert((_side_levels_nb + i) * 100 + 1, QDateTime::currentDateTime());
+				}
+            }
+            if (mapTimeout.size())
+                _timeLine->start();
         }
     };
 
