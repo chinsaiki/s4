@@ -39,7 +39,6 @@ public slots:
 private:
     Ui::SqlViewer *ui;
     DbConnectDialog *connectionDialog = nullptr;
-    QMap<QString, QTableView *> tableMap;
     DBHandler *dbHandler = nullptr;
 
     QStandardItemModel* _dbTree_model;
@@ -49,8 +48,8 @@ private:
 
 private:
     std::shared_ptr<sqlite::DB_t> _pHistory_db;
+    QMap<QString, QTableView *> tableMap;
     std::map<std::string, orderModel*> _order_models;
-    std::map<std::string, QTableView*> _order_views;
 
     volatile bool _tcp_json_server_running = false;
     std::shared_ptr<NW::tcp_json_server> _pTcp_json_server;

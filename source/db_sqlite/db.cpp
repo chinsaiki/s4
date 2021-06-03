@@ -62,16 +62,16 @@ void DB_t::drop_tables(const std::vector<std::string>& tbl_name)
 	return;
 }
 
-std::vector<std::string> DB_t::get_table_list(void)
+std::set<std::string> DB_t::get_table_list(void)
 {
-	std::vector<std::string> ret;
+	std::set<std::string> ret;
 	try {
 		std::string queryStr("SELECT name FROM sqlite_master WHERE type ='table'");
 		
 		SQLite::Statement   query(mDb, queryStr);
 
 		while (query.executeStep()) {
-			ret.emplace_back(query.getColumn(0).getString());
+			ret.insert(query.getColumn(0).getString());
 		}
 	}
 	catch (std::exception & e) {

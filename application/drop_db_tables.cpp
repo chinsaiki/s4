@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 	std::filesystem::path db_root_path = "G:\\E\\work\\999_s\\s4\\db";
 	std::filesystem::path db_path = db_root_path / "s4_history_trade.db";
 	sqlite::DB_t db(db_path.string());
-	std::vector<std::string>db_tables = db.get_table_list();
+	std::set<std::string>db_tables = db.get_table_list();
 
 	std::string to_drop = "s3_REG_2020_07_05__11_49_27_cyc200";
 	db.drop_table(to_drop);

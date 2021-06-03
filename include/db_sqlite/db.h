@@ -16,7 +16,7 @@ public:
     //~DB_t();
 
     // void setConnection(const std::string & cnt);
-	std::vector<std::string> get_table_list(void);
+	std::set<std::string> get_table_list(void);
 
 	// col_name : col_type
 	std::vector<std::string> get_colum_list(const std::string& table_name);
@@ -78,7 +78,8 @@ public:
 		}
 		catch (std::exception& e)
 		{
-			FATAL("SQLite {} to_table {} failed: exception: {}", m_name, tbl_name, e.what());
+			ERR("SQLite {} to_table {} failed: exception: {}", m_name, tbl_name, e.what());
+			throw e;
 			// exit(EXIT_FAILURE);//return; // unexpected error : exit the example program
 		}
 	}
@@ -110,7 +111,8 @@ public:
 		}
 		catch (std::exception& e)
 		{
-			FATAL("SQLite {} read_table {} failed: exception: {}", m_name, tbl_name, e.what());
+			ERR("SQLite {} read_table {} failed: exception: {}", m_name, tbl_name, e.what());
+			throw e;
 			// exit(EXIT_FAILURE);//return; // unexpected error : exit the example program
 		}
 	}
@@ -169,7 +171,8 @@ public:
 		}
 		catch (std::exception& e)
 		{
-			FATAL("SQLite {} to_table {} failed: exception: {}", m_name, tbl_name, e.what());
+			ERR("SQLite {} to_table {} failed: exception: {}", m_name, tbl_name, e.what());
+			throw e;
 			// exit(EXIT_FAILURE);//return; // unexpected error : exit the example program
 		}
 	}
@@ -201,7 +204,8 @@ public:
 		}
 		catch (std::exception& e)
 		{
-			FATAL("SQLite {} read_table {} failed: exception: {}", m_name, tbl_name, e.what());
+			ERR("SQLite {} read_table {} failed: exception: {}", m_name, tbl_name, e.what());
+			throw e;
 			// exit(EXIT_FAILURE);//return; // unexpected error : exit the example program
 		}
 	}

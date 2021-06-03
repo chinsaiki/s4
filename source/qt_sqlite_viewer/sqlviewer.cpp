@@ -105,7 +105,7 @@ void SqlViewer::onOpenDB_orders(void)
     std::filesystem::path db_history_path = db_root_path / db.history_trade;
     _pHistory_db = std::make_shared<sqlite::DB_t>(db_history_path.string());
 
-    std::vector < std::string> history_tables = _pHistory_db->get_table_list();
+    std::set< std::string> history_tables = _pHistory_db->get_table_list();
 
     QStandardItem* orderRoot = new QStandardItem;
     orderRoot->setText(QStringLiteral(HISTORY_ORDER_TREE_ROOT));
@@ -153,7 +153,6 @@ void SqlViewer::openTableTab_orders(const std::string& table_name)
         tv->setModel(proxyModel);
         tv->setSortingEnabled(true);
         tv->setSelectionBehavior(QAbstractItemView::SelectRows);
-        _order_views[table_name] = tv;
         connect(tv, SIGNAL(doubleClicked(const QModelIndex & )), this, SLOT(orderDoubleClicked(const QModelIndex&)));
 
         int i = ui->tabWidget->addTab(tv, table_name.c_str());
@@ -164,7 +163,7 @@ void SqlViewer::openTableTab_orders(const std::string& table_name)
 void SqlViewer::orderDoubleClicked(const QModelIndex& index)
 {
     const QString tabName = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
-    QTableView* tv = (QTableWidget*)ui->tabWidget->currentWidget();//_order_views[tabName.toStdString()];
+    QTableView* tv = (QTableWidget*)ui->tabWidget->currentWidget();
     int row = tv->currentIndex().row();
     QAbstractItemModel* model = tv->model();
     QModelIndex indexCode = model->index(row, 3);

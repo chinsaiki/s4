@@ -368,7 +368,7 @@ bool read_history_DB(const std::filesystem::path& db_file_path, std::vector<s4_h
 	S4::sqlite::tdx_xyzq_history_order_t_dbTbl order_tbl;
 	std::vector<S4::tdx_xyzq_history_order_t> orders_rd;
 
-	std::vector<std::string> tables_in_db = db.get_table_list();
+	std::set<std::string> tables_in_db = db.get_table_list();
 
 	for(auto& table : tables_in_db){
 		if(table_list.size() && table_list.count(table) == 0){

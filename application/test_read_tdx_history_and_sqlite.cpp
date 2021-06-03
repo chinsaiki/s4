@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 		LCL_ERR("history_order_to_DB fail!");
 	}
 
-	std::vector<std::string> tables = qs_history_db.get_table_list();
+	std::set<std::string> tables = qs_history_db.get_table_list();
 	for (auto& t : tables) {
 		std::vector<std::string> colums = qs_history_db.get_colum_list(t);
 		LCL_INFO("{:}", t);

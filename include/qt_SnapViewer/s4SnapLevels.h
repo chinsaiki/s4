@@ -70,10 +70,10 @@ namespace S4
             bid.push_back({ orderSide_t::BID, snap.bid4, snap.bid_vol4 });
             bid.push_back({ orderSide_t::BID, snap.bid5, snap.bid_vol5 });
             //backup
-            beginInsertRows({}, 0, _side_levels_nb << 1);
+            beginResetModel();
             std::swap(ask, _ask);
             std::swap(bid, _bid);
-            endInsertRows();
+            endResetModel();
 
             //TODO: 高亮变动
         }

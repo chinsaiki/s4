@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 	std::filesystem::path db_s3_history_path = db_s3_root_path / db.s3_history;
 	sqlite::DB_t s3_history_db(db_s3_history_path.string());
 
-	std::vector <std::string> s3_tbls = s3_history_db.get_table_list();
+	std::set<std::string> s3_tbls = s3_history_db.get_table_list();
 
 	std::vector<s3_order_t> s3data;
 	std::vector<s4_history_trade_t> s4data;

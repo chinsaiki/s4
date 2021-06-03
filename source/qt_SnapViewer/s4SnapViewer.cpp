@@ -7,8 +7,8 @@
 #include "ui_s4SnapViewer.h"
 #include "common/s4logger.h"
 #include "qt_common/Utils.h"
-#include "qt_Kviewer/s4Kinstrument.h"
 #include "jsonTypes/nw_load_instrument_t.h"
+#include "db_sqlite/db.h"
 #include "jsonTypes/tdx_snap_t_dbTbl.h"
 
 #include <QSplitter>
@@ -17,6 +17,8 @@
 #include <QMessageBox>
 #include <QMetaType>
 #include <QStyleFactory>
+#include <QSortFilterProxyModel>
+#include <QTableWidget>
 
 #ifdef max
 #undef max
@@ -29,72 +31,27 @@ namespace QT {
 
 CREATE_LOCAL_LOGGER("qt_SnapViewer")
 
+#define DBTREE_ROOT_NAME QStringLiteral("快照数据库")
+
 s4SnapViewer::s4SnapViewer(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::s4SnapViewer)
 {   
-    ui->setupUi(this);
+	ui->setupUi(this);
+
+	ui->dbTree->setStyle(QStyleFactory::create("windows"));
+	ui->dbTree->setSortingEnabled(true);
+
 	ui->centralwidget->setMouseTracking(true);
+
 	connect(ui->actionOpen_DB, &QAction::triggered, this, &s4SnapViewer::onOpenDB);
-	//connect(ui->actionCallConsole, &QAction::triggered, this, &s4SnapViewer::onCallConsole);
+	connect(ui->dbTree, &QTreeView::doubleClicked, this, &s4SnapViewer::dbTree_doubleClicked);
 
-	//this->setMouseTracking(true);
-	//_instrument_tab = new Kviewer_instrumentTab(this);
-
-	//
- //   QSplitter *splitterMain = new QSplitter(Qt::Vertical, 0); //新建主分割窗口，水平分割
-	//if (!splitterMain->hasMouseTracking()) {
-	//	splitterMain->setMouseTracking(true);
-	//}
-
- //   QSplitter *splitterV1 = new QSplitter(Qt::Vertical, splitterMain);
-
- //   splitterMain->setHandleWidth(1);
-
- //   splitterV1->addWidget(_instrument_tab);
-	//if (!splitterV1->hasMouseTracking()) {
-	//	splitterV1->setMouseTracking(true);
-	//}
-
-	//QList<int> list;
-	//list << 100;//v1
-	//list << 50;	//v2
-	//list << 20;	//v3
-	//list << 20;
-	//list << 20;
-	//splitterMain->setSizes(list);
-
- //   //创建滚动区域。
- //   QScrollArea *scrollArea = new QScrollArea;
- //   //把label控件放进滚动区域中.注意只能设置一个控件,一个一个控件往里面加,只会显示最后一个加入的控件.
- //   scrollArea->setWidget(splitterMain);
- //   //设置对齐格式.
- //   scrollArea->setAlignment(Qt::AlignCenter);
-
-
- //   //设置水平和垂直滚动条的策略.默认是如下策略.
- //   //scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
- //   //scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
- //   //设置是否自动调整部件的大小.默认是false.
- //   scrollArea->setWidgetResizable(true);
-
-	//scrollArea->resize(1200, 800);
-
-	//button_last_trade = new QPushButton(scrollArea);
-	//button_last_trade->setGeometry(QRect(50, 50, 25, 25));	// x, y, w, h
-	//button_last_trade->setText("<");
-	//connect(button_last_trade, SIGNAL(pressed(void)), this, SLOT(onButton_last_trade(void)));
-	//button_next_trade = new QPushButton(scrollArea);
-	//button_next_trade->setGeometry(QRect(75, 50, 25, 25));	// x, y, w, h
-	//button_next_trade->setText(">");
-	//connect(button_next_trade, SIGNAL(pressed(void)), this, SLOT(onButton_next_trade(void)));
-
-	//this->setCentralWidget(scrollArea);
-
-	//resize(1200, 800);
+	connect(ui->tabWidget, &QTabWidget::tabCloseRequested, this, &s4SnapViewer::snapTab_closeRequest);
 
 }
 
+//打开一个sqlite数据库，并把table添加到dbTree中
 void s4SnapViewer::onOpenDB()
 {
 	QString path = QFileDialog::getOpenFileName(this, tr("Open snap database"), "../db", tr("sqlite db files (*.db)"));
@@ -112,14 +69,34 @@ void s4SnapViewer::onOpenDB()
 
 		sqlite::DB_t snap_db(path.toStdString());
 
-		std::vector <std::string> dates = snap_db.get_table_list();
+		std::set<std::string> dates = snap_db.get_table_list();
 
-		if(!_dbTree_model)
+		//读取一页，检查数据结构 【这里不做】
+		// if (dates.size() == 0) {
+		// 	LCL_ERR("No snap to read out!");
+		// 	QMessageBox::warning(NULL, "warning", "snap db is empty!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+		// 	return;
+		// }
+
+		// S4::sqlite::tdx_snap_t_dbTbl snap_tbl;
+		// std::vector<tdx_snap_t> snaps;
+
+		// snap_db.read_table_v2(&snap_tbl, dates.back(), snaps);
+		// LCL_INFO("{} snaps has been loaded:", snaps.size());
+
+
+		if (!_dbTree_model) {
 			_dbTree_model = new QStandardItemModel(this);
-		_dbTree_model->setHorizontalHeaderLabels(QStringList() << QStringLiteral("快照数据库"));
+			_dbTree_model->setHorizontalHeaderLabels(QStringList() << DBTREE_ROOT_NAME);
+			ui->dbTree->setModel(_dbTree_model);
+		}
+
+		if (_dbTree_model->findItems(fileInfo.baseName()).count()) {
+			_dbTree_model->removeRow(_dbTree_model->findItems(fileInfo.baseName()).first()->row());
+		}
 
 		QStandardItem* treeRoot = new QStandardItem;
-		treeRoot->setText(fileInfo.fileName());
+		treeRoot->setText(fileInfo.baseName());
 		for (auto& tbl : dates) {
 			QStandardItem* child = new QStandardItem;
 			child->setText(tbl.c_str());
@@ -127,41 +104,7 @@ void s4SnapViewer::onOpenDB()
 		}
 		_dbTree_model->appendRow(treeRoot);
 
-		ui->dbTree->setModel(_dbTree_model);
-		ui->dbTree->setStyle(QStyleFactory::create("windows"));
-		ui->dbTree->setSortingEnabled(true);
-
-
-		//if (dates.size() == 0) {
-		//	LCL_ERR("No snap to read out!");
-		//	QMessageBox::warning(NULL, "warning", "snap db is empty!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-		//	return;
-		//}
-		//LCL_INFO("Going to load snap of {}", dates.back());
-
-		//S4::sqlite::tdx_snap_t_dbTbl snap_tbl;
-		//std::vector<tdx_snap_t> snaps;
-
-		//// snap_db.read_table<S4::sqlite::tdx_snap_t_dbTbl::data_t>(&snap_tbl, dates.back(), snaps);
-		//snap_db.read_table_v2(&snap_tbl, dates.back(), snaps, "WHERE minuSec>=91500");
-		//LCL_INFO("{} snaps has been loaded:", snaps.size());
-
-		//if (!glb_conf::pInstance()->load(path.toStdString()))
-		//{
-		//	QMessageBox::warning(NULL, "warning", "file format error!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-		//	return;
-		//}
-
-		//_data_if = std::make_shared<S4::QT::s4qt_data_if>();
-
-		//connect(this, SIGNAL(signal_getInfo(const std::string&, const struct S4::stkInfoReq_t&, class S4::stkInfo_t*&)),
-		//	_data_if.get(), SLOT(getInfo(const std::string&, const struct S4::stkInfoReq_t&, class S4::stkInfo_t*&)));
-		//connect(this, SIGNAL(signal_loadOrdres(const std::string&, const std::string&, const std::string&, std::vector<S4::s4_history_trade_t>&)),
-		//	_data_if.get(), SLOT(loadOrdres(const std::string&, const std::string&, const std::string&, std::vector<S4::s4_history_trade_t>&)));
-
-		//onTcpSetup();
-
-		//onLoadConf();
+		_db_list[fileInfo.baseName().toStdString()] = path.toStdString();
 	}
 	catch (std::exception& e) {
 		QMessageBox::warning(NULL, "warning", "load snap db error: " + QString::fromStdString(e.what()) + "!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
@@ -169,107 +112,119 @@ void s4SnapViewer::onOpenDB()
 	}
 }
 
-void s4SnapViewer::onCallConsole()
-{
-	_console = new s4console(this);
-	connect(_console, SIGNAL(signal_load(const std::string&, const std::string&, const std::string&)),
-		this, SLOT(load(const std::string&, const std::string&, const std::string&)));
-	_console->setModal(false);
-	_console->show();
-	_console->setGeometry(this->x() + this->width(),
-		this->y(), 200, this->height());
+void s4SnapViewer::dbTree_doubleClicked(const QModelIndex& index) {
+	if (!index.parent().isValid()) return;
+	//if (!index.parent().parent().isValid()) return;
+
+	QString tableName = index.data().toString();
+	QString dbName = index.parent().data().toString();
+
+	QString str;
+	str += QStringLiteral("当前选中：%1/%2\n").arg(dbName).arg(tableName);
+	ui->statusbar->showMessage(str);
+
+	openSnapTab(dbName.toStdString(), tableName.toStdString());
 }
 
-void s4SnapViewer::onTcpSetup()
+void s4SnapViewer::openSnapTab(const std::string& db_name, const std::string& table_name)
 {
-	_pTcp_json_client = std::make_shared<qt_tcp_json_client>(glb_conf::pInstance()->nw().db_viewer_port.c_str());
-	_pTcp_json_client->start();
-
-	qRegisterMetaType<std::shared_ptr<nlohmann::json>>("std::shared_ptr<nlohmann::json>");
-	qRegisterMetaType<std::shared_ptr<nlohmann::json>>("std::shared_ptr<nlohmann::json>&");
-	connect(_pTcp_json_client.get(), SIGNAL(signal_onRecv(const std::shared_ptr<nlohmann::json>&)),
-		this, SLOT(onTcpRecvJson(const std::shared_ptr<nlohmann::json>&)));
-}
-
-void s4SnapViewer::load(const std::string& stkName, const std::string& stgName, const std::string& orderTblName)
-{
-
-	S4::stkInfoReq_t infoReq;
-	S4::stkInfo_t* pInfo;
-	std::vector<S4::s4_history_trade_t> history_trade_data;
-
-	infoReq.endDate = _DOOMSDAY_;
-	infoReq.nbDay_preEndDate = std::numeric_limits<int>::max();
-
-	//infoReq.cyc_scope_list = vector<int>{ __CYC_S1__, __CYC_M1__, __CYC_L1__, __CYC_X1__ };
-	// infoReq.ma_scope_list = vector<int>{ 15,60 };
-	infoReq.ma_scope_list = vector<int>{5, 20, 60, 120};
-
-
-	emit signal_getInfo(stkName, infoReq, pInfo);
-
-	if (orderTblName.size() != 0) {
-		emit signal_loadOrdres(stkName, stgName, orderTblName, history_trade_data);
-	}
-
-	if (!pInfo) {
-		LCL_WARN("load nothing to show");
+	if (_db_list.count(db_name) == 0) {
 		return;
 	}
 
-	_data_panel.infoReq = infoReq;
-	_data_panel.history = history_trade_data;
-	_data_panel.info = *pInfo;
-	showData();
-}
+	std::string path = _db_list.at(db_name);
 
-void s4SnapViewer::onButton_next_trade(void)
-{
-	_instrument_tab->slot_next_trade(1);
-}
+	try {
+		sqlite::DB_t snap_db(path);
+		std::set<std::string> dates = snap_db.get_table_list();
+		if (dates.count(table_name) == 0) {
+			return;
+		}
 
-void s4SnapViewer::onButton_last_trade(void)
-{
-	_instrument_tab->slot_next_trade(-1);
-}
+		S4::sqlite::tdx_snap_t_dbTbl snap_tbl;
+		std::vector<tdx_snap_t> snaps;
 
-void s4SnapViewer::onTcpRecvJson(const std::shared_ptr<nlohmann::json>& pJ)
-{
-	LCL_INFO("RecvJson: {:}", pJ->dump(4));
+		snap_db.read_table_v2(&snap_tbl, table_name, snaps);
 
-	int command = pJ->at("command").get<int>();
+		std::string snap_tab_name_s = db_name + "-" + table_name;
+		QString snap_tab_name(snap_tab_name_s.c_str());
 
-	if (command == 1) {
-		nw_load_instrument_t command_load;
-		nw_load_instrument_t::from_json(*pJ, command_load);
-		load(command_load.mktCode, command_load.stgName, command_load.tableName);
+		//drop old data
+		if (tabAlreadyExists(snap_tab_name)) {
+			QWidget* tab = _snap_cargo.at(snap_tab_name).levels_view;
+			int i = ui->tabWidget->indexOf(tab);
+			ui->tabWidget->removeTab(i);
+			_snap_cargo.erase(snap_tab_name);
+		}
+
+		//create new data
+		//QAbstractTableModel
+		snapLevels* levels = new snapLevels(5, this);
+		QTableView* levels_tv = new QTableView(this);
+		//QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel(this);
+		//proxyModel->setSourceModel(levels);
+		levels_tv->setModel(levels);
+		levels_tv->setSortingEnabled(true);
+		levels_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
+		connect(levels_tv, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(snap_level_doubleClicked(const QModelIndex&)));
+
+		int i = ui->tabWidget->addTab(tv, snap_tab_name);
+		ui->tabWidget->setCurrentIndex(i);
+
+		//存储
+		_snap_cargo[snap_tab_name] = { snaps, 0, tv };
+
+		if (snaps.size()) {
+			levels->refresh(snaps.front());
+			_snap_cargo[snap_tab_name].curse = 1;
+		}
 	}
-	else {
-		LCL_ERR("unknown command = {:}", command);
+	catch (std::exception& e) {
+		QMessageBox::warning(NULL, "warning", "read snap table error: " + QString::fromStdString(e.what()) + "!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 	}
-
 }
 
 
-void s4SnapViewer::showData()
+void s4SnapViewer::snap_level_doubleClicked(const QModelIndex& index)
 {
-	_instrument_tab->addInstrument(_data_panel);
+	const QString snap_tab_name = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
 
-	// Kinstrument* K = new Kinstrument(_instrument_tab);
-	// int i = _instrument_tab->addTab(K, _data_panel.info.name().c_str());
-	// _instrument_tab->setCurrentIndex(i);
-	// if (!hasMouseTracking()) {
-	// 	setMouseTracking(true);
-	// }
-	// if (!_instrument_tab->hasMouseTracking()) {
-	// 	_instrument_tab->setMouseTracking(true);
-	// }
-	// if (!K->hasMouseTracking()) {
-	// 	K->setMouseTracking(true);
-	// }
+
+	QTableView* levels_tv = (QTableWidget*)ui->tabWidget->currentWidget();
+	int row = levels_tv->currentIndex().row();
+	QAbstractItemModel* model = levels_tv->model();
+
+	QModelIndex indexCode = model->index(row, 0);
+	const QString side = model->data(indexCode).toString();
+
+	ui->statusbar->showMessage(side);
+
+	if (_snap_cargo.count(snap_tab_name)) {
+		if (_snap_cargo[snap_tab_name].curse < _snap_cargo[snap_tab_name].snaps.size()) {
+			((snapLevels*)model)->refresh(_snap_cargo[snap_tab_name].snaps[_snap_cargo[snap_tab_name].curse++]);
+		}
+	}
+}
+
+void s4SnapViewer::snapTab_closeRequest(int index)
+{
+	const QString tabName = ui->tabWidget->tabText(index);
+	ui->tabWidget->removeTab(index);
+
+	auto it = _snap_cargo.find(tabName);
+	if (it != _snap_cargo.end()) {
+		_snap_cargo.erase(tabName);
+	}
 }
 
 
+bool s4SnapViewer::tabAlreadyExists(const QString& tabName) const
+{
+
+	auto it = _snap_cargo.find(tabName);
+
+	return it != _snap_cargo.end();
+}
 
 s4SnapViewer::~s4SnapViewer()
 {

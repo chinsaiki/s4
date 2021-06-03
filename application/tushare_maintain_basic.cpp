@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 	std::filesystem::path db_root_path = db.root;
 	std::filesystem::path db_tus_basic_path = db_root_path / db.tus_basic;
 	sqlite::DB_t basic_db(db_tus_basic_path.string());
-    std::vector<std::string> basic_db_tables = basic_db.get_table_list();
+    std::set<std::string> basic_db_tables = basic_db.get_table_list();
 
     rptTime rpt("download all basic");
     size_t all = calendar->size();
