@@ -1,4 +1,4 @@
-#include "qt_Kviewer/s4Kinstrument_indicator_scene.h"
+﻿#include "qt_Kviewer/s4Kinstrument_indicator_scene.h"
 #include "common/s4time.h"
 #include "qt_Kviewer/s4KlogicBar.h"
 #include "qt_Kviewer/s4KlogicCurve.h"

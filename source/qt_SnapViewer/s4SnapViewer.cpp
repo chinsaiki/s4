@@ -16,6 +16,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QMetaType>
+#include <QStyleFactory>
 
 #ifdef max
 #undef max
@@ -37,133 +38,61 @@ s4SnapViewer::s4SnapViewer(QWidget *parent) :
 	connect(ui->actionOpen_DB, &QAction::triggered, this, &s4SnapViewer::onOpenDB);
 	//connect(ui->actionCallConsole, &QAction::triggered, this, &s4SnapViewer::onCallConsole);
 
-	this->setMouseTracking(true);
-	_instrument_tab = new Kviewer_instrumentTab(this);
-	// _instrument_tab2 = new QTabWidget(this);
-	// _instrument_tab3 = new QTabWidget(this);
+	//this->setMouseTracking(true);
+	//_instrument_tab = new Kviewer_instrumentTab(this);
 
-	//pCLI = new cliparser(this);
-	//pCLI->setFocusPolicy(Qt::StrongFocus);
-
-	//pmyKwin = new s3qt::myKwin(this);
-
-	//connect(pmyKwin, SIGNAL(signal_getStkInfo(const std::string & , const struct s3qt::stkInfoReq_t& , s3qt::stkInfo_t*& )),
-	//	&dataIF, SLOT(getInfo(const std::string & , const struct s3qt::stkInfoReq_t& , s3qt::stkInfo_t*& )));
-
-	//connect(pmyKwin, SIGNAL(signal_loadOrdres(const std::string &, const std::string & , const std::string & , s3qt::stkInfo_t*& )),
-	//	&dataIF, SLOT(loadOrdres(const std::string &, const std::string &, const std::string &, s3qt::stkInfo_t*&)));
-
-	//connect(pCLI, SIGNAL(getData(std::string& , std::string& , std::string& )), 
-	//	pmyKwin, SLOT(getData(std::string& , std::string& , std::string& )));
-
-    //pmyKwin->getData(std::string("sz000997"), std::string(""), std::string(""));
-
-	
-    QSplitter *splitterMain = new QSplitter(Qt::Vertical, 0); //新建主分割窗口，水平分割
-	if (!splitterMain->hasMouseTracking()) {
-		splitterMain->setMouseTracking(true);
-	}
-
-    QSplitter *splitterV1 = new QSplitter(Qt::Vertical, splitterMain);
-	// QSplitter *splitterV2 = new QSplitter(Qt::Vertical, splitterMain);
-	// QSplitter *splitterV3 = new QSplitter(Qt::Vertical, splitterMain);
-
-    splitterMain->setHandleWidth(1);
-
-    //splitterLeft->addWidget(pkBar);
-    splitterV1->addWidget(_instrument_tab);
-	if (!splitterV1->hasMouseTracking()) {
-		splitterV1->setMouseTracking(true);
-	}
-	// splitterV2->addWidget(_instrument_tab2);
-	// splitterV3->addWidget(_instrument_tab3);
-
-	QList<int> list;
-	list << 100;//v1
-	list << 50;	//v2
-	list << 20;	//v3
-	list << 20;
-	list << 20;
-	splitterMain->setSizes(list);
-
-    //创建滚动区域。
-    QScrollArea *scrollArea = new QScrollArea;
-    //把label控件放进滚动区域中.注意只能设置一个控件,一个一个控件往里面加,只会显示最后一个加入的控件.
-    scrollArea->setWidget(splitterMain);
-    //设置对齐格式.
-    scrollArea->setAlignment(Qt::AlignCenter);
-
-
-    //设置水平和垂直滚动条的策略.默认是如下策略.
-    //scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    //scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    //设置是否自动调整部件的大小.默认是false.
-    scrollArea->setWidgetResizable(true);
-
-	scrollArea->resize(1200, 800);
-
-	button_last_trade = new QPushButton(scrollArea);
-	button_last_trade->setGeometry(QRect(50, 50, 25, 25));	// x, y, w, h
-	button_last_trade->setText("<");
-	connect(button_last_trade, SIGNAL(pressed(void)), this, SLOT(onButton_last_trade(void)));
-	button_next_trade = new QPushButton(scrollArea);
-	button_next_trade->setGeometry(QRect(75, 50, 25, 25));	// x, y, w, h
-	button_next_trade->setText(">");
-	connect(button_next_trade, SIGNAL(pressed(void)), this, SLOT(onButton_next_trade(void)));
-
-    //QHBoxLayout *layout = new QHBoxLayout(this);
-    //layout->addWidget(scrollArea);
-
-    //this->resize(600,600);
-
-    // this->setCentralWidget(splitterMain);
-	this->setCentralWidget(scrollArea);
-
-	resize(1200, 800);
-
-	_data_if = std::make_shared<S4::QT::s4qt_data_if>();
-
-	connect(this, SIGNAL(signal_getInfo(const std::string &, const struct S4::stkInfoReq_t&, class S4::stkInfo_t*&)),
-		_data_if.get(), SLOT(getInfo(const std::string &, const struct S4::stkInfoReq_t&, class S4::stkInfo_t*&)));
-	connect(this, SIGNAL(signal_loadOrdres(const std::string &, const std::string &, const std::string &, std::vector<S4::s4_history_trade_t>&)),
-		_data_if.get(), SLOT(loadOrdres(const std::string &, const std::string &, const std::string &, std::vector<S4::s4_history_trade_t>&)));
-
-	onCallConsole();
-
-#ifndef NDEBUG
-	//S4::stkInfoReq_t _infoReq;
-	//_infoReq.endDate = _DOOMSDAY_;
-	//_infoReq.nbDay_preEndDate = std::numeric_limits<int>::max();
-
-	//S4::stkInfo_t* info;
-
-	//emit signal_getInfo("sz000997", _infoReq, info);
-	//if (info == nullptr) {
-	//	FATAL("getInfo fail");
-	//}
-	//emit signal_getInfo("sh688004", _infoReq, info);
-	//if (info == nullptr) {
-	//	FATAL("getInfo fail");
-	//}
-	//emit signal_getInfo("sh688001", _infoReq, info);
-	//if (info != nullptr) {
-	//	FATAL("getInfo NG");
+	//
+ //   QSplitter *splitterMain = new QSplitter(Qt::Vertical, 0); //新建主分割窗口，水平分割
+	//if (!splitterMain->hasMouseTracking()) {
+	//	splitterMain->setMouseTracking(true);
 	//}
 
-	////////////////
-	//emit signal_getInfo("sz002810", _infoReq, info);
-	//if (info == nullptr) {
-	//	FATAL("getInfo NG");
-	//}
-	//std::vector<S4::s4_history_trade_t> history_trade_data;
-	//emit signal_loadOrdres("sz002810", "tdx_xyzq_history", "to20200531", history_trade_data);
-	//if (!history_trade_data.size()) {
-	//	FATAL("loadOrdres fail");
+ //   QSplitter *splitterV1 = new QSplitter(Qt::Vertical, splitterMain);
+
+ //   splitterMain->setHandleWidth(1);
+
+ //   splitterV1->addWidget(_instrument_tab);
+	//if (!splitterV1->hasMouseTracking()) {
+	//	splitterV1->setMouseTracking(true);
 	//}
 
-#endif // !NDEBUG
+	//QList<int> list;
+	//list << 100;//v1
+	//list << 50;	//v2
+	//list << 20;	//v3
+	//list << 20;
+	//list << 20;
+	//splitterMain->setSizes(list);
 
-	load("sz002810", "", "to20200531");
+ //   //创建滚动区域。
+ //   QScrollArea *scrollArea = new QScrollArea;
+ //   //把label控件放进滚动区域中.注意只能设置一个控件,一个一个控件往里面加,只会显示最后一个加入的控件.
+ //   scrollArea->setWidget(splitterMain);
+ //   //设置对齐格式.
+ //   scrollArea->setAlignment(Qt::AlignCenter);
+
+
+ //   //设置水平和垂直滚动条的策略.默认是如下策略.
+ //   //scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+ //   //scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+ //   //设置是否自动调整部件的大小.默认是false.
+ //   scrollArea->setWidgetResizable(true);
+
+	//scrollArea->resize(1200, 800);
+
+	//button_last_trade = new QPushButton(scrollArea);
+	//button_last_trade->setGeometry(QRect(50, 50, 25, 25));	// x, y, w, h
+	//button_last_trade->setText("<");
+	//connect(button_last_trade, SIGNAL(pressed(void)), this, SLOT(onButton_last_trade(void)));
+	//button_next_trade = new QPushButton(scrollArea);
+	//button_next_trade->setGeometry(QRect(75, 50, 25, 25));	// x, y, w, h
+	//button_next_trade->setText(">");
+	//connect(button_next_trade, SIGNAL(pressed(void)), this, SLOT(onButton_next_trade(void)));
+
+	//this->setCentralWidget(scrollArea);
+
+	//resize(1200, 800);
+
 }
 
 void s4SnapViewer::onOpenDB()
@@ -175,41 +104,62 @@ void s4SnapViewer::onOpenDB()
 		return;
 	}
 
+	QFileInfo fileInfo;
+	fileInfo = QFileInfo(path);
+	ui->statusbar->showMessage(path);
+
 	try {
 
 		sqlite::DB_t snap_db(path.toStdString());
 
 		std::vector <std::string> dates = snap_db.get_table_list();
 
-		if (dates.size() == 0) {
-			LCL_ERR("No snap to read out!");
-			QMessageBox::warning(NULL, "warning", "snap db is empty!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-			return;
+		if(!_dbTree_model)
+			_dbTree_model = new QStandardItemModel(this);
+		_dbTree_model->setHorizontalHeaderLabels(QStringList() << QStringLiteral("快照数据库"));
+
+		QStandardItem* treeRoot = new QStandardItem;
+		treeRoot->setText(fileInfo.fileName());
+		for (auto& tbl : dates) {
+			QStandardItem* child = new QStandardItem;
+			child->setText(tbl.c_str());
+			treeRoot->appendRow(child);
 		}
-		LCL_INFO("Going to load snap of {}", dates.back());
+		_dbTree_model->appendRow(treeRoot);
 
-		S4::sqlite::tdx_snap_t_dbTbl snap_tbl;
-		std::vector<tdx_snap_t> snaps;
+		ui->dbTree->setModel(_dbTree_model);
+		ui->dbTree->setStyle(QStyleFactory::create("windows"));
+		ui->dbTree->setSortingEnabled(true);
 
-		// snap_db.read_table<S4::sqlite::tdx_snap_t_dbTbl::data_t>(&snap_tbl, dates.back(), snaps);
-		snap_db.read_table_v2(&snap_tbl, dates.back(), snaps, "WHERE minuSec>=91500");
-		LCL_INFO("{} snaps has been loaded:", snaps.size());
 
-		if (!glb_conf::pInstance()->load(path.toStdString()))
-		{
-			QMessageBox::warning(NULL, "warning", "file format error!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-			return;
-		}
-		ui->statusbar->showMessage(path);
+		//if (dates.size() == 0) {
+		//	LCL_ERR("No snap to read out!");
+		//	QMessageBox::warning(NULL, "warning", "snap db is empty!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+		//	return;
+		//}
+		//LCL_INFO("Going to load snap of {}", dates.back());
 
-		_data_if = std::make_shared<S4::QT::s4qt_data_if>();
+		//S4::sqlite::tdx_snap_t_dbTbl snap_tbl;
+		//std::vector<tdx_snap_t> snaps;
 
-		connect(this, SIGNAL(signal_getInfo(const std::string&, const struct S4::stkInfoReq_t&, class S4::stkInfo_t*&)),
-			_data_if.get(), SLOT(getInfo(const std::string&, const struct S4::stkInfoReq_t&, class S4::stkInfo_t*&)));
-		connect(this, SIGNAL(signal_loadOrdres(const std::string&, const std::string&, const std::string&, std::vector<S4::s4_history_trade_t>&)),
-			_data_if.get(), SLOT(loadOrdres(const std::string&, const std::string&, const std::string&, std::vector<S4::s4_history_trade_t>&)));
+		//// snap_db.read_table<S4::sqlite::tdx_snap_t_dbTbl::data_t>(&snap_tbl, dates.back(), snaps);
+		//snap_db.read_table_v2(&snap_tbl, dates.back(), snaps, "WHERE minuSec>=91500");
+		//LCL_INFO("{} snaps has been loaded:", snaps.size());
 
-		onTcpSetup();
+		//if (!glb_conf::pInstance()->load(path.toStdString()))
+		//{
+		//	QMessageBox::warning(NULL, "warning", "file format error!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+		//	return;
+		//}
+
+		//_data_if = std::make_shared<S4::QT::s4qt_data_if>();
+
+		//connect(this, SIGNAL(signal_getInfo(const std::string&, const struct S4::stkInfoReq_t&, class S4::stkInfo_t*&)),
+		//	_data_if.get(), SLOT(getInfo(const std::string&, const struct S4::stkInfoReq_t&, class S4::stkInfo_t*&)));
+		//connect(this, SIGNAL(signal_loadOrdres(const std::string&, const std::string&, const std::string&, std::vector<S4::s4_history_trade_t>&)),
+		//	_data_if.get(), SLOT(loadOrdres(const std::string&, const std::string&, const std::string&, std::vector<S4::s4_history_trade_t>&)));
+
+		//onTcpSetup();
 
 		//onLoadConf();
 	}

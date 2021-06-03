@@ -2,6 +2,8 @@
 
 #include <QMainWindow>
 #include <QPushButton>
+#include <QStandardItemModel>
+
 //#include "qt\console\cliparser.h"
 #include "qt_console/s4console.h"
 //#include "qt\s4qt_view_k.h"
@@ -41,7 +43,7 @@ signals:
 	void signal_loadOrdres(const std::string & stkName, const std::string & stgName, const std::string & orderTblName, std::vector<S4::s4_history_trade_t>& history_trade_data);
 private:
     Ui::s4SnapViewer *ui;
-
+	QStandardItemModel* _dbTree_model = nullptr;
 	//s3qt::myKwin* pmyKwin;
 	Kviewer_instrumentTab* _instrument_tab;
 	// QTabWidget* _instrument_tab2;
