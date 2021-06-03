@@ -36,7 +36,9 @@ SqlViewer::SqlViewer(QWidget *parent)
 
 SqlViewer::~SqlViewer()
 {
-    _pTcp_json_server->stop();
+    if (_pTcp_json_server)
+        _pTcp_json_server->stop();
+
     delete dbHandler;
     delete ui;
 }
