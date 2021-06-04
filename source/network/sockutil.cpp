@@ -879,4 +879,14 @@ int SockUtil::leaveMultiAddrFilter(int sockFd, const char* strAddr, const char* 
     return ret;
 }
 
+
+void SockUtil::makeAddr(struct sockaddr *out, const char *ip, uint16_t port) {
+	struct sockaddr_in &servaddr = *((struct sockaddr_in *)out);
+	servaddr.sin_family = AF_INET;
+	servaddr.sin_port = htons(port);
+	servaddr.sin_addr.s_addr = inet_addr(ip);
+	bzero(&(servaddr.sin_zero), sizeof servaddr.sin_zero);
+}
+
+
 }  // namespace S4

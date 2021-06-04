@@ -316,6 +316,14 @@ public:
      * @param dstIp 对方ip
      */
     static bool in_same_lan(const char *myIp, const char *dstIp);
+
+
+	/**
+	 * 赋值struct sockaddr，用于sendto或recvfrom
+	 * @param ip
+	 * @param port
+	 */
+	static void makeAddr(struct sockaddr *out, const char *ip, uint16_t port);
 };
 
 }  // namespace S4
