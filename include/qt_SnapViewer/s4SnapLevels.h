@@ -3,7 +3,7 @@
 #include <QTableView>
 #include "types/s4type.h"
 #include "types/s4convertors.h"
-#include "qt_common/s4qt_tableDelegate.h"
+#include "qt_common/s4qt_itemFormatDelegate.h"
 #include <QDateTime>
 #include <QTimeLine>
 #include <QDebug>
@@ -27,8 +27,8 @@ namespace S4
         {
             _ask.resize(side_levels_nb);
 			_bid.resize(side_levels_nb);
-			_timeLine = new QTimeLine(tableDelegate::update_scope + 200, this);
-            _timeLine->setFrameRange(0, tableDelegate::update_nb);
+			_timeLine = new QTimeLine(itemFormatDelegate::update_scope + 200, this);
+            _timeLine->setFrameRange(0, itemFormatDelegate::update_nb);
             _timeLine->stop();
 			connect(_timeLine, &QTimeLine::frameChanged, this, [=](int ) {
 				beginResetModel();
@@ -126,8 +126,8 @@ namespace S4
 				QMap<int, QVariant>::const_iterator it = mapTimeout.find(index.row() * 100 + index.column());
 				if (it == mapTimeout.end()) return QVariant();
 				float nTimePassed = it.value().toDateTime().msecsTo(QDateTime::currentDateTime());
-				if (nTimePassed < tableDelegate::update_scope) {
-					float idx = nTimePassed / tableDelegate::update_scope;
+				if (nTimePassed < itemFormatDelegate::update_scope) {
+					float idx = nTimePassed / itemFormatDelegate::update_scope;
 					QColor bg = Qt::cyan;
 					uint8_t r = (255 - bg.red()) * (idx)+bg.red();
 					uint8_t g = (255 - bg.green()) * (idx)+bg.green();

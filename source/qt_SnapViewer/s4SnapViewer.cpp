@@ -161,7 +161,7 @@ void s4SnapViewer::openSnapTab(const std::string& db_name, const std::string& ta
 		//QAbstractTableModel
 		QTableView* levels_tv = new QTableView(this);
 		snapLevels* levels = new snapLevels(5, levels_tv);
-		tableDelegate* delegate = new tableDelegate(levels_tv);
+		itemFormatDelegate* delegate = new itemFormatDelegate(levels_tv);
 		//QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel(this);
 		//proxyModel->setSourceModel(levels);
 		levels_tv->setModel(levels);
