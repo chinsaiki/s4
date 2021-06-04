@@ -8,6 +8,9 @@
 #include <QTimeLine>
 #include <QDebug>
 
+#include "sbe_ssz.h"
+#include "sbe_ssh.h"
+
 namespace S4
 {
 
@@ -83,16 +86,15 @@ namespace S4
 
         void refresh(const tdx_snap_t &snap)
         {
-
             std::vector<QVariant> data;
             for (auto& key : _row_names){
-                if (key == "Price") data.push_back(snap.price);
-                if (key == "Last Close") data.push_back(snap.last_close);
-                if (key == "Open") data.push_back(snap.open);
-                if (key == "High") data.push_back(snap.high);
-                if (key == "Low") data.push_back(snap.low);
+                if (key == "Price") data.push_back(iPrice_to_fPrice(snap.price));
+                if (key == "Last Close") data.push_back(iPrice_to_fPrice(snap.last_close));
+                if (key == "Open") data.push_back(iPrice_to_fPrice(snap.open));
+                if (key == "High") data.push_back(iPrice_to_fPrice(snap.high));
+                if (key == "Low") data.push_back(iPrice_to_fPrice(snap.low));
                 if (key == "Total Volume") data.push_back(snap.vol);
-                if (key == "Total Amount") data.push_back(QString::fromStdString(DoubleConvertor::convert((snap.amount)/_KW) + " KW"));
+                if (key == "Total Amount") data.push_back(QString::number((snap.amount)/_KW) + " KW");
                 if (key == "Current Volume") data.push_back(snap.cur_vol);
                 if (key == "Sell Volume") data.push_back(snap.s_vol);
                 if (key == "Buy Volume") data.push_back(snap.b_vol);
@@ -100,39 +102,92 @@ namespace S4
                 if (key == "Local Time") data.push_back(snap.minuSec);
             }
 
+            refresh(data);
+        }
+
+        
+        void refresh(const uint8_t* sbe, size_t sbe_size){
+            if (sbe_size < sizeof(SBE_SSH_header_t)){
+                return;
+            }
+            const SBE_SSH_header_t* pH = (SBE_SSH_header_t*)sbe;
+            std::vector<QVariant> data;
+
+            if (pH->SecurityIDSource == 101 && pH->MsgType == __MsgType_SSH_INSTRUMENT_SNAP__ && pH->MsgLen == sizeof(SBE_SSH_instrument_snap_t)){
+                const SBE_SSH_instrument_snap_t* pSnap = (SBE_SSH_instrument_snap_t*)sbe;
+                for (auto& key : _row_names){
+                    if (key == "Price") data.push_back(L2_iPrice_snap_to_fPrice(pSnap->LastPx));
+                    if (key == "Last Close") data.push_back(L2_iPrice_tick_to_fPrice(pSnap->PrevClosePx));
+                    if (key == "Open") data.push_back(L2_iPrice_snap_to_fPrice(pSnap->OpenPx));
+                    if (key == "High") data.push_back(L2_iPrice_snap_to_fPrice(pSnap->HighPx));
+                    if (key == "Low") data.push_back(L2_iPrice_snap_to_fPrice(pSnap->LowPx));
+                    if (key == "Total Volume") data.push_back(pSnap->TotalVolumeTrade/L2_Qty_precision);
+                    if (key == "Total Amount") data.push_back(QString::number((pSnap->TotalValueTrade/L2_Amt_precision)/_KW) + " KW");
+                    if (key == "Current Volume") data.push_back(0);
+                    if (key == "Sell Volume") data.push_back(pSnap->AskWeightSize/L2_Qty_precision);
+                    if (key == "Buy Volume") data.push_back(pSnap->BidWeightSize/L2_Qty_precision);
+                    if (key == "Active") data.push_back(pSnap->NumTrades);
+                    if (key == "Local Time") data.push_back(pSnap->DataTimeStamp);
+                }
+            }else 
+            if (pH->SecurityIDSource == 102 && pH->MsgType == __MsgType_SSZ_INSTRUMENT_SNAP__ && pH->MsgLen == sizeof(SBE_SSZ_instrument_snap_t)){
+                const SBE_SSZ_instrument_snap_t* pSnap = (SBE_SSZ_instrument_snap_t*)sbe;
+                for (auto& key : _row_names){
+                    if (key == "Price") data.push_back(L2_iPrice_snap_to_fPrice(pSnap->LastPx));
+                    if (key == "Last Close") data.push_back(L2_iPrice_tick_to_fPrice(pSnap->PrevClosePx));
+                    if (key == "Open") data.push_back(L2_iPrice_snap_to_fPrice(pSnap->OpenPx));
+                    if (key == "High") data.push_back(L2_iPrice_snap_to_fPrice(pSnap->HighPx));
+                    if (key == "Low") data.push_back(L2_iPrice_snap_to_fPrice(pSnap->LowPx));
+                    if (key == "Total Volume") data.push_back(pSnap->TotalVolumeTrade/L2_Qty_precision);
+                    if (key == "Total Amount") data.push_back(QString::number((pSnap->TotalValueTrade/L2_Amt_precision)/_KW) + " KW");
+                    if (key == "Current Volume") data.push_back(0);
+                    if (key == "Sell Volume") data.push_back(pSnap->AskWeightSize/L2_Qty_precision);
+                    if (key == "Buy Volume") data.push_back(pSnap->BidWeightSize/L2_Qty_precision);
+                    if (key == "Active") data.push_back(pSnap->NumTrades);
+                    if (key == "Local Time") data.push_back(pSnap->TransactTime);
+                }
+            }
+            
+            refresh(data);
+        }
+
+
+    private:
+        QVariant itemFadeColor(const QModelIndex& index) const
+        {
+            QMap<int, QVariant>::const_iterator it = mapTimeout.find(index.row() * 100 + index.column());
+            if (it == mapTimeout.end()) return QVariant();
+            float nTimePassed = it.value().toDateTime().msecsTo(QDateTime::currentDateTime());
+            if (nTimePassed < itemFormatDelegate::update_scope) {
+                float idx = nTimePassed / itemFormatDelegate::update_scope;
+                QColor bg = Qt::cyan;
+                uint8_t r = (255 - bg.red()) * (idx)+bg.red();
+                uint8_t g = (255 - bg.green()) * (idx)+bg.green();
+                uint8_t b = (255 - bg.blue()) * (idx)+bg.blue();
+                //bg.setAlpha(0.2);
+                return QColor(r, g, b);
+            }
+            return  QColor(255, 255, 255);
+        }
+
+        void refresh(std::vector<QVariant>& data)
+        {
             //backup
             beginResetModel();
             std::swap(data, _data);
             endResetModel();
 
             //高亮变动
-			_timeLine->stop();
-			mapTimeout.clear();
-			for (int i = 0; i < _row_names.size(); ++i) {
+            _timeLine->stop();
+            mapTimeout.clear();
+            for (int i = 0; i < _row_names.size(); ++i) {
                 if (data[i] != _data[i]) {
-					mapTimeout.insert((i) * 100 + 1, QDateTime::currentDateTime());
-				}
+                    mapTimeout.insert((i) * 100 + 1, QDateTime::currentDateTime());
+                }
             }
             if (mapTimeout.size())
                 _timeLine->start();
         }
-        private:
-            QVariant itemFadeColor(const QModelIndex& index) const
-			{
-				QMap<int, QVariant>::const_iterator it = mapTimeout.find(index.row() * 100 + index.column());
-				if (it == mapTimeout.end()) return QVariant();
-				float nTimePassed = it.value().toDateTime().msecsTo(QDateTime::currentDateTime());
-				if (nTimePassed < itemFormatDelegate::update_scope) {
-					float idx = nTimePassed / itemFormatDelegate::update_scope;
-					QColor bg = Qt::cyan;
-					uint8_t r = (255 - bg.red()) * (idx)+bg.red();
-					uint8_t g = (255 - bg.green()) * (idx)+bg.green();
-					uint8_t b = (255 - bg.blue()) * (idx)+bg.blue();
-					//bg.setAlpha(0.2);
-					return QColor(r, g, b);
-				}
-				return  QColor(255, 255, 255);
-            }
     };
 
 }

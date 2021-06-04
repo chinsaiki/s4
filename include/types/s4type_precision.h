@@ -1,15 +1,26 @@
 ﻿#pragma once
 
-//整数价格，精度=分
+//TDX 整数价格，精度=分
 typedef int32_t price_t;
 typedef double fprice_t;
 #define iPrice_precision 100
-
 
 //float price to int price: 15.199999 -> 15.20499 -> 1520
 #define fPrice_to_iPrice(x) ((price_t)(((x)+0.005)*iPrice_precision))
 #define iPrice_to_fPrice(x) ((x)*(1.0/iPrice_precision))
 
+//交易所L2 逐笔价格精度
+#define L2_iPrice_tick_precision 10000
+//交易所L2 快照价格精度
+#define L2_iPrice_snap_precision 1000000
+//交易所L2 数量精度
+#define L2_Qty_precision 100
+//交易所L2 成交量精度
+#define L2_Amt_precision 10000
+
+#define L2_iPrice_tick_to_fPrice(x) ((x)*(1.0/L2_iPrice_tick_precision))
+#define L2_iPrice_snap_to_fPrice(x) ((x)*(1.0/L2_iPrice_snap_precision))
+#define L2_Qty_to_hand(x)   ((x)/(100.0*L2_Qty_precision))
 
 //5% 板价格
 #define UP_5p(x) ((price_t)((x)*1.05+0.5))
