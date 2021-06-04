@@ -46,8 +46,7 @@ namespace S4
         QVariant data(const QModelIndex &index, int role) const override
         {
             if (role == ItemChangeNoticeRole) {
-				QMap<int, QVariant>::const_iterator it = mapTimeout.find(index.row()*100 + index.column());
-				return it == mapTimeout.end() ? QVariant() : it.value();
+                return itemFadeColor(index);
             }
 
 			if (role != Qt::DisplayRole)
@@ -121,6 +120,23 @@ namespace S4
             if (mapTimeout.size())
                 _timeLine->start();
         }
+        private:
+            QVariant itemFadeColor(const QModelIndex& index) const
+			{
+				QMap<int, QVariant>::const_iterator it = mapTimeout.find(index.row() * 100 + index.column());
+				if (it == mapTimeout.end()) return QVariant();
+				float nTimePassed = it.value().toDateTime().msecsTo(QDateTime::currentDateTime());
+				if (nTimePassed < tableDelegate::update_scope) {
+					float idx = nTimePassed / tableDelegate::update_scope;
+					QColor bg = Qt::cyan;
+					uint8_t r = (255 - bg.red()) * (idx)+bg.red();
+					uint8_t g = (255 - bg.green()) * (idx)+bg.green();
+					uint8_t b = (255 - bg.blue()) * (idx)+bg.blue();
+					//bg.setAlpha(0.2);
+					return QColor(r, g, b);
+				}
+				return  QColor(255, 255, 255);
+            }
     };
 
 }
