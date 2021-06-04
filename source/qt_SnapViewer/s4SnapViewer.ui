@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>604</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -109,7 +109,7 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpen_DB"/>
+    <addaction name="actionOpen_tdxDB"/>
     <addaction name="actionOpen_Live"/>
     <addaction name="actionExit"/>
    </widget>
@@ -121,19 +121,21 @@
      <property name="title">
       <string>Export...</string>
      </property>
-     <addaction name="actionDatabase"/>
      <addaction name="separator"/>
-     <addaction name="actionCurrent_table_as_CSV"/>
     </widget>
     <addaction name="menuExport_2"/>
+    <addaction name="actionNextSnap"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuExport"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionOpen_DB">
+  <action name="actionOpen_tdxDB">
    <property name="text">
-    <string>Open DB</string>
+    <string>Open tdx DB</string>
+   </property>
+   <property name="toolTip">
+    <string>Open tdx DB</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -147,6 +149,17 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionNextSnap">
+   <property name="text">
+    <string>Next Snap</string>
+   </property>
+   <property name="toolTip">
+    <string>Next Snap</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+X</string>
    </property>
   </action>
  </widget>

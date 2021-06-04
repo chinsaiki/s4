@@ -20,7 +20,7 @@ void itemFormatDelegate::paint(QPainter * painter, const QStyleOptionViewItem & 
 
 
     QAbstractTableModel * db_model  = (QAbstractTableModel *)index.model();
-    QVariant v = db_model->data( index, ItemChangeNoticeRole ); //TODO: 自定义填色结构
+    QVariant v = db_model->data( index, itemFormatDelegateRole ); //TODO: 自定义填色结构
 
     painter->save();
 

@@ -7,7 +7,7 @@ namespace S4
 {
 
 enum itemFormatDelegateRole {
-    ItemChangeNoticeRole = Qt::UserRole + 1024
+    itemFormatDelegateRole = Qt::UserRole + 1024
 };
 
 class itemFormatDelegate: public QStyledItemDelegate

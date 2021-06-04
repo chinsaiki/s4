@@ -1,11 +1,11 @@
 ﻿#pragma once
 
 #include <QMainWindow>
-
+#include <QTableView>
 #include <QStandardItemModel>
 
-
-#include "qt_SnapViewer/s4SnapLevels.h"
+#include "types/s4type.h"
+#include "qt_SnapViewer/s4SnapInstrument.h"
 
 
 
@@ -31,9 +31,9 @@ public:
 public slots:
 //    void updateTableList();
     void dbTree_doubleClicked(const QModelIndex &index);
-	void openSnapTab(const std::string& db_name, const std::string& table_name);
+	void openTdxSnapTab(const std::string& db_name, const std::string& table_name);
 
-    void snap_level_doubleClicked(const QModelIndex&);
+    void snap_level_doubleClicked();
 
 signals:
 
@@ -47,9 +47,9 @@ private:
 	{
 		std::vector<tdx_snap_t> snaps;
 		int curse;
-		QTableView* levels_view;
+		snapInstrument* view;
 	};
-	std::map<QString, snap_info_t> _snap_cargo;
+	std::map<QString, snap_info_t> _instrument_cargo;
 
 private:
 	void mouseMoveEvent(QMouseEvent* )
@@ -61,7 +61,7 @@ private:
 private:
 
 
-	void onOpenDB();
+	void onOpenTdxDB();
 
 	bool tabAlreadyExists(const QString& tabName) const;
 

@@ -11,7 +11,7 @@
 namespace S4
 {
 
-    class snapLevels : public QAbstractTableModel
+    class snapLevel : public QAbstractTableModel
     {
         Q_OBJECT
         QMap<int, QVariant> mapTimeout;
@@ -22,7 +22,7 @@ namespace S4
         std::vector<orderBookLevel_t> _bid; //0 is best
         QTimeLine* _timeLine;
     public:
-        snapLevels(int side_levels_nb, QObject *parent = {}) : QAbstractTableModel{parent},
+        snapLevel(int side_levels_nb, QObject *parent = {}) : QAbstractTableModel{parent},
                                                                _side_levels_nb(side_levels_nb)
         {
             _ask.resize(side_levels_nb);
@@ -34,18 +34,13 @@ namespace S4
 				beginResetModel();
 				endResetModel();
 			});
-			//connect(_timeLine, &QTimeLine::finished, this, [=]() {
-   //             mapTimeout.clear();
-			//	beginResetModel();
-			//	endResetModel();
-			//});
 		}
 
         int rowCount(const QModelIndex &) const override { return _side_levels_nb << 1; }
         int columnCount(const QModelIndex &) const override { return (int)_title.size(); }
         QVariant data(const QModelIndex &index, int role) const override
         {
-            if (role == ItemChangeNoticeRole) {
+            if (role == itemFormatDelegateRole) {
                 return itemFadeColor(index);
             }
 
