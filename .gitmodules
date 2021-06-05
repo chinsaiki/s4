@@ -10,3 +10,9 @@
 [submodule "thirdparty/asio"]
 	path = thirdparty/asio
 	url = https://github.com/chriskohlhoff/asio.git
+[submodule "thirdparty/concurrentqueue"]
+	path = thirdparty/concurrentqueue
+	url = https://github.com/cameron314/concurrentqueue.git
+[submodule "thirdparty/readerwriterqueue"]
+	path = thirdparty/readerwriterqueue
+	url = https://github.com/cameron314/readerwriterqueue.git

@@ -11,9 +11,14 @@ namespace S4
 //用于在智能指针释放时删除new对象
 template<typename TYPE >
 struct array_deleter {
-	void operator ()(TYPE const * p)
+	void operator ()(TYPE * p)
 	{
-		delete[] p;
+#ifdef _WIN32
+		_aligned_free(p);
+#else
+		//delete[] p;
+		free(p);
+#endif
 	}
 };
 
@@ -55,7 +60,7 @@ public:
 	{
 	}
 
-	//new出一块新内存，并用智能指针管理
+	//new出一块新内存，并用智能指针管理，4K对齐
 	explicit shared_array(size_t len):
 		// _sp(new T[len], array_deleter<T>()),
 		_size(len)

@@ -3,6 +3,7 @@
 
 #include "network/sockutil.h"
 #include <thread>
+#include "queue/simpleQ_mpmc_ar.h"
 
 using namespace S4;
 
@@ -17,6 +18,7 @@ int main(int argc, char** argv)
 	glb_conf::pInstance()->load("../json_template/glb_conf_ctx_t.json");
 	s4logger::pInstance()->init((void*)glb_conf::pInstance()->pLogger());
 
+	simpleQ_mpmc_ar_test();
 
 	sr_test();
 
