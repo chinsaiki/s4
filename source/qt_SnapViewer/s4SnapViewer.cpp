@@ -31,7 +31,7 @@ using namespace std;
 namespace S4 {
 namespace QT {
 
-CREATE_LOCAL_LOGGER("qt_SnapViewer")
+//CREATE_LOCAL_LOGGER("qt_SnapViewer")
 
 #define DBTREE_ROOT_NAME QStringLiteral("实时数据源")
 
@@ -202,8 +202,8 @@ void s4SnapViewer::snap_level_doubleClicked()
 	const QString snap_tab_name = ui->tabWidget->tabText(idx);
 
 
-	QTableView* levels_tv = (QTableWidget*)ui->tabWidget->currentWidget();
-	QAbstractItemModel* model = levels_tv->model();
+	//QTableView* levels_tv = (QTableWidget*)ui->tabWidget->currentWidget();
+	//QAbstractItemModel* model = levels_tv->model();
 
 	//int row = levels_tv->currentIndex().row();
 	//QModelIndex indexCode = model->index(row, 0);
@@ -211,7 +211,7 @@ void s4SnapViewer::snap_level_doubleClicked()
 	//ui->statusbar->showMessage(side);
 
 	if (_instrument_cargo.count(snap_tab_name)) {
-		if (_instrument_cargo[snap_tab_name].curse < _instrument_cargo[snap_tab_name].snaps.size()) {
+		if (_instrument_cargo[snap_tab_name].curse < (int)_instrument_cargo[snap_tab_name].snaps.size()) {
 			_instrument_cargo[snap_tab_name].view->addSnaps({ _instrument_cargo[snap_tab_name].snaps[_instrument_cargo[snap_tab_name].curse++] });
 		}
 	}

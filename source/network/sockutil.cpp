@@ -503,7 +503,7 @@ vector<map<string,string> > SockUtil::getInterfaceList(){
     });
 #endif
     return ret;
-};
+}
 
 uint16_t SockUtil::get_local_port(int fd) {
     struct sockaddr addr;

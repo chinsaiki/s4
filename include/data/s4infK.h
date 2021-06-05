@@ -92,7 +92,7 @@ public:
 	int high_fq;
 	int low_fq;
 	int close_fq;*/
-	const enum class timeMode_t _tMode;
+	const enum timeMode_t _tMode;
 	time_t _fh_baseTime;
 
 	infK_t& operator=(const infK_t& pK) {

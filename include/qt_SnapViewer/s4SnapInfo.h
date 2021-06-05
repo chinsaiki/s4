@@ -121,11 +121,11 @@ namespace S4
                     if (key == "Open") data.push_back(L2_iPrice_snap_to_fPrice(pSnap->OpenPx));
                     if (key == "High") data.push_back(L2_iPrice_snap_to_fPrice(pSnap->HighPx));
                     if (key == "Low") data.push_back(L2_iPrice_snap_to_fPrice(pSnap->LowPx));
-                    if (key == "Total Volume") data.push_back(pSnap->TotalVolumeTrade/L2_Qty_precision);
+                    if (key == "Total Volume") data.push_back(QVariant::fromValue(pSnap->TotalVolumeTrade/L2_Qty_precision));
                     if (key == "Total Amount") data.push_back(QString::number((pSnap->TotalValueTrade/L2_Amt_precision)/_KW) + " KW");
                     if (key == "Current Volume") data.push_back(0);
-                    if (key == "Sell Volume") data.push_back(pSnap->AskWeightSize/L2_Qty_precision);
-                    if (key == "Buy Volume") data.push_back(pSnap->BidWeightSize/L2_Qty_precision);
+                    if (key == "Sell Volume") data.push_back(QVariant::fromValue(pSnap->AskWeightSize/L2_Qty_precision));
+                    if (key == "Buy Volume") data.push_back(QVariant::fromValue(pSnap->BidWeightSize/L2_Qty_precision));
                     if (key == "Active") data.push_back(pSnap->NumTrades);
                     if (key == "Local Time") data.push_back(pSnap->DataTimeStamp);
                 }
@@ -138,14 +138,14 @@ namespace S4
                     if (key == "Open") data.push_back(L2_iPrice_snap_to_fPrice(pSnap->OpenPx));
                     if (key == "High") data.push_back(L2_iPrice_snap_to_fPrice(pSnap->HighPx));
                     if (key == "Low") data.push_back(L2_iPrice_snap_to_fPrice(pSnap->LowPx));
-                    if (key == "Total Volume") data.push_back(pSnap->TotalVolumeTrade/L2_Qty_precision);
+                    if (key == "Total Volume") data.push_back(QVariant::fromValue(pSnap->TotalVolumeTrade/L2_Qty_precision));
                     if (key == "Total Amount") data.push_back(QString::number((pSnap->TotalValueTrade/L2_Amt_precision)/_KW) + " KW");
                     if (key == "Current Volume") data.push_back(0);
-                    if (key == "Sell Volume") data.push_back(pSnap->AskWeightSize/L2_Qty_precision);
-                    if (key == "Buy Volume") data.push_back(pSnap->BidWeightSize/L2_Qty_precision);
-                    if (key == "Active") data.push_back(pSnap->NumTrades);
-                    if (key == "Local Time") data.push_back(pSnap->TransactTime);
-                }
+                    if (key == "Sell Volume") data.push_back(QVariant::fromValue(pSnap->AskWeightSize/L2_Qty_precision));
+                    if (key == "Buy Volume") data.push_back(QVariant::fromValue(pSnap->BidWeightSize/L2_Qty_precision));
+                    if (key == "Active") data.push_back(QVariant::fromValue(pSnap->NumTrades));
+                    if (key == "Local Time") data.push_back(QVariant::fromValue(pSnap->TransactTime));
+		}
             }
             
             refresh(data);
@@ -180,7 +180,7 @@ namespace S4
             //高亮变动
             _timeLine->stop();
             mapTimeout.clear();
-            for (int i = 0; i < _row_names.size(); ++i) {
+            for (size_t i = 0; i < _row_names.size(); ++i) {
                 if (data[i] != _data[i]) {
                     mapTimeout.insert((i) * 100 + 1, QDateTime::currentDateTime());
                 }
