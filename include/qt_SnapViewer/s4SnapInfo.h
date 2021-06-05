@@ -17,7 +17,7 @@ namespace S4
     class snapInfo : public QAbstractTableModel
     {
         Q_OBJECT
-        QMap<int, QVariant> mapTimeout;
+        QMap<size_t, QVariant> mapTimeout;
 
         std::vector<QString> _row_names = {
             "Price",
@@ -155,7 +155,7 @@ namespace S4
     private:
         QVariant itemFadeColor(const QModelIndex& index) const
         {
-            QMap<int, QVariant>::const_iterator it = mapTimeout.find(index.row() * 100 + index.column());
+            QMap<size_t, QVariant>::const_iterator it = mapTimeout.find(index.row() * 100 + index.column());
             if (it == mapTimeout.end()) return QVariant();
             float nTimePassed = it.value().toDateTime().msecsTo(QDateTime::currentDateTime());
             if (nTimePassed < itemFormatDelegate::update_scope) {
