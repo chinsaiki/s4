@@ -95,11 +95,11 @@ public:
 
 	T& operator[](size_t n) noexcept{
 		assert(n < _size);
-		return sp().get()[n];
+		return _sp.get()[n];
 	}
 
 	const T& operator[](size_t n) const noexcept{
-		return sp().get()[n];
+		return _sp.get()[n];
 	}
 
 	const size_t size() noexcept{
