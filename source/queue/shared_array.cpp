@@ -1,5 +1,5 @@
 // #include "stdafx.h"
-#include "common/shared_array.h"
+#include "queue/shared_array.h"
 #include <string.h>
 
 namespace S4

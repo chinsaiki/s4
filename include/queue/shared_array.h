@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include <memory>
 #include <assert.h>
+#include "common/s4exceptions.h"
+
+#include <stdlib.h>
 
 namespace S4
 {
@@ -19,7 +22,32 @@ template<typename T>
 class shared_array
 {
 private:
-
+#ifdef _WIN32
+	int check_align(size_t align)
+	{
+		for (size_t i = sizeof(void *); i != 0; i *= 2)
+		if (align == i)
+			return 0;
+		return EINVAL;
+	}
+	
+	int posix_memalign(void **ptr, size_t align, size_t size)
+	{
+		if (check_align(align))
+			return EINVAL;
+	
+		int saved_errno = errno;
+		void *p = _aligned_malloc(size, align);
+		if (p == NULL)
+		{
+			errno = saved_errno;
+			return ENOMEM;
+		}
+	
+		*ptr = p;
+		return 0;
+	}
+#endif
 public:
 	shared_array() noexcept:
 		_sp(nullptr),
@@ -28,10 +56,16 @@ public:
 	}
 
 	//new出一块新内存，并用智能指针管理
-	explicit shared_array(size_t len) noexcept:
-		_sp(new T[len], array_deleter<T>()),
+	explicit shared_array(size_t len):
+		// _sp(new T[len], array_deleter<T>()),
 		_size(len)
 	{
+		T* p;
+		int ret = posix_memalign((void **)&p, 4096, len * sizeof(T));
+		if (ret != 0) {
+			throw std::runtime_error("Error allocating aligned memory!");
+		}
+		_sp.reset(p, array_deleter<T>());
 	}
 
 	//拷贝构造，智能指针增加引用

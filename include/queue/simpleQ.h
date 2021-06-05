@@ -13,6 +13,10 @@ struct simpleQueParticle_t
 {
 	size_t length = 0;					//有效数据长度，buffer总长度由simpleQ_t.getPageSize获取
 	char* const pBuffer = nullptr;		//
+	simpleQueParticle_t(char * p):
+		length(0),
+		pBuffer(p)
+	{}
 };
 typedef std::shared_ptr<simpleQueParticle_t> queParticle_ptr_t;
 
