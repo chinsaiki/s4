@@ -4,9 +4,9 @@ A股相关工具，version4
 争取跨平台，但目前先在Windows(VS2017/2019)上开发/测试，不定期在Linux(CentoOS8 gcc8.3)上编译测试
 
 ## Todo list
-· TDX K线文件读取
-· K线浏览，并叠加TDX导的出历史成交txt，便于复盘
-· 盘中L1/L2快照可视化
+- TDX K线文件读取
+- K线浏览，并叠加TDX导的出历史成交txt，便于复盘
+- 盘中L1/L2快照可视化
 
 
 ## 要求 requirement
