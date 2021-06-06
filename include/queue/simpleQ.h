@@ -29,6 +29,8 @@ public:
 
 	//生产者传递数据进入队列
 	virtual void P_send(queParticle_ptr_t& p) = 0;
+	//生产者批量传递数据进入队列
+	virtual void P_send_bulk(std::vector<queParticle_ptr_t>& p) = 0;
 
 	//消费者从队列中获取生产者输送的数据，阻塞。
 	virtual void C_recv(queParticle_ptr_t& p) = 0;

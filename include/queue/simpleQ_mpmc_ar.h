@@ -29,13 +29,13 @@ Producter接口：
     P_get_tryBest : 总能获取到内存，如果生产所需内存已消耗完，将自动增加内存分配
     P_get_timeout : 非阻塞式，如果生产所需内存已消耗完，将超时失败
 
-    P_send : 对外屏蔽
+    P_send : 可不使用
 
 Consumor接口：
     C_recv   : 阻塞式，直到有需消费数据为止
     C_recv_timeout : 非阻塞式，如果无所需消费内存，将超时失败
 
-    C_return : 对外屏蔽
+    C_return : 可不使用
 */
 template<class extInfoT>
 class simpleQ_mpmc_ar_t;
@@ -60,7 +60,7 @@ public:
     typedef std::shared_ptr<queParticle_t<extInfoT>> hostQ_particle_t;
     hostQ_particle_t pQdata;
     queParticle_ar_t(hostQ_particle_t& pD, const std::shared_ptr<moodycamel::BlockingConcurrentQueue<hostQ_particle_t>>& pQ):
-        pQdata(pD), //直接传递
+        pQdata(std::move(pD)), //直接传递
         pHostQ(pQ)
     {}
     ~queParticle_ar_t()
@@ -141,6 +141,19 @@ public:
 	virtual void P_send(queParticle_arPtr_t& p) override
     {
         p.reset();
+    }
+	//生产者批量传递数据进入队列
+	virtual void P_send_bulk(std::vector<queParticle_arPtr_t>& pv) override
+    {
+        std::vector<queParticle_ptr_t> pruducted_data;
+		pruducted_data.reserve(pv.size());
+        for (auto& p : pv){
+			p->pHostQ = nullptr;
+			pruducted_data.emplace_back(std::move(p->pQdata));
+        }
+
+        _dataPtoC->enqueue_bulk(pruducted_data.begin(), pv.size());
+        pv.clear();
     }
 
 	//消费者从队列中获取生产者输送的数据，阻塞。

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "common/s4mktCode.h"
 #include "types/s4type_time.h"
@@ -10,6 +10,7 @@ namespace S4{
 
 uint64_t nowTime_ms(void);
 
+/**** 精度秒 ***/
 //HHMMSS
 time_minuSec_t nowMinuSec(void);
 
@@ -33,6 +34,13 @@ time_utcSec_t tm_to_utc(const struct tm *ltm, int utcdiff=0);
 
 //YYYYmmDD [19901219~
 bool chk_stk_date_legal(time_date_t date);
+
+/**** 精度m秒 ***/
+
+
+
+/**** 精度n秒 ***/
+
 
 class rptTime {
 public:

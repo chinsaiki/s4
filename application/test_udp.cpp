@@ -117,6 +117,8 @@ void queue_test()
 		int n = 0;
 		udpData_arPtr_t pData;
 		udpDataQ.P_get_tryBest(pData);	//空数据会在析构时进入数据队列、被C收到，此时通过fd=-1,len=0判断是无效数据。
+		std::vector<udpData_arPtr_t> bulk;
+		bulk.reserve(64);
 		do {
 			n = recv(recv_fd, pData->pQdata->pBuffer, (int)udpDataQ.getPageSize(), 0);
 			if (n > 0) {
@@ -124,12 +126,17 @@ void queue_test()
 				recv_byte_cnt+=n;
 				pData->pQdata->info.data_len = n;
 				pData->pQdata->info.recv_fd = recv_fd;
+				//bulk.emplace_back(std::move(pData));
 				udpDataQ.P_get_tryBest(pData);
 				// LCL_INFO("recv OK size = {}, data= {}", n, data);
 			}else if (n!=-1){
 				LCL_ERR("recv_fd broken!");
 				break;
 			}
+			//else {
+			//	if (bulk.size()>=64)
+			//		udpDataQ.P_send_bulk(bulk);
+			//}
 		} while (!signalhandler_t::getSigint());
 	};
 
@@ -141,7 +148,7 @@ void queue_test()
 			got_data = udpDataQ.C_recv_timeout(pData, 100);
 			if (got_data && pData->pQdata->info.recv_fd != -1){
 				pData->pQdata->pBuffer[pData->pQdata->info.data_len] = 0;
-				LCL_INFO("proc #{} data={}", proc_frame_cnt, pData->pQdata->pBuffer);
+				//LCL_INFO("proc #{} data={}", proc_frame_cnt, pData->pQdata->pBuffer);
 				proc_frame_cnt++;
 				proc_byte_cnt += pData->pQdata->info.data_len;
 			}
@@ -157,13 +164,15 @@ void queue_test()
 	SockUtil::makeAddr(&addrDst, "127.0.0.1", 8888);//
 	int send_frame_nb = 0;
 	int send_byte_nb = 0;
-	for (int i=64; i<1500; i+=16){
-		
-		std::string s(i, (char)('a'+(send_frame_nb++)%26));
-		send_byte_nb += sendto(send_fd, s.data(), (int)s.size(), 0, &addrDst, sizeof(struct sockaddr));
+	for (int n = 0; n < 4096; ++n) {
+		for (int i = 64; i < 1500; i += 16) {
+
+			std::string s(i, (char)('a' + (send_frame_nb++) % 26));
+			send_byte_nb += sendto(send_fd, s.data(), (int)s.size(), 0, &addrDst, sizeof(struct sockaddr));
+		}
 	}
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(300));
+	//std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	signalhandler_t::dummyInt();
 
 	tr.join();
@@ -172,5 +181,5 @@ void queue_test()
 	LCL_INFO("send frame_cnt = {}, byte_cnt = {}", send_frame_nb, send_byte_nb);
 	LCL_INFO("recv frame_cnt = {}, byte_cnt = {}", recv_frame_cnt, recv_byte_cnt);
 	LCL_INFO("proc frame_cnt = {}, byte_cnt = {}", proc_frame_cnt, proc_byte_cnt);
-
+	LCL_INFO("PtoC space = {} / {}, CtoP space = {}", udpDataQ.size_approx_PtoC(), udpDataQ.getDepth(), udpDataQ.size_approx_CtoP());
 }
