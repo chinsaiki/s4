@@ -142,6 +142,7 @@ public:
     {
         p.reset();
     }
+
 	//生产者批量传递数据进入队列
 	virtual void P_send_bulk(std::vector<queParticle_arPtr_t>& pv) override
     {

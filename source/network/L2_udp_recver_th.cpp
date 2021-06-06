@@ -25,10 +25,16 @@ void L2_udp_recver_th::setReportInterval(unsigned int ms)
     _report_interval_ms = ms;
 }
 
-void L2_udp_recver_th::report_stats()
+
+unsigned int L2_udp_recver_th::getReportInterval() const
+{
+    return _report_interval_ms;
+}
+
+void L2_udp_recver_th::report_stats(bool force)
 {
     uint64_t now_ms = nowTime_ms();
-    if (now_ms < _last_report_time_ms + _report_interval_ms)
+    if (!force && now_ms < _last_report_time_ms + _report_interval_ms)
         return;
 
     L2Data_arPtr_t report_data;

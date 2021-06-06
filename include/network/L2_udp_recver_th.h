@@ -25,11 +25,13 @@ struct L2DataInfo_t{
 struct L2Stats_t
 {
     size_t recv_frame_cnt;
+    size_t recv_heartbeat_cnt;
     size_t recv_instrument_snap_cnt;
     size_t recv_index_snap_cnt;
     size_t recv_order_cnt;
     size_t recv_exec_cnt;
-    time_t last_frame_time;
+    size_t recv_unknown_cnt;
+    uint64_t last_frame_time_ms;
     
     size_t live_code_nb;
     size_t live_instrument_snap_cnt;
@@ -62,9 +64,10 @@ public:
     virtual void delLive(mktCodeI_t);
 
     void setReportInterval(unsigned int ms);
+    unsigned int getReportInterval() const;
 protected:
-    //
-    virtual void report_stats();
+    //发送统计报告，内部会检测时间间隔，force=ture则强制发送
+    virtual void report_stats(bool force=false);
 
 protected:
     std::shared_ptr<L2DataQ_t> _pL2DataQ;
