@@ -3,7 +3,7 @@
 
 #include "network/sockutil.h"
 #include <thread>
-#include "queue/simpleQ_mpmc_ar.h"
+#include "queue/simpleQ_spmc_ar.h"
 
 using namespace S4;
 
@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 	glb_conf::pInstance()->load("../json_template/glb_conf_ctx_t.json");
 	s4logger::pInstance()->init((void*)glb_conf::pInstance()->pLogger());
 
-	//simpleQ_mpmc_ar_test();
+	//simpleQ_spmc_ar_test();
 
 	queue_test();
 
@@ -98,8 +98,8 @@ void queue_test()
 	};
 
 	
-	typedef simpleQ_mpmc_ar_t<udpDataInfo_t> udpDataQ_t;
-	typedef simpleQ_mpmc_ar_t<udpDataInfo_t>::queParticle_arPtr_t udpData_arPtr_t;
+	typedef simpleQ_spmc_ar_t<udpDataInfo_t> udpDataQ_t;
+	typedef simpleQ_spmc_ar_t<udpDataInfo_t>::queParticle_arPtr_t udpData_arPtr_t;
 
 	//data queue between recv & proc
 	udpDataQ_t udpDataQ(16, 2048, true);

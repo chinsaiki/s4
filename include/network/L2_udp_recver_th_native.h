@@ -1,4 +1,4 @@
-#pragma
+﻿#pragma
 
 #include "L2_udp_recver_th.h"
 #include "sockutil.h"
@@ -18,16 +18,7 @@ public:
     //创建socket，并启动监听线程
     virtual bool start(const char* pLocalIp, const uint16_t port) override;
     //终止监听线程，并关掉socket
-    virtual bool stop() override
-    {
-        std::lock_guard<std::mutex> l(_mux);
-        if (!_stop && _pThread){
-            _stop = true;
-            _pThread->join();
-            _pThread.reset();
-            _stop = false;
-        }
-    }
+    virtual bool stop() override;
 protected:
     bool _running = false;
     bool _stop = false;

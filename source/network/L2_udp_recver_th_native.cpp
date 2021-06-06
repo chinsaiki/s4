@@ -18,10 +18,13 @@ bool L2_udp_recver_th_native::start(const char* pLocalIp, const uint16_t port)
     memset(&_stats, 0, sizeof(_stats));
 
     _pThread = std::make_shared<std::thread>(
-        [&](){
-            recv_thread(pLocalIp, port);
-        }
+        [&](const char* ip, const uint16_t pt){
+            recv_thread(ip, pt);
+        }, 
+        pLocalIp, port
     );
+
+    return true;
 }
 
 bool L2_udp_recver_th_native::stop()
@@ -46,7 +49,7 @@ void L2_udp_recver_th_native::recv_thread(const char* pLocalIp, const uint16_t p
     char_array_t recv_buffer(4096);
     int recv_len;
     do {
-        recv_len = recv(_fd, recv_buffer.get(), recv_buffer.size(), 0);
+        recv_len = recv(_fd, recv_buffer.get(), (int)recv_buffer.size(), 0);
         if (recv_len > 0){
             _stats.recv_frame_cnt++;
             _stats.last_frame_time_ms = nowTime_ms();
@@ -118,6 +121,8 @@ void L2_udp_recver_th_native::recv_thread(const char* pLocalIp, const uint16_t p
                     break;
                 
                 default:
+                    _stats.recv_unknown_cnt++;
+                    len = 0;
                     break;
                 }
             }while(len > 0);

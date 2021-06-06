@@ -57,6 +57,6 @@ public:
 
 
 // simpleQ_ptr_t make_simpleQ_spsc_ptr(unsigned int depth, unsigned int page_size);
-// simpleQ_ptr_t make_simpleQ_mpmc_ptr(unsigned int depth, size_t page_size);
+// simpleQ_ptr_t make_simpleQ_spmc_ptr(unsigned int depth, size_t page_size);
 
 }

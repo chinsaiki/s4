@@ -14,12 +14,12 @@
 namespace S4 {
 
 /*
-Multi-Producter/Multi-Consumer Auto-Recycle none-lock queue
+signal-Producter/Multi-Consumer Auto-Recycle none-lock queue 生产者单线程，消费者可多线程
 
 extInfoT : 自定义queue数据附加信息，可为数据长度等
 
-simpleQ_mpmc_ar_t<extInfoT>::queParticle_arPtr_t : queue对外接口读取的数据结构，包含内部存储数据结构指针
-simpleQ_mpmc_ar_t<extInfoT>::queParticle_t : queue内部存储的数据结构，包含extInfo和pBuffer
+simpleQ_spmc_ar_t<extInfoT>::queParticle_arPtr_t : queue对外接口读取的数据结构，包含内部存储数据结构指针
+simpleQ_spmc_ar_t<extInfoT>::queParticle_t : queue内部存储的数据结构，包含extInfo和pBuffer
 pBuffer  : queue数据内存，总长由构造时page_size指定
 
 Producter(P)调用P_get_tryBest获取载体p(包含数据内存指针)，写入数据后p析构时将自动回收到queue内，供Consumer消费；
@@ -38,7 +38,7 @@ Consumor接口：
     C_return : 可不使用
 */
 template<class extInfoT>
-class simpleQ_mpmc_ar_t;
+class simpleQ_spmc_ar_t;
 
 template<class extInfoT>
 class queParticle_t
@@ -55,7 +55,7 @@ public:
 template<class extInfoT>
 class queParticle_ar_t
 {
-	friend simpleQ_mpmc_ar_t<extInfoT>;
+	friend simpleQ_spmc_ar_t<extInfoT>;
 public:
     typedef std::shared_ptr<queParticle_t<extInfoT>> hostQ_particle_t;
     hostQ_particle_t pQdata;
@@ -74,9 +74,9 @@ private:
 };
 
 template<class extInfoT>
-class simpleQ_mpmc_ar_t: 
+class simpleQ_spmc_ar_t: 
     public simpleQ_t<std::shared_ptr<queParticle_ar_t<extInfoT>>>,
-    public std::enable_shared_from_this<simpleQ_mpmc_ar_t<extInfoT>>
+    public std::enable_shared_from_this<simpleQ_spmc_ar_t<extInfoT>>
 {
 public:
 	typedef std::shared_ptr<queParticle_t<extInfoT>> queParticle_ptr_t;
@@ -87,7 +87,7 @@ public:
 public:
 typedef std::shared_ptr<queParticle_ar_t<extInfoT>> queParticle_arPtr_t;
 public:
-	simpleQ_mpmc_ar_t(unsigned int init_depth, size_t page_size, bool all_memalign):
+	simpleQ_spmc_ar_t(unsigned int init_depth, size_t page_size, bool all_memalign):
     	_page_size(page_size),
         _all_memalign(all_memalign)
     {
@@ -95,8 +95,11 @@ public:
         _dataPool = std::make_shared<queue_t>(init_depth*sizeof(queParticle_ptr_t));      //数据池，生产者读，消费者写
         _dataPtoC = std::make_shared<queue_t>(init_depth*sizeof(queParticle_ptr_t));      //生产者写，消费者读
 
+        ctok_dataPool = std::make_shared<moodycamel::ConsumerToken>(*_dataPool);
+        ctok_dataPtoC = std::make_shared<moodycamel::ConsumerToken>(*_dataPtoC);
+
         if (!init_dataPool(init_depth)){
-            throw std::runtime_error("Init simpleQ_mpmc_ar_t::dataPool fail!");
+            throw std::runtime_error("Init simpleQ_spmc_ar_t::dataPool fail!");
         }
     }
 
@@ -104,7 +107,7 @@ public:
 	virtual void P_get(queParticle_arPtr_t& p) override
 	{
 		queParticle_ptr_t pool_data;
-		_dataPool->wait_dequeue(pool_data);
+		_dataPool->wait_dequeue(*ctok_dataPool, pool_data);
         p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC);
     }
 
@@ -112,7 +115,7 @@ public:
     virtual bool P_get_timeout(queParticle_arPtr_t& p, long long us) override
 	{
 		queParticle_ptr_t pool_data;
-		if (_dataPool->wait_dequeue_timed(pool_data, us)) {
+		if (_dataPool->wait_dequeue_timed(*ctok_dataPool, pool_data, us)) {
             p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC);
 			return true;
 		}
@@ -124,7 +127,7 @@ public:
 	virtual bool P_get_tryBest(queParticle_arPtr_t& p) override
 	{
         queParticle_ptr_t pool_data;
-        if (_dataPool->try_dequeue(pool_data)) {
+        if (_dataPool->try_dequeue(*ctok_dataPool, pool_data)) {
             p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC);
             return true;
         }
@@ -161,7 +164,7 @@ public:
 	virtual void C_recv(queParticle_arPtr_t& p) override
 	{
 		queParticle_ptr_t pruducted_data;
-		_dataPtoC->wait_dequeue(pruducted_data);
+		_dataPtoC->wait_dequeue(*ctok_dataPtoC, pruducted_data);
         p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
     }
 
@@ -169,7 +172,7 @@ public:
 	virtual bool C_try_recv(queParticle_arPtr_t& p) override
 	{
 		queParticle_ptr_t pruducted_data;
-		if (_dataPtoC->try_dequeue(pruducted_data)) {
+		if (_dataPtoC->try_dequeue(*ctok_dataPtoC, pruducted_data)) {
 			p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
 			return true;
 		}
@@ -180,7 +183,7 @@ public:
     virtual bool C_recv_timeout(queParticle_arPtr_t& p, long long us) override
 	{
 		queParticle_ptr_t pruducted_data;
-		if (_dataPtoC->wait_dequeue_timed(pruducted_data, us)) {
+		if (_dataPtoC->wait_dequeue_timed(*ctok_dataPtoC, pruducted_data, us)) {
 			p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
 			return true;
 		}
@@ -192,7 +195,7 @@ public:
 	{
         std::vector<queParticle_ptr_t> pruducted_data(max_nb);
 		pv.clear();
-		if (_dataPtoC->wait_dequeue_bulk_timed(pruducted_data.begin(), max_nb, us)) {
+		if (_dataPtoC->wait_dequeue_bulk_timed(*ctok_dataPtoC, pruducted_data.begin(), max_nb, us)) {
             for (auto& QB : pruducted_data) {
                 if (!QB)
                     break;;
@@ -233,6 +236,11 @@ private:
 
     std::mutex _mem_mux;
 	std::vector<char_array_t> _mem_hoster;
+
+    // std::shared_ptr<moodycamel::ConsumerToken> ptok_dataPool;
+    std::shared_ptr<moodycamel::ConsumerToken> ctok_dataPool;
+    // std::shared_ptr<moodycamel::ConsumerToken> ptok_dataPtoC;
+    std::shared_ptr<moodycamel::ConsumerToken> ctok_dataPtoC;
 private:
     //构造帧数据片
     bool malloc_particle(std::vector<queParticle_ptr_t>& particles, unsigned int num = 64)
@@ -301,7 +309,7 @@ private:
 
 };
 
-inline void simpleQ_mpmc_ar_test() {
+inline void simpleQ_spmc_ar_test() {
 #if defined(__linux__)
 #define C_P64 "l"
 #else
@@ -314,8 +322,8 @@ inline void simpleQ_mpmc_ar_test() {
 		int64_t CONNID = 0;
     };
 
-	typedef simpleQ_mpmc_ar_t<header_t> nwQ_t;
-	typedef simpleQ_mpmc_ar_t<header_t>::queParticle_arPtr_t nwQ_data_arPtr_t;
+	typedef simpleQ_spmc_ar_t<header_t> nwQ_t;
+	typedef simpleQ_spmc_ar_t<header_t>::queParticle_arPtr_t nwQ_data_arPtr_t;
     std::shared_ptr<nwQ_t> nwQ = std::make_shared<nwQ_t>(10, 2048, true);
 
 	for (int i = 0; i < 100; ++i) {

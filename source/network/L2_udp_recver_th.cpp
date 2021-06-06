@@ -3,6 +3,25 @@
 namespace S4{
 namespace NW{
 
+std::string L2Stats_t::toString() const
+{
+    std::string s;
+    s += "recv_frame_cnt = " + std::to_string(recv_frame_cnt) + "\n";
+    s += "recv_heartbeat_cnt = " + std::to_string(recv_heartbeat_cnt) + "\n";
+    s += "recv_instrument_snap_cnt = " + std::to_string(recv_instrument_snap_cnt) + "\n";
+    s += "recv_index_snap_cnt = " + std::to_string(recv_index_snap_cnt) + "\n";
+    s += "recv_order_cnt = " + std::to_string(recv_order_cnt) + "\n";
+    s += "recv_exec_cnt = " + std::to_string(recv_exec_cnt) + "\n";
+    s += "recv_unknown_cnt = " + std::to_string(recv_unknown_cnt) + "\n";
+    s += "last_frame_time_ms = " + std::to_string(last_frame_time_ms) + "\n";
+    s += "live_code_nb = " + std::to_string(live_code_nb) + "\n";
+    s += "live_instrument_snap_cnt = " + std::to_string(live_instrument_snap_cnt) + "\n";
+    s += "live_index_snap_cnt = " + std::to_string(live_index_snap_cnt) + "\n";
+    s += "live_order_cnt = " + std::to_string(live_order_cnt) + "\n";
+    s += "live_exec_cnt = " + std::to_string(live_exec_cnt) + "\n";
+    return s;
+}
+
 
 //增加/删除关注代码
 void L2_udp_recver_th::addLive(mktCodeI_t code)
