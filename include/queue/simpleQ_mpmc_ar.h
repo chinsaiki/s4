@@ -105,12 +105,7 @@ public:
 	{
 		queParticle_ptr_t pool_data;
 		_dataPool->wait_dequeue(pool_data);
-        if (!p){
-            p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC);
-        }else{
-            p->pQdata = pool_data;
-            p->pHostQ = _dataPtoC;
-        }
+        p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC);
     }
 
 	//生产者从数据池中获取数据，阻塞timeout_us时间后，若数据池为空则返回false。
@@ -118,12 +113,7 @@ public:
 	{
 		queParticle_ptr_t pool_data;
 		if (_dataPool->wait_dequeue_timed(pool_data, us)) {
-            if (!p){
-                p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC);
-            }else{
-                p->pQdata = pool_data;
-                p->pHostQ = _dataPtoC;
-            }
+            p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC);
 			return true;
 		}
 		p = nullptr;
@@ -135,12 +125,7 @@ public:
 	{
         queParticle_ptr_t pool_data;
         if (_dataPool->try_dequeue(pool_data)) {
-            if (!p){
-                p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC);
-            }else{
-                p->pQdata = pool_data;
-                p->pHostQ = _dataPtoC;
-            }
+            p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC);
             return true;
         }
 
@@ -163,12 +148,7 @@ public:
 	{
 		queParticle_ptr_t pruducted_data;
 		_dataPtoC->wait_dequeue(pruducted_data);
-        if (!p){
-            p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
-        }else{
-            p->pQdata = pruducted_data;
-            p->pHostQ = _dataPool;
-        }
+        p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
     }
 
 	//消费者从队列中获取生产者输送的数据，非阻塞。
@@ -176,12 +156,7 @@ public:
 	{
 		queParticle_ptr_t pruducted_data;
 		if (_dataPtoC->try_dequeue(pruducted_data)) {
-            if (!p){
-			    p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
-            }else{
-                p->pQdata = pruducted_data;
-                p->pHostQ = _dataPool;
-            }
+			p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
 			return true;
 		}
 		p = nullptr;
@@ -192,12 +167,7 @@ public:
 	{
 		queParticle_ptr_t pruducted_data;
 		if (_dataPtoC->wait_dequeue_timed(pruducted_data, us)) {
-            if (!p){
-			    p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
-            }else{
-                p->pQdata = pruducted_data;
-                p->pHostQ = _dataPool;
-            }
+			p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
 			return true;
 		}
 		p = nullptr;

@@ -15,7 +15,9 @@
 #include <asio.hpp>
 #include <functional>
 #include <thread>
+
 CREATE_LOCAL_LOGGER(testAsioUDP)
+using namespace S4;
 
 namespace asio {
 	namespace placeholders {

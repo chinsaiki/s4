@@ -1,14 +1,18 @@
 # s4
 A股相关工具，version4
 
-争取跨平台，但目前先在Windows(VS)上开发/测试，有Linux需求的请自行测试，
+争取跨平台，但目前先在Windows(VS2017/2019)上开发/测试，不定期在Linux(CentoOS8 gcc8.3)上编译测试
 
+## Todo list
+· TDX K线文件读取
+· K线浏览，并叠加TDX导的出历史成交txt，便于复盘
+· 盘中L1/L2快照可视化
 
 
 ## 要求 requirement
 
-- Visual Studio 2017
-- QT 5.11 (Install to E:\Qt\5.11.1 for examples.)
+- Visual Studio 2017 or 2019
+- QT 5.11+ (Install to E:\Qt\5.11.1 for examples.)
 - cmake 3.9
 - python 3.7
 - ~~activeTcl https://www.activestate.com/products/tcl/downloads/~~
