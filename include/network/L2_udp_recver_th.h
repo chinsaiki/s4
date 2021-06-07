@@ -1,7 +1,7 @@
 ﻿#pragma
 
 #include "common/s4mktCode.h"
-#include "queue/simpleQ_spmc_ar.h"
+#include "queue/simpleQ_mpmc_ar.h"
 
 #include <stdint.h>
 #include <set>
@@ -42,8 +42,8 @@ struct L2Stats_t
     std::string toString() const;
 };
 
-typedef simpleQ_spmc_ar_t<L2DataInfo_t> L2DataQ_t;
-typedef simpleQ_spmc_ar_t<L2DataInfo_t>::queParticle_arPtr_t L2Data_arPtr_t;
+typedef simpleQ_mpmc_ar_t<L2DataInfo_t> L2DataQ_t;
+typedef simpleQ_mpmc_ar_t<L2DataInfo_t>::queParticle_arPtr_t L2Data_arPtr_t;
 
 //UDP L2行情接收与转发线程基类
 //从UDP端口接收L2行情数据
