@@ -32,6 +32,7 @@ namespace QT {
 
 #define TITLE_TDX_DB QStringLiteral("TDX-DB")
 #define TITLE_TDX_LIVE QStringLiteral("TDX-LIVE")
+
 #define TITLE_L2_DB QStringLiteral("L2-DB")
 #define TITLE_L2_LIVE QStringLiteral("L2-LIVE")
 

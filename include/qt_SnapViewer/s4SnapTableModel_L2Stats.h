@@ -99,29 +99,29 @@ namespace S4
             }
 
         }
-
-        void refresh(const NW::L2Stats_t &stats)
+    public slots:
+        void refresh(const struct NW::L2Stats_t &stats)
         {
             std::vector<QVariant> data;
             for (auto& key : _row_names){
                 switch(key){
-                    case dataType_t::recv_frame_cnt : _data.emplace_back(stats.recv_frame_cnt);
-                    case dataType_t::recv_heartbeat_cnt : _data.emplace_back(stats.recv_heartbeat_cnt);
-                    case dataType_t::recv_instrument_snap_cnt : _data.emplace_back(stats.recv_instrument_snap_cnt);
-                    case dataType_t::recv_index_snap_cnt : _data.emplace_back(stats.recv_index_snap_cnt);
-                    case dataType_t::recv_order_cnt : _data.emplace_back(stats.recv_order_cnt);
-                    case dataType_t::recv_exec_cnt : _data.emplace_back(stats.recv_exec_cnt);
-                    case dataType_t::recv_unknown_cnt : _data.emplace_back(stats.recv_unknown_cnt);
-                    case dataType_t::last_frame_time_ms : _data.emplace_back(stats.last_frame_time_ms);
-                    case dataType_t::live_code_nb : _data.emplace_back(stats.live_code_nb);
-                    case dataType_t::live_instrument_snap_cnt : _data.emplace_back(stats.live_instrument_snap_cnt);
-                    case dataType_t::live_index_snap_cnt : _data.emplace_back(stats.live_index_snap_cnt);
-                    case dataType_t::live_order_cnt : _data.emplace_back(stats.live_order_cnt);
-                    case dataType_t::live_exec_cnt : _data.emplace_back(stats.live_exec_cnt);
+                    case dataType_t::recv_frame_cnt : data.emplace_back(stats.recv_frame_cnt); break;
+                    case dataType_t::recv_heartbeat_cnt : data.emplace_back(stats.recv_heartbeat_cnt); break;
+                    case dataType_t::recv_instrument_snap_cnt : data.emplace_back(stats.recv_instrument_snap_cnt); break;
+                    case dataType_t::recv_index_snap_cnt : data.emplace_back(stats.recv_index_snap_cnt); break;
+                    case dataType_t::recv_order_cnt : data.emplace_back(stats.recv_order_cnt); break;
+                    case dataType_t::recv_exec_cnt : data.emplace_back(stats.recv_exec_cnt); break;
+                    case dataType_t::recv_unknown_cnt : data.emplace_back(stats.recv_unknown_cnt); break;
+                    case dataType_t::last_frame_time_ms : data.emplace_back(stats.last_frame_time_ms); break;
+                    case dataType_t::live_code_nb : data.emplace_back(stats.live_code_nb); break;
+                    case dataType_t::live_instrument_snap_cnt : data.emplace_back(stats.live_instrument_snap_cnt); break;
+                    case dataType_t::live_index_snap_cnt : data.emplace_back(stats.live_index_snap_cnt); break;
+                    case dataType_t::live_order_cnt : data.emplace_back(stats.live_order_cnt); break;
+                    case dataType_t::live_exec_cnt : data.emplace_back(stats.live_exec_cnt); break;
                 };
             }
 
-            refresh(data);
+            _refresh(data);
         }
 
 
@@ -143,7 +143,7 @@ namespace S4
             return  QColor(255, 255, 255);
         }
 
-        void refresh(std::vector<QVariant>& data)
+        void _refresh(std::vector<QVariant>& data)
         {
             //backup
             beginResetModel();

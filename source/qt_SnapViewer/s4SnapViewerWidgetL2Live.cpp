@@ -4,7 +4,7 @@
 #endif
 
 #include "qt_SnapViewer/s4SnapViewerWidgetL2Live.h"
-#include "qt_SnapViewer/s4SnapTableModel_L2Stats.h"
+#include "network/L2_udp_recver_th_native.h"
 
 #include "common/s4logger.h"
 
@@ -40,8 +40,8 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
     itemFormatDelegate* delegate = new itemFormatDelegate(this);
     _stats_tv = new QTableView(this);
     _stats_tv->setItemDelegate(delegate);
-    snapTableModel_L2Stats* levels = new snapTableModel_L2Stats(_stats_tv);
-    _stats_tv->setModel(levels);
+    _stats_model = new snapTableModel_L2Stats(_stats_tv);
+    _stats_tv->setModel(_stats_model);
     _stats_tv->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     _stats_tv->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     // _stats_tv->verticalHeader()->setMaximumHeight(24);
@@ -64,14 +64,39 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
 	connect(_tabWidget, &QTabWidget::tabCloseRequested, this, &s4SnapViewerWidgetL2Live::closeSnapTab);
 
 	connect(_treeView, &QTreeView::doubleClicked, this, &s4SnapViewerWidgetL2Live::dbTree_doubleClicked);
+
+    
 }
+
+Q_DECLARE_METATYPE(NW::L2Stats_t);
 
 void s4SnapViewerWidgetL2Live::onStartL2LiveReceiver()
 {
+	if (!_pL2DataQ) {
+		_pL2DataQ = std::make_shared<NW::L2DataQ_t>(1024, 2048, true);
+	}
+	if (!_pL2CmdQ) {
+		_pL2CmdQ = std::make_shared<NW::L2CmdQ_t>(64);
+	}
+
+	if (!_udp_recver_th) {
+		_udp_recver_th = std::make_shared<NW::L2_udp_recver_th_native>(_pL2DataQ, _pL2CmdQ);
+	}
+    _snapMarketDataLive = new s4SnapMarketDataLive(_pL2DataQ, _pL2CmdQ);
+
+    qRegisterMetaType<struct NW::L2Stats_t>();
+    connect(_snapMarketDataLive, &s4SnapMarketDataLive::onL2Stats, 
+            _stats_model, &snapTableModel_L2Stats::refresh);
+    _snapMarketDataLive->start();
+    _udp_recver_th->start("0.0.0.0", 8888);
 }
 
 void s4SnapViewerWidgetL2Live::onStopL2LiveReceiver()
 {
+	if (_udp_recver_th) {
+		_udp_recver_th->stop();
+	}
+    _snapMarketDataLive->stop();
 }
 
 void s4SnapViewerWidgetL2Live::dbTree_doubleClicked(const QModelIndex& index) {

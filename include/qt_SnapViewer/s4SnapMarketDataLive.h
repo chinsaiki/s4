@@ -10,6 +10,7 @@ namespace QT{
 
 class s4SnapMarketDataLive : public QThread
 {
+    Q_OBJECT
 public:
     s4SnapMarketDataLive(std::shared_ptr<NW::L2DataQ_t>& pL2DataQ, std::shared_ptr<NW::L2CmdQ_t>& pCmdQ):
         _pL2DataQ(pL2DataQ),

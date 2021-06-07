@@ -79,18 +79,18 @@ void s4SnapMarketDataLive::delLive(mktCodeI_t code)
     _pCmdQ->enqueue(*_pPtok_cmdQ, std::move(pData));
 }
 
-// void s4SnapMarketDataLive::onL2Stats(const struct L2Stats_t&)
-// {}
-// void s4SnapMarketDataLive::onL2Data(const std::string&)
-// {}
-// void s4SnapMarketDataLive::onL2Data_instrument_snap(const std::string&)
-// {}
-// void s4SnapMarketDataLive::onL2Data_index_snap(const std::string&)
-// {}
-// void s4SnapMarketDataLive::onL2Data_order(const std::string&)
-// {}
-// void s4SnapMarketDataLive::onL2Data_exec(const std::string&)
-// {}
+ //void s4SnapMarketDataLive::onL2Stats(const struct L2Stats_t&)
+ //{}
+ //void s4SnapMarketDataLive::onL2Data(const NW::L2Data_arPtr_t&)
+ //{}
+ //void s4SnapMarketDataLive::onL2Data_instrument_snap(const std::string&)
+ //{}
+ //void s4SnapMarketDataLive::onL2Data_index_snap(const std::string&)
+ //{}
+ //void s4SnapMarketDataLive::onL2Data_order(const std::string&)
+ //{}
+ //void s4SnapMarketDataLive::onL2Data_exec(const std::string&)
+ //{}
 
 }
 }
