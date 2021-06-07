@@ -1,15 +1,6 @@
 ﻿#pragma once
 
-#include "simpleQ.h"
-
-#include <blockingconcurrentqueue.h>
-
-#include <vector>
-#include <memory>
-#include <map>
-#include <exception>
-#include <mutex>
-
+#include "simpleQ_mpmc_ar.h"
 
 namespace S4 {
 
@@ -38,69 +29,15 @@ Consumor接口：
     C_return : 可不使用
 */
 template<class extInfoT>
-class simpleQ_spmc_ar_t;
-
-template<class extInfoT>
-class queParticle_t
+class simpleQ_spmc_ar_t: public simpleQ_mpmc_ar_t<extInfoT>
 {
-public:
-    extInfoT info;
-    char* const pBuffer = nullptr;		//
-    queParticle_t(char * p):
-        pBuffer(p)
-    {}
-};
-
-//生产者向消费者传递的数据帧，在析构时将自动回收
-template<class extInfoT>
-class queParticle_ar_t
-{
-	friend simpleQ_spmc_ar_t<extInfoT>;
-public:
-    typedef std::shared_ptr<queParticle_t<extInfoT>> hostQ_particle_t;
-    hostQ_particle_t pQdata;
-    queParticle_ar_t(hostQ_particle_t& pD, const std::shared_ptr<moodycamel::BlockingConcurrentQueue<hostQ_particle_t>>& pQ):
-        pQdata(std::move(pD)), //直接传递
-        pHostQ(pQ)
-    {}
-    ~queParticle_ar_t()
-    {
-        if (pHostQ){
-            pHostQ->enqueue(pQdata);
-        }
-    }
-private:
-    std::shared_ptr<moodycamel::BlockingConcurrentQueue<hostQ_particle_t>> pHostQ;
-};
-
-template<class extInfoT>
-class simpleQ_spmc_ar_t: 
-    public simpleQ_t<std::shared_ptr<queParticle_ar_t<extInfoT>>>,
-    public std::enable_shared_from_this<simpleQ_spmc_ar_t<extInfoT>>
-{
-public:
-	typedef std::shared_ptr<queParticle_t<extInfoT>> queParticle_ptr_t;
-
-    typedef moodycamel::BlockingConcurrentQueue<queParticle_ptr_t> queue_t;
-	typedef std::shared_ptr<queue_t> queue_ptr_t;
-
-public:
-typedef std::shared_ptr<queParticle_ar_t<extInfoT>> queParticle_arPtr_t;
 public:
 	simpleQ_spmc_ar_t(unsigned int init_depth, size_t page_size, bool all_memalign):
-    	_page_size(page_size),
-        _all_memalign(all_memalign)
+    	simpleQ_mpmc_ar_t<extInfoT>(init_depth, page_size, all_memalign)
     {
         //
-        _dataPool = std::make_shared<queue_t>(init_depth*sizeof(queParticle_ptr_t));      //数据池，生产者读，消费者写
-        _dataPtoC = std::make_shared<queue_t>(init_depth*sizeof(queParticle_ptr_t));      //生产者写，消费者读
-
         ctok_dataPool = std::make_shared<moodycamel::ConsumerToken>(*_dataPool);
         ctok_dataPtoC = std::make_shared<moodycamel::ConsumerToken>(*_dataPtoC);
-
-        if (!init_dataPool(init_depth)){
-            throw std::runtime_error("Init simpleQ_spmc_ar_t::dataPool fail!");
-        }
     }
 
 	//生产者从数据池中获取数据，阻塞。
@@ -147,18 +84,18 @@ public:
     }
 
 	//生产者批量传递数据进入队列
-	virtual void P_send_bulk(std::vector<queParticle_arPtr_t>& pv) override
-    {
-        std::vector<queParticle_ptr_t> pruducted_data;
-		pruducted_data.reserve(pv.size());
-        for (auto& p : pv){
-			p->pHostQ = nullptr;
-			pruducted_data.emplace_back(std::move(p->pQdata));
-        }
+	//virtual void P_send_bulk(std::vector<queParticle_arPtr_t>& pv) override
+ //   {
+ //       std::vector<queParticle_ptr_t> pruducted_data;
+	//	pruducted_data.reserve(pv.size());
+ //       for (auto& p : pv){
+	//		p->pHostQ = nullptr;
+	//		pruducted_data.emplace_back(std::move(p->pQdata));
+ //       }
 
-        _dataPtoC->enqueue_bulk(pruducted_data.begin(), pv.size());
-        pv.clear();
-    }
+ //       _dataPtoC->enqueue_bulk(pruducted_data.begin(), pv.size());
+ //       pv.clear();
+ //   }
 
 	//消费者从队列中获取生产者输送的数据，阻塞。
 	virtual void C_recv(queParticle_arPtr_t& p) override
@@ -222,90 +159,25 @@ public:
 	// 	return _sp_pool[N].get(); 
 	// }
 
-	virtual size_t getPageSize()  override { return _page_size; }
-	virtual unsigned int getDepth()  override { return _depth; }
-	virtual size_t size_approx_PtoC() override { return _dataPtoC->size_approx(); };
-	virtual size_t size_approx_CtoP() override { return _dataPool->size_approx(); };
+// 	virtual size_t getPageSize()  override { return _page_size; }
+// 	virtual unsigned int getDepth()  override { return _depth; }
+// 	virtual size_t size_approx_PtoC() override { return _dataPtoC->size_approx(); };
+// 	virtual size_t size_approx_CtoP() override { return _dataPool->size_approx(); };
+// private:
+//     const size_t _page_size;
+//     const bool _all_memalign;
+// 	unsigned int _depth = 0;
+
+// 	queue_ptr_t _dataPool;
+//     queue_ptr_t _dataPtoC;
+
+//     std::mutex _mem_mux;
+// 	std::vector<char_array_t> _mem_hoster;
 private:
-    const size_t _page_size;
-    const bool _all_memalign;
-	unsigned int _depth = 0;
-
-	queue_ptr_t _dataPool;
-    queue_ptr_t _dataPtoC;
-
-    std::mutex _mem_mux;
-	std::vector<char_array_t> _mem_hoster;
-
     // std::shared_ptr<moodycamel::ConsumerToken> ptok_dataPool;
     std::shared_ptr<moodycamel::ConsumerToken> ctok_dataPool;
     // std::shared_ptr<moodycamel::ConsumerToken> ptok_dataPtoC;
     std::shared_ptr<moodycamel::ConsumerToken> ctok_dataPtoC;
-private:
-    //构造帧数据片
-    bool malloc_particle(std::vector<queParticle_ptr_t>& particles, unsigned int num = 64)
-    {
-        if (num == 0)
-            return true;
-
-
-        if (_all_memalign){
-            //每个帧都4K对齐
-            std::lock_guard<std::mutex> lk(_mem_mux);
-            for(unsigned int n = 0; n < num; ++n){
-                char_array_t mem(_page_size);
-                if(mem.get() == nullptr)	//new fail
-                    return false;
-                queParticle_ptr_t p = std::make_shared<queParticle_t<extInfoT>>(mem.get());
-                particles.emplace_back(p);
-
-                _mem_hoster.emplace_back(mem);
-                _depth ++;
-            }
-        }else{
-            size_t mem_size = _page_size * num;
-            //每个帧不一定4K对齐
-            char_array_t mem(mem_size);
-            if(mem.get() == nullptr)	//new fail
-                return false;
-
-            particles.clear();
-            for(unsigned int n = 0; n < num; ++n){
-                queParticle_ptr_t p = std::make_shared<queParticle_t<extInfoT>>(mem.get() + n * _page_size);
-                particles.emplace_back(p);
-            }
-
-            {
-                std::lock_guard<std::mutex> lk(_mem_mux);
-                _mem_hoster.emplace_back(mem);
-                _depth += num;
-            }
-        }
-
-        _depth += num;
-        return true;
-    }
-
-    //向数据池中添加新帧数据片
-	bool init_dataPool(unsigned int num)
-    {
-        std::vector<queParticle_ptr_t> particles;
-
-        if(!malloc_particle(particles, num)){
-            return false;
-        }
-
-        size_t i;
-        for (i = 0; i < particles.size(); ++i) {
-            if (!_dataPool->enqueue(particles[i])) {
-                break;
-            }
-        }
-        if(i==0){
-            return false;
-        }
-        return true;
-    }
 
 };
 

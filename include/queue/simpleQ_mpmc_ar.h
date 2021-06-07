@@ -223,7 +223,7 @@ public:
 	virtual unsigned int getDepth()  override { return _depth; }
 	virtual size_t size_approx_PtoC() override { return _dataPtoC->size_approx(); };
 	virtual size_t size_approx_CtoP() override { return _dataPool->size_approx(); };
-private:
+protected:
     const size_t _page_size;
     const bool _all_memalign;
 	unsigned int _depth = 0;
@@ -233,7 +233,7 @@ private:
 
     std::mutex _mem_mux;
 	std::vector<char_array_t> _mem_hoster;
-private:
+protected:
     //构造帧数据片
     bool malloc_particle(std::vector<queParticle_ptr_t>& particles, unsigned int num = 64)
     {
