@@ -93,62 +93,62 @@ public:
 	//		pruducted_data.emplace_back(std::move(p->pQdata));
  //       }
 
- //       _dataPtoC->enqueue_bulk(pruducted_data.begin(), pv.size());
+ //       _dataPtoC->enqueue_bulk(pruducted_data.begin(), pv.size());   //TODO: use token
  //       pv.clear();
  //   }
 
-	//消费者从队列中获取生产者输送的数据，阻塞。
-	virtual void C_recv(queParticle_arPtr_t& p) override
-	{
-		queParticle_ptr_t pruducted_data;
-		_dataPtoC->wait_dequeue(pruducted_data);
-        p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
-    }
+	// //消费者从队列中获取生产者输送的数据，阻塞。
+	// virtual void C_recv(queParticle_arPtr_t& p) override
+	// {
+	// 	queParticle_ptr_t pruducted_data;
+	// 	_dataPtoC->wait_dequeue(pruducted_data);
+    //     p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
+    // }
 
-	//消费者从队列中获取生产者输送的数据，非阻塞。
-	virtual bool C_try_recv(queParticle_arPtr_t& p) override
-	{
-		queParticle_ptr_t pruducted_data;
-		if (_dataPtoC->try_dequeue(pruducted_data)) {
-			p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
-			return true;
-		}
-		p = nullptr;
-        return false;
-    }
+	// //消费者从队列中获取生产者输送的数据，非阻塞。
+	// virtual bool C_recv_try(queParticle_arPtr_t& p) override
+	// {
+	// 	queParticle_ptr_t pruducted_data;
+	// 	if (_dataPtoC->try_dequeue(pruducted_data)) {
+	// 		p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
+	// 		return true;
+	// 	}
+	// 	p = nullptr;
+    //     return false;
+    // }
 
-    virtual bool C_recv_timeout(queParticle_arPtr_t& p, long long us) override
-	{
-		queParticle_ptr_t pruducted_data;
-		if (_dataPtoC->wait_dequeue_timed(pruducted_data, us)) {
-			p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
-			return true;
-		}
-		p = nullptr;
-		return false;
-	}
+    // virtual bool C_recv_timeout(queParticle_arPtr_t& p, long long us) override
+	// {
+	// 	queParticle_ptr_t pruducted_data;
+	// 	if (_dataPtoC->wait_dequeue_timed(pruducted_data, us)) {
+	// 		p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
+	// 		return true;
+	// 	}
+	// 	p = nullptr;
+	// 	return false;
+	// }
 
-	virtual bool C_wait_getBulk_timeout(std::vector<queParticle_arPtr_t>& pv, size_t max_nb, long long us) override
-	{
-        std::vector<queParticle_ptr_t> pruducted_data(max_nb);
-		pv.clear();
-		if (_dataPtoC->wait_dequeue_bulk_timed(pruducted_data.begin(), max_nb, us)) {
-            for (auto& QB : pruducted_data) {
-                if (!QB)
-                    break;;
-                queParticle_arPtr_t p = std::make_shared<queParticle_ar_t<extInfoT>>(QB, _dataPool);
-                pv.emplace_back(p);
-            }
-			return true;
-		}
-		return false;
-	}
+	// virtual bool C_getBulk_timeout(std::vector<queParticle_arPtr_t>& pv, size_t max_nb, long long us) override
+	// {
+    //     std::vector<queParticle_ptr_t> pruducted_data(max_nb);
+	// 	pv.clear();
+	// 	if (_dataPtoC->wait_dequeue_bulk_timed(pruducted_data.begin(), max_nb, us)) {
+    //         for (auto& QB : pruducted_data) {
+    //             if (!QB)
+    //                 break;;
+    //             queParticle_arPtr_t p = std::make_shared<queParticle_ar_t<extInfoT>>(QB, _dataPool);
+    //             pv.emplace_back(p);
+    //         }
+	// 		return true;
+	// 	}
+	// 	return false;
+	// }
 
-	//消费者使用完帧数据后归还数据池
-    virtual void C_return(queParticle_arPtr_t& p) override
-    {
-        p.reset();
-    }
+	// //消费者使用完帧数据后归还数据池
+    // virtual void C_return(queParticle_arPtr_t& p) override
+    // {
+    //     p.reset();
+    // }
 	
 	//virtual sQ_ptr_t get_dataPtoC() { return _dataPtoC; };
 	//virtual sQ_ptr_t get_dataPool() { return _dataPool; };
@@ -221,7 +221,7 @@ inline void simpleQ_spmc_ar_test() {
 		for (int n = 0; n < i; ++n) {
 			printf("   ----------- \n");
 			nwQ_data_arPtr_t pData;
-            if (nwQ->C_try_recv(pData)) {
+            if (nwQ->C_recv_try(pData)) {
                 printf("4. pending-frame / space = %" C_P64 "u / %" C_P64 "u, depth = %u, adr=%" C_P64 "x, info.length=%" C_P64 "u\n", nwQ->size_approx_PtoC(), nwQ->size_approx_CtoP(), nwQ->getDepth(), (uint64_t)pData->pQdata->pBuffer, pData->pQdata->info.length);
             }
             else {

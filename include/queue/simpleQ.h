@@ -35,11 +35,11 @@ public:
 	//消费者从队列中获取生产者输送的数据，阻塞。
 	virtual void C_recv(queParticle_ptr_t& p) = 0;
 	//消费者从队列中获取生产者输送的数据，非阻塞。
-	virtual bool C_try_recv(queParticle_ptr_t& p) = 0;
+	virtual bool C_recv_try(queParticle_ptr_t& p) = 0;
 	//消费者从队列中获取生产者输送的数据，阻塞timeout_us时间后，若队列为空则返回false。
 	virtual bool C_recv_timeout(queParticle_ptr_t& p, long long us) = 0;
 	//消费者从队列中批量获取生产者输送的数据，阻塞timeout_us时间后，若队列为空则返回false。
-	virtual bool C_wait_getBulk_timeout(std::vector<queParticle_ptr_t>& pv, size_t max_nb, long long us) = 0;
+	virtual bool C_getBulk_timeout(std::vector<queParticle_ptr_t>& pv, size_t max_nb, long long us) = 0;
 
 	//消费者使用完帧数据后归还数据池
 	virtual void C_return(queParticle_ptr_t& p) = 0;
