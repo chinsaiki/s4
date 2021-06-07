@@ -5,6 +5,7 @@
 
 #include "qt_SnapViewer/s4SnapViewer.h"
 #include "qt_SnapViewer/s4SnapViewerWidgetTdxDB.h"
+#include "qt_SnapViewer/s4SnapViewerWidgetL2Live.h"
 
 #include "ui_s4SnapViewer.h"
 #include "common/s4logger.h"
@@ -54,14 +55,10 @@ void s4SnapViewer::action_mode_tdxDB()
 		((s4SnapViewerWidgetTdxDB*)(this->centralWidget()))->onOpenTdxDB();
 		return;
 	}
-	// QWidget* p = new QWidget(this);
 	s4SnapViewerWidgetTdxDB* pWidget = new s4SnapViewerWidgetTdxDB(this);
 	connect(ui->actionOpen, &QAction::triggered, pWidget, &s4SnapViewerWidgetTdxDB::onOpenTdxDB);
 	connect(ui->actionNextSnap, &QAction::triggered, pWidget, &s4SnapViewerWidgetTdxDB::nextTdxSnap);
 
-	// QGridLayout* l = new QGridLayout(p);
-	// l->addWidget(pWidget, 0, 0);
-	// p->setLayout(l);
 	this->setCentralWidget(pWidget);
 	this->setWindowTitle(TITLE_TDX_DB);
 }
@@ -71,7 +68,11 @@ void s4SnapViewer::action_mode_L2Live()
 	if (this->windowTitle()==TITLE_L2_LIVE){
 		return;
 	}
-	ui->centralwidget = new QWidget(this);
+	s4SnapViewerWidgetL2Live* pWidget = new s4SnapViewerWidgetL2Live(this);
+	connect(ui->actionOpen, &QAction::triggered, pWidget, &s4SnapViewerWidgetL2Live::onStartL2LiveReceiver);
+	connect(ui->actionClose, &QAction::triggered, pWidget, &s4SnapViewerWidgetL2Live::onStopL2LiveReceiver);
+
+	this->setCentralWidget(pWidget);
 	this->setWindowTitle(TITLE_L2_LIVE);
 }
 

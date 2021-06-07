@@ -27,24 +27,7 @@ namespace QT {
 s4SnapViewerWidget::s4SnapViewerWidget(QWidget *parent) :
 	QWidget(parent)
 {   
-	_treeView = new QTreeView(this);
-	_treeView->setStyle(QStyleFactory::create("windows"));
-	_treeView->setSortingEnabled(true);
-	_treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	_treeView->setMaximumWidth(300);
-
-	_tabWidget = new QTabWidget(this);
-    //网格分割
-	QGridLayout *pLayout = new QGridLayout(this);
-    pLayout->addWidget(_treeView, 0, 0);
-    pLayout->addWidget(_tabWidget, 0, 2);
-	pLayout->setColumnStretch(0, 1);			//0列的拉伸系数
-	pLayout->setColumnStretch(2, 3);			//6列的拉伸系数 (0=不拉伸)
-
-	setLayout(pLayout);
-
 	setMouseTracking(true);
-	connect(_tabWidget, &QTabWidget::tabCloseRequested, this, &s4SnapViewerWidget::closeSnapTab);
 }
 
 void s4SnapViewerWidget::addTreeItem(const QString& root_name, const std::vector<QString>& leaf_names)

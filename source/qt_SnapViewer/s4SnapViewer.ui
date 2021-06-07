@@ -50,6 +50,7 @@
     </widget>
     <addaction name="menuMode_2"/>
     <addaction name="actionOpen"/>
+    <addaction name="actionClose"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuExport">
@@ -107,6 +108,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
    </property>
   </action>
  </widget>

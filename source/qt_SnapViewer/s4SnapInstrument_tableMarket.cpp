@@ -1,6 +1,6 @@
 ﻿#include "qt_SnapViewer/s4SnapInstrument_tableMarket.h"
-#include "qt_SnapViewer/s4SnapInfo.h"
-#include "qt_SnapViewer/s4SnapLevel.h"
+#include "qt_SnapViewer/s4SnapTableModel_snapInfo.h"
+#include "qt_SnapViewer/s4SnapTableModel_level.h"
 
 #include <QGridLayout>
 #include <QHeaderView>
@@ -16,7 +16,7 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
 
     _level_tv = new QTableView(this);
     _level_tv->setItemDelegate(delegate);
-    snapLevel* levels = new snapLevel(snapLeves_nb, _level_tv);
+    snapTableModel_level* levels = new snapTableModel_level(snapLeves_nb, _level_tv);
     _level_tv->setModel(levels);
     _level_tv->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     _level_tv->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -26,7 +26,7 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
 
     _info_tv = new QTableView(this);
     _info_tv->setItemDelegate(delegate);
-    snapInfo* infos = new snapInfo(_info_tv);
+    snapTableModel_snapInfo* infos = new snapTableModel_snapInfo(_info_tv);
     _info_tv->setModel(infos);
     _info_tv->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     _info_tv->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -79,10 +79,10 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
 void snapInstrument_tableMarket::addSnaps(const std::vector<tdx_snap_t>& vSnap)
 {
 	QAbstractItemModel* levels = _level_tv->model();
-    ((snapLevel*)levels)->refresh(vSnap.back());
+    ((snapTableModel_level*)levels)->refresh(vSnap.back());
     
 	QAbstractItemModel* infos = _info_tv->model();
-    ((snapInfo*)infos)->refresh(vSnap.back());
+    ((snapTableModel_snapInfo*)infos)->refresh(vSnap.back());
 }
 
 

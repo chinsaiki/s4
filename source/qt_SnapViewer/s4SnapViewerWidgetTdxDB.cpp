@@ -19,10 +19,8 @@
 #include <QStyleFactory>
 #include <QSortFilterProxyModel>
 #include <QTableWidget>
+#include <QGridLayout>
 
-#ifdef max
-#undef max
-#endif
 
 using namespace std;
 
@@ -31,20 +29,32 @@ namespace QT {
 
 //CREATE_LOCAL_LOGGER("qt_SnapViewer")
 
-#define DBTREE_ROOT_NAME QStringLiteral("实时数据源")
-
 #define TDX_DB_PREAMBLE QStringLiteral("TDX_")
 
 s4SnapViewerWidgetTdxDB::s4SnapViewerWidgetTdxDB(QWidget *parent) :
     s4SnapViewerWidget(parent)
 {   
 
-	// connect(ui->actionOpen_tdxDB, &QAction::triggered, this, &s4SnapViewerWidgetTdxDB::onOpenTdxDB);
-	// connect(ui->actionNextSnap, &QAction::triggered, this, &s4SnapViewerWidgetTdxDB::nextTdxSnap);
+	_treeView = new QTreeView(this);
+	_treeView->setStyle(QStyleFactory::create("windows"));
+	_treeView->setSortingEnabled(true);
+	_treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	_treeView->setMaximumWidth(300);
 
-	connect(_treeView, &QTreeView::doubleClicked, this, &s4SnapViewerWidgetTdxDB::dbTree_doubleClicked);
+	_tabWidget = new QTabWidget(this);
+	//网格分割
+	QGridLayout* pLayout = new QGridLayout(this);
+	pLayout->addWidget(_treeView, 0, 0);
+	pLayout->addWidget(_tabWidget, 0, 2);
+	pLayout->setColumnStretch(0, 1);			//0列的拉伸系数
+	pLayout->setColumnStretch(2, 3);			//6列的拉伸系数 (0=不拉伸)
+
+	setLayout(pLayout);
+
+	connect(_tabWidget, &QTabWidget::tabCloseRequested, this, &s4SnapViewerWidget::closeSnapTab);
 	connect(_tabWidget, &QTabWidget::tabCloseRequested, this, &s4SnapViewerWidgetTdxDB::closeSnapTab);
 
+	connect(_treeView, &QTreeView::doubleClicked, this, &s4SnapViewerWidgetTdxDB::dbTree_doubleClicked);
 }
 
 //打开一个TDX sqlite数据库，并把table添加到dbTree中
@@ -133,8 +143,8 @@ void s4SnapViewerWidgetTdxDB::openTdxSnapTab(const std::string& db_name, const s
 
 		//create new data
 		//QTableView* levels_tv = new QTableView(this);
-		//// snapLevel* levels = new snapLevel(5, levels_tv);
-		//snapInfo* levels = new snapInfo(levels_tv);
+		//// snapTableModel_level* levels = new snapTableModel_level(5, levels_tv);
+		//snapTableModel_snapInfo* levels = new snapTableModel_snapInfo(levels_tv);
 		//itemFormatDelegate* delegate = new itemFormatDelegate(levels_tv);
 		//levels_tv->setModel(levels);
 		//levels_tv->setItemDelegate(delegate);
