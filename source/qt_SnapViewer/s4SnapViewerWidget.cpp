@@ -40,11 +40,9 @@ void s4SnapViewerWidget::newTree(const QString& root_name, const std::vector<QSt
 
 	delTree(root_name);
 
-	QStandardItem* treeRoot = new QStandardItem;
-	treeRoot->setText(root_name);
+	QStandardItem* treeRoot = new QStandardItem(root_name);
 	for (auto& tbl : leaf_names) {
-		QStandardItem* child = new QStandardItem;
-		child->setText(tbl);
+		QStandardItem* child = new QStandardItem(tbl);
 		treeRoot->appendRow(child);
 	}
 	_tree_model->appendRow(treeRoot);
@@ -73,8 +71,7 @@ void s4SnapViewerWidget::appendTreeItems(const QString& root_name, const std::ve
 	else {
 		QStandardItem* root = _tree_model->findItems(root_name).first();
 		for (auto& leaf: leaf_names){
-			QStandardItem* child = new QStandardItem;
-			child->setText(leaf);
+			QStandardItem* child = new QStandardItem(leaf);
 			root->appendRow(child);
 		}
 	}

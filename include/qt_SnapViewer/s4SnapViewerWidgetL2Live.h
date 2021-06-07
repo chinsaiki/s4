@@ -8,6 +8,7 @@
 #include "qt_SnapViewer/s4SnapTableModel_L2Stats.h"
 
 #include <QTableView>
+#include <QStandardItem>
 
 namespace S4{
 namespace QT{
@@ -55,7 +56,7 @@ protected:
 protected:
 	QTableView* _stats_tv;
 	snapTableModel_L2Stats* _stats_model;
-
+	QStandardItem* _aim_security_root;
 protected:
 	std::shared_ptr<NW::L2DataQ_t> _pL2DataQ;
 	std::shared_ptr<NW::L2CmdQ_t> _pL2CmdQ;

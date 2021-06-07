@@ -25,6 +25,7 @@ namespace S4 {
 namespace QT {
 
 //CREATE_LOCAL_LOGGER("qt_SnapViewer")
+#define AIM_SECURITY_TREE_NAME QStringLiteral("双击添加代码")
 
 s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
     s4SnapViewerWidget(parent)
@@ -32,7 +33,6 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
 	_treeView = new QTreeView(this);
 	_treeView->setStyle(QStyleFactory::create("windows"));
 	_treeView->setSortingEnabled(true);
-	_treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	_treeView->setMaximumWidth(150);
 
 	_tabWidget = new QTabWidget(this);
@@ -68,6 +68,8 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
 
 	connect(_treeView, &QTreeView::doubleClicked, this, &s4SnapViewerWidgetL2Live::dbTree_doubleClicked);
 
+	newTree(AIM_SECURITY_TREE_NAME, {});
+	_aim_security_root = _tree_model->findItems(AIM_SECURITY_TREE_NAME).first();
     
 }
 
@@ -103,10 +105,13 @@ void s4SnapViewerWidgetL2Live::onStopL2LiveReceiver()
 }
 
 void s4SnapViewerWidgetL2Live::dbTree_doubleClicked(const QModelIndex& index) {
-	if (!index.parent().isValid()) return;
+	//if (!index.parent().isValid())
+	//	return;
 	//if (!index.parent().parent().isValid()) return;
 
-
+    QStandardItem * item = new QStandardItem;
+	item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsEditable);
+	_aim_security_root->appendRow(item);
 }
 
 void s4SnapViewerWidgetL2Live::openInstrumentTab(mktCodeI_t)
