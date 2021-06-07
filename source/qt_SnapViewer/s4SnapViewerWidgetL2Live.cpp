@@ -30,7 +30,7 @@ namespace QT {
 s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
     s4SnapViewerWidget(parent)
 {
-	_treeView = new QTreeView(this);
+	_treeView = new unicTreeView(this);
 	_treeView->setStyle(QStyleFactory::create("windows"));
 	_treeView->setSortingEnabled(true);
 	_treeView->setMaximumWidth(150);
@@ -66,11 +66,11 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
 	connect(_tabWidget, &QTabWidget::tabCloseRequested, this, &s4SnapViewerWidget::closeSnapTab);
 	connect(_tabWidget, &QTabWidget::tabCloseRequested, this, &s4SnapViewerWidgetL2Live::closeSnapTab);
 
-	connect(_treeView, &QTreeView::doubleClicked, this, &s4SnapViewerWidgetL2Live::dbTree_doubleClicked);
+	connect((unicTreeView*)_treeView, &unicTreeView::signal_treeDoubleClick, this, &s4SnapViewerWidgetL2Live::dbTree_doubleClicked);
 
 	newTree(AIM_SECURITY_TREE_NAME, {});
 	_aim_security_root = _tree_model->findItems(AIM_SECURITY_TREE_NAME).first();
-    
+	_aim_security_root->setFlags(_aim_security_root->flags() ^ Qt::ItemIsEditable);
 }
 
 Q_DECLARE_METATYPE(NW::L2Stats_t);
@@ -104,7 +104,7 @@ void s4SnapViewerWidgetL2Live::onStopL2LiveReceiver()
     _snapMarketDataLive->stop();
 }
 
-void s4SnapViewerWidgetL2Live::dbTree_doubleClicked(const QModelIndex& index) {
+void s4SnapViewerWidgetL2Live::dbTree_doubleClicked(const QModelIndex& index={}) {
 	//if (!index.parent().isValid())
 	//	return;
 	//if (!index.parent().parent().isValid()) return;

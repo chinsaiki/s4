@@ -4,6 +4,7 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
+                "D:\\Qt\\5.11.2\\msvc2017_64\\include\\**",
                 "E:\\Qt\\5.11.1\\msvc2017_64\\include\\",
                 "E:\\Qt\\5.11.1\\msvc2017_64\\include\\QtCore",
                 "E:\\Qt\\5.11.1\\msvc2017_64\\include\\QtQml",

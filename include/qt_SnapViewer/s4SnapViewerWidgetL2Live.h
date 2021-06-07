@@ -6,6 +6,7 @@
 #include "network/L2_udp_recver_th.h"
 #include "qt_SnapViewer/s4SnapMarketDataLive.h"
 #include "qt_SnapViewer/s4SnapTableModel_L2Stats.h"
+#include "qt_common/s4qt_unicTreeView.h"
 
 #include <QTableView>
 #include <QStandardItem>
