@@ -21,7 +21,7 @@ public:
 
 public slots:
 	void onOpenTdxDB();
-	
+
 	void closeSnapTab(int index);
 
     void dbTree_doubleClicked(const QModelIndex &index);
@@ -31,6 +31,7 @@ public slots:
     // void addTdxSnaps();
 
 signals:
+	void signal_status(const QString&);
 
 protected:
 

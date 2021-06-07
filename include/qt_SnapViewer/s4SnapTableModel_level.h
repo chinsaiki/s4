@@ -14,7 +14,7 @@
 namespace S4
 {
 
-    class snapLevel : public QAbstractTableModel
+    class snapTableModel_level : public QAbstractTableModel
     {
         Q_OBJECT
         QMap<int, QVariant> mapTimeout;
@@ -35,7 +35,7 @@ namespace S4
         std::vector<Level_t> _bid; //0 is best
         QTimeLine* _timeLine;
     public:
-        snapLevel(int side_levels_nb, QObject *parent = {}) : QAbstractTableModel{parent},
+        snapTableModel_level(int side_levels_nb, QObject *parent = {}) : QAbstractTableModel{parent},
                                                                _side_levels_nb(side_levels_nb)
         {
             _ask.resize(side_levels_nb);
