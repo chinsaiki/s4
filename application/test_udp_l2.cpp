@@ -2,6 +2,7 @@
 #include "common/s4signalhandle.h"
 
 #include "network/L2_udp_recver_th_native.h"
+#include "queue/simpleQ_spmc_ar.h"
 
 using namespace S4;
 using namespace S4::NW;
@@ -16,9 +17,10 @@ int main(int argc, char** argv)
 	glb_conf::pInstance()->load("../json_template/glb_conf_ctx_t.json");
 	s4logger::pInstance()->init((void*)glb_conf::pInstance()->pLogger());
 
-	std::shared_ptr<L2DataQ_t> pL2DataQ = std::make_shared<L2DataQ_t>(1024, 4096, true);
+	std::shared_ptr<L2DataQ_t> pL2DataQ = std::make_shared<simpleQ_mpmc_ar_t<L2DataInfo_t>>(1024, 4096, true);
+	std::shared_ptr<L2CmdQ_t> pL2CmdQ = std::make_shared<L2CmdQ_t>(128);
 
-	L2_udp_recver_th_native L2recver(pL2DataQ);
+	L2_udp_recver_th_native L2recver(pL2DataQ, pL2CmdQ);
 
 	L2recver.start("0.0.0.0", 8888);
 
@@ -27,7 +29,7 @@ int main(int argc, char** argv)
 		bool has_l2_data;
 		uint64_t last_rpt_ms = 0;
 		do {
-			has_l2_data = pL2DataQ->C_recv_timeout(p, 500000);
+			has_l2_data = pL2DataQ->C_recv_timeout(p, 600000);
 			if (!has_l2_data)
 				break;
 			if (p->pQdata->info.type == L2DataType::STATS_DATA) {
@@ -39,7 +41,7 @@ int main(int argc, char** argv)
 	};
 	std::thread t(proc);
 
-#if 1
+#if 0
 	//do send dmy data
     int send_fd = SockUtil::bindUdpSock(0, "127.0.0.1");
 	struct sockaddr addrDst;
@@ -54,17 +56,21 @@ int main(int argc, char** argv)
 		}
 	}
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	signalhandler_t::dummyInt();
+	LCL_INFO("send frame_cnt = {}, byte_cnt = {}", send_frame_nb, send_byte_nb);
 #else
-	// while(!signalhandler_t::getSigint());
+	while (!signalhandler_t::getSigint())
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	}
 #endif
 
 	L2recver.stop();
 	t.join();
 
 
-	LCL_INFO("send frame_cnt = {}, byte_cnt = {}", send_frame_nb, send_byte_nb);
+	LCL_INFO("PtoC space = {} / {}, CtoP space = {}", pL2DataQ->size_approx_PtoC(), pL2DataQ->getDepth(), pL2DataQ->size_approx_CtoP());
 
 	LCL_INFO("L2 UDP test done!");
 

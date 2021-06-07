@@ -128,6 +128,7 @@ void L2_udp_recver_th_native::recv_thread(const char* pLocalIp, const uint16_t p
             }while(len > 0);
         }else if(recv_len == -1){
             report_stats();
+            proc_cmdQ();
         }else if (recv_len < -1){
             break;
         }
@@ -157,6 +158,22 @@ bool L2_udp_recver_th_native::liveTrans(char* pH)
     return false;
 }
 
+void L2_udp_recver_th_native::proc_cmdQ()
+{
+    if (!_pCmdQ || _pCmdQ->size_approx() == 0)
+        return;
+
+    std::vector<std::shared_ptr<live_cmd_t>> cmds(8);
+    _pCmdQ->try_dequeue_bulk(*_pCtok_cmdQ, cmds.begin(), 8);
+    for (auto& cmd : cmds){
+        if (cmd->add){
+            _live_list.insert(cmd->code);
+        }else{
+            _live_list.erase(cmd->code);
+        }
+    }
+    
+}
 
 
 } // namespace NW

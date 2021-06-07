@@ -25,21 +25,6 @@ std::string L2Stats_t::toString() const
 }
 
 
-//增加/删除关注代码
-void L2_udp_recver_th::addLive(mktCodeI_t code)
-{
-    live_cmd_t data;
-    data.add = true;
-    data.code = code;
-    _liveQ.enqueue(std::move(data));
-}
-void L2_udp_recver_th::delLive(mktCodeI_t code)
-{
-    live_cmd_t data;
-    data.add = false;
-    data.code = code;
-    _liveQ.enqueue(std::move(data));
-}
 
 void L2_udp_recver_th::setReportInterval(unsigned int ms)
 {
