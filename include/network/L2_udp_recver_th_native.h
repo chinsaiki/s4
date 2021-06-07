@@ -1,4 +1,4 @@
-﻿#pragma
+﻿#pragma once
 
 #include "L2_udp_recver_th.h"
 #include "sockutil.h"

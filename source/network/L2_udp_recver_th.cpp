@@ -1,5 +1,7 @@
 #include "network/L2_udp_recver_th.h"
 #include "common/s4time.h"
+#include <cstring>
+
 namespace S4{
 namespace NW{
 

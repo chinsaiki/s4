@@ -1,4 +1,4 @@
-﻿#pragma
+﻿#pragma once
 
 #include "common/s4mktCode.h"
 #include "queue/simpleQ_mpmc_ar.h"

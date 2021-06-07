@@ -62,8 +62,8 @@ void L2_udp_recver_th_native::recv_thread(const char* pLocalIp, const uint16_t p
                 switch (pH->MsgType)
                 {
                 case __MsgType_SSH_INSTRUMENT_SNAP__:
-                    if ((pH->SecurityIDSource == 101 && pH->MsgLen == sizeof(SBE_SSH_instrument_snap_t) && len >= sizeof(SBE_SSH_instrument_snap_t)) ||
-                        (pH->SecurityIDSource == 102 && pH->MsgLen == sizeof(SBE_SSZ_instrument_snap_t) && len >= sizeof(SBE_SSZ_instrument_snap_t))) {
+                    if ((pH->SecurityIDSource == 101 && pH->MsgLen == sizeof(SBE_SSH_instrument_snap_t) && len >= (int)sizeof(SBE_SSH_instrument_snap_t)) ||
+                        (pH->SecurityIDSource == 102 && pH->MsgLen == sizeof(SBE_SSZ_instrument_snap_t) && len >= (int)sizeof(SBE_SSZ_instrument_snap_t))) {
                         _stats.recv_instrument_snap_cnt++;
                         _stats.live_instrument_snap_cnt += liveTrans((char*)pH);
                         len -= pH->MsgLen;
@@ -74,8 +74,8 @@ void L2_udp_recver_th_native::recv_thread(const char* pLocalIp, const uint16_t p
                     }
                     break;
                 case __MsgType_SSH_INDEX_SNAP__:
-                    if ((pH->SecurityIDSource == 101 && pH->MsgLen == sizeof(SBE_SSH_index_snap_t) && len >= sizeof(SBE_SSH_index_snap_t)) ||
-                        (pH->SecurityIDSource == 102 && pH->MsgLen == sizeof(SBE_SSZ_index_snap_t) && len >= sizeof(SBE_SSZ_index_snap_t))) {
+                    if ((pH->SecurityIDSource == 101 && pH->MsgLen == sizeof(SBE_SSH_index_snap_t) && len >= (int)sizeof(SBE_SSH_index_snap_t)) ||
+                        (pH->SecurityIDSource == 102 && pH->MsgLen == sizeof(SBE_SSZ_index_snap_t) && len >= (int)sizeof(SBE_SSZ_index_snap_t))) {
                         _stats.recv_index_snap_cnt++;
                         _stats.live_index_snap_cnt += liveTrans((char*)pH);
                         len -= pH->MsgLen;
@@ -86,8 +86,8 @@ void L2_udp_recver_th_native::recv_thread(const char* pLocalIp, const uint16_t p
                     }
                     break;
                 case __MsgType_SSH_ORDER__:
-                    if ((pH->SecurityIDSource == 101 && pH->MsgLen == sizeof(SBE_SSH_ord_t) && len >= sizeof(SBE_SSH_ord_t)) ||
-                        (pH->SecurityIDSource == 102 && pH->MsgLen == sizeof(SBE_SSZ_ord_t) && len >= sizeof(SBE_SSZ_ord_t))) {
+                    if ((pH->SecurityIDSource == 101 && pH->MsgLen == sizeof(SBE_SSH_ord_t) && len >= (int)sizeof(SBE_SSH_ord_t)) ||
+                        (pH->SecurityIDSource == 102 && pH->MsgLen == sizeof(SBE_SSZ_ord_t) && len >= (int)sizeof(SBE_SSZ_ord_t))) {
                         _stats.recv_order_cnt++;
                         _stats.live_order_cnt += liveTrans((char*)pH);
                         len -= pH->MsgLen;
@@ -98,8 +98,8 @@ void L2_udp_recver_th_native::recv_thread(const char* pLocalIp, const uint16_t p
                     }
                     break;
                 case __MsgType_SSH_EXECUTION__:
-                    if ((pH->SecurityIDSource == 101 && pH->MsgLen == sizeof(SBE_SSH_exe_t) && len >= sizeof(SBE_SSH_exe_t)) ||
-                        (pH->SecurityIDSource == 102 && pH->MsgLen == sizeof(SBE_SSZ_exe_t) && len >= sizeof(SBE_SSZ_exe_t))) {
+                    if ((pH->SecurityIDSource == 101 && pH->MsgLen == sizeof(SBE_SSH_exe_t) && len >= (int)sizeof(SBE_SSH_exe_t)) ||
+                        (pH->SecurityIDSource == 102 && pH->MsgLen == sizeof(SBE_SSZ_exe_t) && len >= (int)sizeof(SBE_SSZ_exe_t))) {
                         _stats.recv_exec_cnt++;
                         _stats.live_exec_cnt += liveTrans((char*)pH);
                         len -= pH->MsgLen;
@@ -110,7 +110,7 @@ void L2_udp_recver_th_native::recv_thread(const char* pLocalIp, const uint16_t p
                     }
                     break;
                 case __MsgType_HEARTBEAT__:
-                    if ((pH->SecurityIDSource == 101 || pH->SecurityIDSource == 102) && pH->MsgLen == sizeof(SBE_SSH_header_t) && len >= sizeof(SBE_SSH_header_t)){
+                    if ((pH->SecurityIDSource == 101 || pH->SecurityIDSource == 102) && pH->MsgLen == sizeof(SBE_SSH_header_t) && len >= (int)sizeof(SBE_SSH_header_t)){
                         _stats.recv_heartbeat_cnt++;
                         len -= sizeof(SBE_SSH_header_t);
                         pH += sizeof(SBE_SSH_header_t);
