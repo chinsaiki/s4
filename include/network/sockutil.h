@@ -74,9 +74,10 @@ public:
      * 创建udp套接字
      * @param port 监听的本地端口
      * @param localIp 绑定的本地网卡ip
+     * @param udpLite 采用UDP-lite协议(Linux only)
      * @return -1代表失败，其他为socket fd号
      */
-    static int bindUdpSock(const uint16_t port, const char *localIp = "0.0.0.0");
+    static int bindUdpSock(const uint16_t port, const char *localIp = "0.0.0.0", bool udpLite = false);
 
     /**
      * 绑定socket fd至某个网卡和端口

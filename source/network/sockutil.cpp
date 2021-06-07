@@ -547,13 +547,19 @@ int SockUtil::bindSock(int sockFd,const char *ifr_ip,uint16_t port){
     return 0;
 }
 
-int SockUtil::bindUdpSock(const uint16_t port, const char* localIp) {
+int SockUtil::bindUdpSock(const uint16_t port, const char* localIp, bool udpLite) {
     int sockfd = -1;
+#ifdef WIN32
     if ((sockfd = (int)socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
         //WARN << "创建套接字失败:" << get_uv_errmsg(true);
         return -1;
     }
-
+#else
+    if ((sockfd = (int)socket(AF_INET, SOCK_DGRAM, udpLite?IPPROTO_UDPLITE : IPPROTO_UDP)) == -1) {
+        //WARN << "创建套接字失败:" << get_uv_errmsg(true);
+        return -1;
+    }
+#endif
     setReuseable(sockfd);
     setNoSigpipe(sockfd);
     setNoBlocked(sockfd);
