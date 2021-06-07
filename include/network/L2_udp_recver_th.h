@@ -45,6 +45,13 @@ struct L2Stats_t
 typedef simpleQ_mpmc_ar_t<L2DataInfo_t> L2DataQ_t;
 typedef simpleQ_mpmc_ar_t<L2DataInfo_t>::queParticle_arPtr_t L2Data_arPtr_t;
 
+
+struct live_cmd_t{
+    bool add;
+    mktCodeI_t code;
+};
+typedef moodycamel::BlockingConcurrentQueue<std::shared_ptr<live_cmd_t>> L2CmdQ_t;
+
 //UDP L2行情接收与转发线程基类
 //从UDP端口接收L2行情数据
 //向L2DataQ转发关注的指数或股票L2行情
@@ -52,18 +59,16 @@ typedef simpleQ_mpmc_ar_t<L2DataInfo_t>::queParticle_arPtr_t L2Data_arPtr_t;
 class L2_udp_recver_th
 {
 public:
-    L2_udp_recver_th(std::shared_ptr<L2DataQ_t> pL2DataQ):
-        _pL2DataQ(pL2DataQ)
+public:
+    L2_udp_recver_th(const std::shared_ptr<L2DataQ_t>& pL2DataQ, const std::shared_ptr<L2CmdQ_t>& pCmdQ):
+        _pL2DataQ(pL2DataQ),
+        _pCmdQ(pCmdQ)
     {}
 
     //创建socket，并启动监听线程
     virtual bool start(const char* pLocalIp, const uint16_t port) = 0;
     //终止监听线程，并关掉socket
     virtual bool stop() = 0;
-
-    //增加/删除关注代码
-    virtual void addLive(mktCodeI_t);
-    virtual void delLive(mktCodeI_t);
 
     void setReportInterval(unsigned int ms);
     unsigned int getReportInterval() const;
@@ -73,16 +78,12 @@ protected:
 
 protected:
     std::shared_ptr<L2DataQ_t> _pL2DataQ;
+    std::shared_ptr<L2CmdQ_t> _pCmdQ;
 
     struct L2Stats_t _stats;
 
     std::set<mktCodeI_t> _live_list;
 
-    struct live_cmd_t{
-        bool add;
-        mktCodeI_t code;
-    };
-    moodycamel::BlockingConcurrentQueue<live_cmd_t> _liveQ;
 
     unsigned int _report_interval_ms = 500;
 

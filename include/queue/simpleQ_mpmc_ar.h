@@ -63,14 +63,24 @@ public:
         pQdata(std::move(pD)), //直接传递
         pHostQ(pQ)
     {}
+    queParticle_ar_t(hostQ_particle_t& pD, const std::shared_ptr<moodycamel::BlockingConcurrentQueue<hostQ_particle_t>>& pQ,
+                     const std::shared_ptr<moodycamel::ProducerToken>& pPtok):
+        pQdata(std::move(pD)), //直接传递
+        pHostQ(pQ),
+        _pPtok(pPtok)
+    {}
     ~queParticle_ar_t()
     {
         if (pHostQ){
-            pHostQ->enqueue(pQdata);
+            if (_pPtok)
+                pHostQ->enqueue(*_pPtok, pQdata);
+            else
+                pHostQ->enqueue(pQdata);
         }
     }
 private:
     std::shared_ptr<moodycamel::BlockingConcurrentQueue<hostQ_particle_t>> pHostQ;
+    std::shared_ptr<moodycamel::ProducerToken> _pPtok;
 };
 
 template<class extInfoT>

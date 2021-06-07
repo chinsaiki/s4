@@ -36,8 +36,8 @@ public:
     	simpleQ_mpmc_ar_t<extInfoT>(init_depth, page_size, all_memalign)
     {
         //
-        ctok_dataPool = std::make_shared<moodycamel::ConsumerToken>(*_dataPool);
-        ctok_dataPtoC = std::make_shared<moodycamel::ConsumerToken>(*_dataPtoC);
+        ctok_dataPool = std::make_shared<moodycamel::ConsumerToken>(*_dataPool);    //dataPool : Consumer=1, Producer=n
+        ptok_dataPtoC = std::make_shared<moodycamel::ProducerToken>(*_dataPtoC);    //dataPtoC : Consumer=n, Producer=1
     }
 
 	//生产者从数据池中获取数据，阻塞。
@@ -45,7 +45,7 @@ public:
 	{
 		queParticle_ptr_t pool_data;
 		_dataPool->wait_dequeue(*ctok_dataPool, pool_data);
-        p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC);
+        p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC, ptok_dataPtoC);
     }
 
 	//生产者从数据池中获取数据，阻塞timeout_us时间后，若数据池为空则返回false。
@@ -53,7 +53,7 @@ public:
 	{
 		queParticle_ptr_t pool_data;
 		if (_dataPool->wait_dequeue_timed(*ctok_dataPool, pool_data, us)) {
-            p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC);
+            p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC, ptok_dataPtoC);
 			return true;
 		}
 		p = nullptr;
@@ -65,7 +65,7 @@ public:
 	{
         queParticle_ptr_t pool_data;
         if (_dataPool->try_dequeue(*ctok_dataPool, pool_data)) {
-            p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC);
+            p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC, ptok_dataPtoC);
             return true;
         }
 
@@ -101,7 +101,7 @@ public:
 	virtual void C_recv(queParticle_arPtr_t& p) override
 	{
 		queParticle_ptr_t pruducted_data;
-		_dataPtoC->wait_dequeue(*ctok_dataPtoC, pruducted_data);
+		_dataPtoC->wait_dequeue(pruducted_data);
         p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
     }
 
@@ -109,7 +109,7 @@ public:
 	virtual bool C_try_recv(queParticle_arPtr_t& p) override
 	{
 		queParticle_ptr_t pruducted_data;
-		if (_dataPtoC->try_dequeue(*ctok_dataPtoC, pruducted_data)) {
+		if (_dataPtoC->try_dequeue(pruducted_data)) {
 			p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
 			return true;
 		}
@@ -120,7 +120,7 @@ public:
     virtual bool C_recv_timeout(queParticle_arPtr_t& p, long long us) override
 	{
 		queParticle_ptr_t pruducted_data;
-		if (_dataPtoC->wait_dequeue_timed(*ctok_dataPtoC, pruducted_data, us)) {
+		if (_dataPtoC->wait_dequeue_timed(pruducted_data, us)) {
 			p = std::make_shared<queParticle_ar_t<extInfoT>>(pruducted_data, _dataPool);
 			return true;
 		}
@@ -132,7 +132,7 @@ public:
 	{
         std::vector<queParticle_ptr_t> pruducted_data(max_nb);
 		pv.clear();
-		if (_dataPtoC->wait_dequeue_bulk_timed(*ctok_dataPtoC, pruducted_data.begin(), max_nb, us)) {
+		if (_dataPtoC->wait_dequeue_bulk_timed(pruducted_data.begin(), max_nb, us)) {
             for (auto& QB : pruducted_data) {
                 if (!QB)
                     break;;
@@ -174,10 +174,10 @@ public:
 //     std::mutex _mem_mux;
 // 	std::vector<char_array_t> _mem_hoster;
 private:
-    // std::shared_ptr<moodycamel::ConsumerToken> ptok_dataPool;
+    // std::shared_ptr<moodycamel::ProducerToken> ptok_dataPool;
     std::shared_ptr<moodycamel::ConsumerToken> ctok_dataPool;
-    // std::shared_ptr<moodycamel::ConsumerToken> ptok_dataPtoC;
-    std::shared_ptr<moodycamel::ConsumerToken> ctok_dataPtoC;
+    std::shared_ptr<moodycamel::ProducerToken> ptok_dataPtoC;
+    // std::shared_ptr<moodycamel::ConsumerToken> ctok_dataPtoC;
 
 };
 
