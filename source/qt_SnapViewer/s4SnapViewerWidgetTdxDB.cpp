@@ -93,7 +93,7 @@ void s4SnapViewerWidgetTdxDB::onOpenTdxDB()
 		for (auto& d :dates){
 			Qdates.push_back(QString::fromStdString(d));
 		}
-		addTreeItem(TDX_DB_PREAMBLE + fileInfo.baseName(), Qdates);
+		newTree(TDX_DB_PREAMBLE + fileInfo.baseName(), Qdates);
 
 		_db_list[(TDX_DB_PREAMBLE + fileInfo.baseName()).toStdString()] = path.toStdString();
 	}

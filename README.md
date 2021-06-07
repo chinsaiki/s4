@@ -6,7 +6,7 @@ A股相关工具，version4
 ## Todo list
 - TDX K线文件读取
 - K线浏览，并叠加TDX导的出历史成交txt，便于复盘
-- 盘中L1/L2快照可视化
+- L1/L2行情可视化
 
 
 ## 要求 requirement

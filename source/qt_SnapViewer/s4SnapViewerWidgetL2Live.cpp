@@ -33,7 +33,7 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
 	_treeView->setStyle(QStyleFactory::create("windows"));
 	_treeView->setSortingEnabled(true);
 	_treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	_treeView->setMaximumWidth(300);
+	_treeView->setMaximumWidth(150);
 
 	_tabWidget = new QTabWidget(this);
 
@@ -49,15 +49,18 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
     _stats_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
 	_stats_tv->setMaximumWidth(300);
 
+
+	QSplitter* splitter = new QSplitter(this);
+	splitter->addWidget(_treeView);
+	splitter->addWidget(_stats_tv);
+	splitter->addWidget(_tabWidget);
+    QList<int> list;
+    list<<50<<50<<200;//width 为 50 100 200
+    splitter->setSizes(list);
+
     //网格分割
 	QGridLayout *pLayout = new QGridLayout(this);
-    pLayout->addWidget(_treeView, 0, 0);
-    pLayout->addWidget(_stats_tv, 0, 2);
-    pLayout->addWidget(_tabWidget, 0, 4);
-	pLayout->setColumnStretch(0, 1);			//0列的拉伸系数
-	pLayout->setColumnStretch(2, 3);			//6列的拉伸系数 (0=不拉伸)
-	pLayout->setColumnStretch(4, 3);			//6列的拉伸系数 (0=不拉伸)
-
+    pLayout->addWidget(splitter);
 	setLayout(pLayout);
 
 	connect(_tabWidget, &QTabWidget::tabCloseRequested, this, &s4SnapViewerWidget::closeSnapTab);

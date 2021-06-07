@@ -30,7 +30,7 @@ s4SnapViewerWidget::s4SnapViewerWidget(QWidget *parent) :
 	setMouseTracking(true);
 }
 
-void s4SnapViewerWidget::addTreeItem(const QString& root_name, const std::vector<QString>& leaf_names)
+void s4SnapViewerWidget::newTree(const QString& root_name, const std::vector<QString>& leaf_names)
 {
 	if (!_tree_model) {
 		_tree_model = new QStandardItemModel(this);
@@ -38,9 +38,7 @@ void s4SnapViewerWidget::addTreeItem(const QString& root_name, const std::vector
 		_treeView->setModel(_tree_model);
 	}
 
-	if (_tree_model->findItems(root_name).count()) {
-		_tree_model->removeRow(_tree_model->findItems(root_name).first()->row());
-	}
+	delTree(root_name);
 
 	QStandardItem* treeRoot = new QStandardItem;
 	treeRoot->setText(root_name);
@@ -52,7 +50,7 @@ void s4SnapViewerWidget::addTreeItem(const QString& root_name, const std::vector
 	_tree_model->appendRow(treeRoot);
 }
 
-void s4SnapViewerWidget::delTreeItem(const QString& root_name)
+void s4SnapViewerWidget::delTree(const QString& root_name)
 {
 
 	while (_tree_model->findItems(root_name).count()) {
@@ -60,6 +58,47 @@ void s4SnapViewerWidget::delTreeItem(const QString& root_name)
 	}
 }
 
+
+void s4SnapViewerWidget::appendTreeItems(const QString& root_name, const std::vector<QString>& leaf_names)
+{
+	if (!_tree_model) {
+		_tree_model = new QStandardItemModel(this);
+		_tree_model->setHorizontalHeaderLabels(QStringList() << DBTREE_ROOT_NAME);
+		_treeView->setModel(_tree_model);
+	}
+
+	if (_tree_model->findItems(root_name).count()==0){
+		newTree(root_name, leaf_names);
+	}
+	else {
+		QStandardItem* root = _tree_model->findItems(root_name).first();
+		for (auto& leaf: leaf_names){
+			QStandardItem* child = new QStandardItem;
+			child->setText(leaf);
+			root->appendRow(child);
+		}
+	}
+
+}
+
+void s4SnapViewerWidget::removeTreeItems(const QString& root_name, const std::vector<QString>& leaf_names)
+{
+	if (!_tree_model || _tree_model->findItems(root_name).count() == 0) {
+		return;
+	}
+
+	QStandardItem* root = _tree_model->findItems(root_name).first();
+	for (auto& leaf : leaf_names) {
+		for (int i = 0; i < root->rowCount(); ++i)
+		{
+			if (root->child(i)->text() == leaf)
+			{
+				root->removeRow(i);
+				break;
+			}
+		}
+	}
+}
 void s4SnapViewerWidget::openSnapTab(const QString& snap_tab_name, snapInstrument* pInstrument)
 {
 
