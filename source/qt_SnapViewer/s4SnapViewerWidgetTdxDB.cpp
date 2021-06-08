@@ -42,6 +42,7 @@ s4SnapViewerWidgetTdxDB::s4SnapViewerWidgetTdxDB(QWidget *parent) :
 	_treeView->setMaximumWidth(300);
 
 	_tabWidget = new QTabWidget(this);
+	_tabWidget->setTabsClosable(true);
 	//网格分割
 	QGridLayout* pLayout = new QGridLayout(this);
 	pLayout->addWidget(_treeView, 0, 0);

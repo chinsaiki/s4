@@ -164,13 +164,15 @@ void L2_udp_recver_th_native::proc_cmdQ()
         return;
 
     std::vector<std::shared_ptr<live_cmd_t>> cmds(8);
-    _pCmdQ->try_dequeue_bulk(*_pCtok_cmdQ, cmds.begin(), 8);
+    size_t s = _pCmdQ->try_dequeue_bulk(*_pCtok_cmdQ, cmds.begin(), 8);
+    size_t n = 0;
     for (auto& cmd : cmds){
         if (cmd->add){
             _live_list.insert(cmd->code);
         }else{
             _live_list.erase(cmd->code);
         }
+        if (++n >= s)break;
     }
     
 }

@@ -32,8 +32,8 @@ public:
 
 public slots:
 
-	void openSnapTab(const QString& tab_name, snapInstrument* pInstrument);
-	void closeSnapTab(int index);
+	virtual void openSnapTab(const QString& tab_name, snapInstrument* pInstrument);
+	virtual void closeSnapTab(int index);
 
 	void newTree(const QString& root_name, const std::vector<QString>& leaf_names);
 	void delTree(const QString& root_name);

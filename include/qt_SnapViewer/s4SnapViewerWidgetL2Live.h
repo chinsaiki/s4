@@ -30,17 +30,19 @@ public slots:
 	void onStartL2LiveReceiver();
 	void onStopL2LiveReceiver();
 	
+	void setCurrentInstrument(const QString& code);
 	void openInstrumentTab(const QString& code);
-	void closeSnapTab(int index);
+	void closeInstrumentTab(const QString& code);
 
     // void dbTree_doubleClicked(const QModelIndex &index);
 	// void openTdxSnapTab(const std::string& db_name, const std::string& table_name);
 
     // void nextTdxSnap();
     // void addTdxSnaps();
-
+	virtual void closeSnapTab(int index) override;
 signals:
 	void signal_status(const QString&);
+	void signal_closeSnapTab(const QString&);
 protected:
 
 	struct snap_info_t
@@ -65,6 +67,8 @@ protected:
 
 	std::shared_ptr<NW::L2_udp_recver_th> _udp_recver_th;
 	s4SnapMarketDataLive* _snapMarketDataLive;
+
+	void startDataLive();
 };
 
 

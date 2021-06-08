@@ -16,16 +16,20 @@ public:
 
     typedef bool (textFormater_t)(const QString& raw_code, QString& mktCode);
 
+    int findChild(const QString&);
 public slots:
     void onSetTextFormater(textFormater_t*);
-    void onItemChanged(QStandardItem *item);
+    void onItemChanged(QWidget* editor, int hint);
 
-    void onTreeDoubleClick(const QModelIndex& index);
-    void onBlankDoubleClick();
+	void onDelkey();
+	void onMouseClick(const QModelIndex& index);
+    void onBlankDoubleClick(); 
     void onSetCurrentRoot(QStandardItem* );
+
+    void onDelItem(const QString&);
 signals:
-    void signal_mouseDoubleClick();
-    void signal_treeDoubleClick(const QModelIndex& index);
+    void signal_selectItem(const QString&);
+	void signal_blankDoubleClick();
     void signal_newItem(const QString&);
     void signal_delItem(const QString&);
 protected:
