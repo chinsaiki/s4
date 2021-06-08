@@ -2,6 +2,7 @@
 
 #include "types/s4type.h"
 
+
 #include <QWidget>
 #include <QKeyEvent>
 #include <QGraphicsView>
@@ -29,12 +30,25 @@ public:
 public slots:
 
     void addSnaps(const std::vector<tdx_snap_t>&);
+
+
     // void addOrders(const std::vector<ssz_sbe_order_t>&);
     // void addExecs(const std::vector<ssz_sbe_exec_t>&);
 
     //TODO
     void addBasic(){}
     
+public slots:
+	void onL2Data_instrument_snap(const std::string&);
+	void onL2Data_index_snap(const std::string&);
+	void onL2Data_order(const std::string&);
+	void onL2Data_exec(const std::string&);
+signals:
+	void signal_L2Data_instrument_snap(const std::string&);
+	void signal_L2Data_index_snap(const std::string&);
+	void signal_L2Data_order(const std::string&);
+	void signal_L2Data_exec(const std::string&);
+
 private:
     // K line tab
     // SnapInstrument_Kline_tab* _K_tab;

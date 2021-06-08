@@ -1,14 +1,14 @@
 #pragma once
 
 #include "network/L2_udp_recver_th.h"
-
+#include "qt_common/dynamicqobject.h"
 #include <QThread>
 
 
 namespace S4{
 namespace QT{
 
-class s4SnapMarketDataLive : public QThread
+class s4SnapMarketDataLive : public QThread//, public DynamicQObject
 {
     Q_OBJECT
 public:
@@ -32,12 +32,12 @@ public slots:
     virtual void delLive(mktCodeI_t);
 
 signals:
-	void onL2Stats(const struct NW::L2Stats_t&);
-	void onL2Data(const NW::L2Data_arPtr_t&);
-	void onL2Data_instrument_snap(const std::string&);
-	void onL2Data_index_snap(const std::string&);
-	void onL2Data_order(const std::string&);
-	void onL2Data_exec(const std::string&);
+	void signal_L2Stats(const struct NW::L2Stats_t&);
+	void signal_L2Data(const NW::L2Data_arPtr_t&);
+	void signal_L2Data_instrument_snap(const std::string&);
+	void signal_L2Data_index_snap(const std::string&);
+	void signal_L2Data_order(const std::string&);
+	void signal_L2Data_exec(const std::string&);
 
 protected:
     volatile bool m_stop;

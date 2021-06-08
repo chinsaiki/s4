@@ -20,6 +20,10 @@ snapInstrument::snapInstrument(int snapLevels_nb, QWidget *parent) :
 	// connect(_K_tab, SIGNAL(signalViewEvent(std::shared_ptr<view_event>)), _indicator_tab, SLOT(slotViewEvent(std::shared_ptr<view_event>)));
 
     _table = new snapInstrument_table(snapLevels_nb, this);
+	connect(this, &snapInstrument::signal_L2Data_instrument_snap, (snapInstrument_table*)_table, &snapInstrument_table::onL2Data_instrument_snap);
+	connect(this, &snapInstrument::signal_L2Data_index_snap, (snapInstrument_table*)_table, &snapInstrument_table::onL2Data_index_snap);
+	connect(this, &snapInstrument::signal_L2Data_order, (snapInstrument_table*)_table, &snapInstrument_table::onL2Data_order);
+	connect(this, &snapInstrument::signal_L2Data_exec, (snapInstrument_table*)_table, &snapInstrument_table::onL2Data_exec);
     
 	//网格分割
 	QGridLayout *pLayout = new QGridLayout();
@@ -53,6 +57,22 @@ void snapInstrument::addSnaps(const std::vector<tdx_snap_t>& vSnap)
 
 // }
 
+void snapInstrument::onL2Data_instrument_snap(const std::string& s)
+{
+	emit signal_L2Data_instrument_snap(s);
+}
+void snapInstrument::onL2Data_index_snap(const std::string& s)
+{
+	emit signal_L2Data_index_snap(s);
+}
+void snapInstrument::onL2Data_order(const std::string& s)
+{
+	emit signal_L2Data_order(s);
+}
+void snapInstrument::onL2Data_exec(const std::string& s)
+{
+	emit signal_L2Data_exec(s);
+}
 
 
 } // namespace QT

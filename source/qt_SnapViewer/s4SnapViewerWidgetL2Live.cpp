@@ -28,6 +28,8 @@ namespace QT {
 
 //CREATE_LOCAL_LOGGER("qt_SnapViewer")
 #define AIM_SECURITY_TREE_NAME QStringLiteral("双击添加代码")
+Q_DECLARE_METATYPE(NW::L2Stats_t);
+Q_DECLARE_METATYPE(std::string);
 
 bool transCode(const QString& raw_code, QString& mktCode)
 {
@@ -131,12 +133,10 @@ void s4SnapViewerWidgetL2Live::startDataLive()
 	_snapMarketDataLive = new s4SnapMarketDataLive(_pL2DataQ, _pL2CmdQ);
 
 	qRegisterMetaType<struct NW::L2Stats_t>();
-	connect(_snapMarketDataLive, &s4SnapMarketDataLive::onL2Stats,
-		_stats_model, &snapTableModel_L2Stats::refresh);
+	connect(_snapMarketDataLive, &s4SnapMarketDataLive::signal_L2Stats, _stats_model, &snapTableModel_L2Stats::refresh);
 	_snapMarketDataLive->start();
 }
 
-Q_DECLARE_METATYPE(NW::L2Stats_t);
 
 void s4SnapViewerWidgetL2Live::onStartL2LiveReceiver()
 {
@@ -174,7 +174,12 @@ void s4SnapViewerWidgetL2Live::openInstrumentTab(const QString& code)
 {
     QString mktCode;
     if (_instrument_info_cargo.count(code) == 0){
-        snapInstrument* pInstrument = new snapInstrument(20, this);
+        snapInstrument* pInstrument = new snapInstrument(10, this);
+	    qRegisterMetaType<std::string>();
+		connect(_snapMarketDataLive, &s4SnapMarketDataLive::signal_L2Data_instrument_snap, pInstrument, &snapInstrument::onL2Data_instrument_snap);
+		connect(_snapMarketDataLive, &s4SnapMarketDataLive::signal_L2Data_index_snap, pInstrument, &snapInstrument::onL2Data_index_snap);
+		connect(_snapMarketDataLive, &s4SnapMarketDataLive::signal_L2Data_order, pInstrument, &snapInstrument::onL2Data_order);
+		connect(_snapMarketDataLive, &s4SnapMarketDataLive::signal_L2Data_exec, pInstrument, &snapInstrument::onL2Data_exec);
         openSnapTab(code, pInstrument);
         snap_info_t info;
         info.code = mktCodeStr_to_mktCodeInt(code.toStdString());

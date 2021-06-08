@@ -23,6 +23,7 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
     // _level_tv->verticalHeader()->setMaximumHeight(24);
     // _level_tv->verticalHeader()->setMinimumHeight(5);
     _level_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
+    connect(this, &snapInstrument_tableMarket::signal_L2Data_instrument_snap, levels, &snapTableModel_level::refreshL2);
 
     _info_tv = new QTableView(this);
     _info_tv->setItemDelegate(delegate);
@@ -33,6 +34,7 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
     // _info_tv->verticalHeader()->setMaximumHeight(24);
     // _info_tv->verticalHeader()->setMinimumHeight(5);
     _info_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
+    connect(this, &snapInstrument_tableMarket::signal_L2Data_instrument_snap, infos, &snapTableModel_snapInfo::refreshL2);
 
     {
         // const int nNumRows = levels->rowCount(QModelIndex());
@@ -83,6 +85,23 @@ void snapInstrument_tableMarket::addSnaps(const std::vector<tdx_snap_t>& vSnap)
     
 	QAbstractItemModel* infos = _info_tv->model();
     ((snapTableModel_snapInfo*)infos)->refresh(vSnap.back());
+}
+
+void snapInstrument_tableMarket::onL2Data_instrument_snap(const std::string& s)
+{
+	emit signal_L2Data_instrument_snap(s);
+}
+void snapInstrument_tableMarket::onL2Data_index_snap(const std::string& s)
+{
+	emit signal_L2Data_index_snap(s);
+}
+void snapInstrument_tableMarket::onL2Data_order(const std::string& s)
+{
+	emit signal_L2Data_order(s);
+}
+void snapInstrument_tableMarket::onL2Data_exec(const std::string& s)
+{
+	emit signal_L2Data_exec(s);
 }
 
 

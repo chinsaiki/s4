@@ -35,6 +35,16 @@ public slots:
     //TODO
     void addBasic(){}
     
+public slots:
+	void onL2Data_instrument_snap(const std::string&);
+	void onL2Data_index_snap(const std::string&);
+	void onL2Data_order(const std::string&);
+	void onL2Data_exec(const std::string&);
+signals:
+	void signal_L2Data_instrument_snap(const std::string&);
+	void signal_L2Data_index_snap(const std::string&);
+	void signal_L2Data_order(const std::string&);
+	void signal_L2Data_exec(const std::string&);
     
 private:
     // std::map<int, Kinstrument_indicator_scene::indCtx_t> _tab_ctx;

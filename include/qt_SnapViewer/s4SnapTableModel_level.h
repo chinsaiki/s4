@@ -106,22 +106,23 @@ namespace S4
             refresh(ask, bid);
         }
 
-        void refresh(const uint8_t* sbe, size_t sbe_size){
+        void refreshL2(const std::string& l2data){
+            size_t sbe_size = l2data.size();
             if (sbe_size < sizeof(SBE_SSH_header_t)){
                 return;
             }
-            const SBE_SSH_header_t* pH = (SBE_SSH_header_t*)sbe;
+            const SBE_SSH_header_t* pH = (SBE_SSH_header_t*)l2data.data();
             std::vector<Level_t> ask;
             std::vector<Level_t> bid;
 
             if (pH->MsgType == __MsgType_SSH_INSTRUMENT_SNAP__ && pH->MsgLen == sizeof(SBE_SSH_instrument_snap_t)){
-                const SBE_SSH_instrument_snap_t* pSnap = (SBE_SSH_instrument_snap_t*)sbe;
+                const SBE_SSH_instrument_snap_t* pSnap = (SBE_SSH_instrument_snap_t*)l2data.data();
                 for (int i=0; i<10 && i<_side_levels_nb; ++i){
                     ask.push_back(Level_t( L2_iPrice_snap_to_fPrice(pSnap->AskLevel[i].Price), L2_Qty_to_hand(pSnap->AskLevel[i].Qty) ));
                     bid.push_back(Level_t( L2_iPrice_snap_to_fPrice(pSnap->BidLevel[i].Price), L2_Qty_to_hand(pSnap->BidLevel[i].Qty) ));
                 }
             }else if (pH->MsgType == __MsgType_SSZ_INSTRUMENT_SNAP__ && pH->MsgLen == sizeof(SBE_SSZ_instrument_snap_t)){
-                const SBE_SSZ_instrument_snap_t* pSnap = (SBE_SSZ_instrument_snap_t*)sbe;
+                const SBE_SSZ_instrument_snap_t* pSnap = (SBE_SSZ_instrument_snap_t*)l2data.data();
                 for (int i=0; i<10 && i<_side_levels_nb; ++i){
                     ask.push_back(Level_t( L2_iPrice_snap_to_fPrice(pSnap->AskLevel[i].Price), L2_Qty_to_hand(pSnap->AskLevel[i].Qty) ));
                     bid.push_back(Level_t( L2_iPrice_snap_to_fPrice(pSnap->BidLevel[i].Price), L2_Qty_to_hand(pSnap->BidLevel[i].Qty) ));

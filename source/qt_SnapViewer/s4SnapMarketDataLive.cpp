@@ -26,26 +26,44 @@ void s4SnapMarketDataLive::run()
             {
             case L2DataType::STATS_DATA:
                 L2Stats_t stats = *(L2Stats_t*)pL2Data->pQdata->pBuffer;
-                emit onL2Stats(stats);
+                emit signal_L2Stats(stats);
                 break;
             case L2DataType::MARKET_DATA:
-                emit onL2Data(pL2Data);
+                emit signal_L2Data(pL2Data);
                 {
                     SBE_SSZ_header_t* pH = (SBE_SSZ_header_t*)pL2Data->pQdata->pBuffer;
                     std::string s(pL2Data->pQdata->pBuffer, pH->MsgLen);
+
+                    // QString securityID(pH->SecurityID);
+                    // if (pH->SecurityIDSource==101){
+                    //     securityID = "sh" + securityID;
+                    // }else if (pH->SecurityIDSource==102){
+                    //     securityID = "sz" + securityID;
+                    // }
+                    // QString signalName(pH->SecurityID);
+                    // QVector<void *> args(2, 0);
+
                     switch (pH->MsgType)
                     {
                     case __MsgType_SSZ_INDEX_SNAP__:
-                        emit onL2Data_index_snap(s);
+                        emit signal_L2Data_index_snap(s);
+                        // signalName = "signal_L2Data_index_snap" + securityID + "(std::string)";
+                        // args[0] = 0;
+                        // args[1] = &s;    
+                        // emitDynamicSignal(signalName.toStdString().data(), args.data());
                         break;
                     case __MsgType_SSZ_INSTRUMENT_SNAP__:
-                        emit onL2Data_instrument_snap(s);
+                        emit signal_L2Data_instrument_snap(s);
+                        // signalName = "signal_L2Data_instrument_snap" + securityID;
+                        // args[0] = 0;
+                        // args[1] = &s;    
+                        // emitDynamicSignal(signalName.toStdString().data(), args.data());
                         break;
                     case __MsgType_SSZ_EXECUTION__:
-                        emit onL2Data_exec(s);
+                        emit signal_L2Data_exec(s);
                         break;
                     case __MsgType_SSZ_ORDER__:
-                        emit onL2Data_order(s);
+                        emit signal_L2Data_order(s);
                         break;
                     default:
                         break;

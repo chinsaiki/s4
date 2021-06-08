@@ -32,6 +32,17 @@ public slots:
     // void addOrders(const std::vector<ssz_sbe_order_t>&);
     // void addExecs(const std::vector<ssz_sbe_exec_t>&);
     
+public slots:
+	void onL2Data_instrument_snap(const std::string&);
+	void onL2Data_index_snap(const std::string&);
+	void onL2Data_order(const std::string&);
+	void onL2Data_exec(const std::string&);
+signals:
+	void signal_L2Data_instrument_snap(const std::string&);
+	void signal_L2Data_index_snap(const std::string&);
+	void signal_L2Data_order(const std::string&);
+	void signal_L2Data_exec(const std::string&);
+    
 private:
     // 
     QTableView* _level_tv;
