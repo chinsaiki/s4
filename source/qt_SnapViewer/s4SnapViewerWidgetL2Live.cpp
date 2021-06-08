@@ -4,6 +4,7 @@
 #endif
 
 #include "qt_SnapViewer/s4SnapViewerWidgetL2Live.h"
+#include "qt_common/s4qt_itemDelegateNumberOnly.h"
 #include "network/L2_udp_recver_th_native.h"
 
 #include "common/s4logger.h"
@@ -27,6 +28,39 @@ namespace QT {
 //CREATE_LOCAL_LOGGER("qt_SnapViewer")
 #define AIM_SECURITY_TREE_NAME QStringLiteral("双击添加代码")
 
+bool transCode(const QString& raw_code, QString& mktCode)
+{
+    QString code = raw_code.toLower();
+    if (code.size() < 8){
+        if (code.left(2) == "sz"){
+            code.insert(2, QString(8-code.size(), '0'));
+        }else if(code.left(2) == "sh"){
+            code.insert(2, '6');
+            if (code.size() < 8){
+                code.insert(3, QString(8-code.size(), '0'));
+            }
+        }
+    }
+    std::string mktCodeStr;
+    // mktCodeI_t mktCodeI;
+    try{
+        // mktCodeI = 
+        mktCodeStr_to_mktCodeInt(code.toStdString());
+        mktCode = code;
+        return true;
+    }catch(std::exception&){
+    }
+    try{
+        mktCodeStr = pureCodeStr_to_mktCodeStr(code.toStdString());
+        mktCode = QString::fromStdString(mktCodeStr);
+        // mktCodeI = 
+        mktCodeStr_to_mktCodeInt(mktCodeStr);
+        return true;
+    }catch(std::exception&){
+    }
+    return false;
+}
+
 s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
     s4SnapViewerWidget(parent)
 {
@@ -34,6 +68,7 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
 	_treeView->setStyle(QStyleFactory::create("windows"));
 	_treeView->setSortingEnabled(true);
 	_treeView->setMaximumWidth(150);
+	_treeView->setItemDelegate( new itemDelegateNumberOnly);
 
 	_tabWidget = new QTabWidget(this);
 
@@ -66,11 +101,14 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
 	connect(_tabWidget, &QTabWidget::tabCloseRequested, this, &s4SnapViewerWidget::closeSnapTab);
 	connect(_tabWidget, &QTabWidget::tabCloseRequested, this, &s4SnapViewerWidgetL2Live::closeSnapTab);
 
-	connect((unicTreeView*)_treeView, &unicTreeView::signal_treeDoubleClick, this, &s4SnapViewerWidgetL2Live::dbTree_doubleClicked);
+	// connect((unicTreeView*)_treeView, &unicTreeView::signal_treeDoubleClick, this, &s4SnapViewerWidgetL2Live::dbTree_doubleClicked);
+    connect((unicTreeView*)_treeView, &unicTreeView::signal_newItem, this, &s4SnapViewerWidgetL2Live::openInstrumentTab);
 
 	newTree(AIM_SECURITY_TREE_NAME, {});
 	_aim_security_root = _tree_model->findItems(AIM_SECURITY_TREE_NAME).first();
-	_aim_security_root->setFlags(_aim_security_root->flags() ^ Qt::ItemIsEditable);
+	_aim_security_root->setFlags(_aim_security_root->flags() & (~Qt::ItemIsEditable));
+    ((unicTreeView*)_treeView)->onSetCurrentRoot(_aim_security_root);
+    ((unicTreeView*)_treeView)->onSetTextFormater(&transCode);
 }
 
 Q_DECLARE_METATYPE(NW::L2Stats_t);
@@ -104,18 +142,27 @@ void s4SnapViewerWidgetL2Live::onStopL2LiveReceiver()
     _snapMarketDataLive->stop();
 }
 
-void s4SnapViewerWidgetL2Live::dbTree_doubleClicked(const QModelIndex& index={}) {
-	//if (!index.parent().isValid())
-	//	return;
-	//if (!index.parent().parent().isValid()) return;
+// void s4SnapViewerWidgetL2Live::dbTree_doubleClicked(const QModelIndex& index={}) {
+// 	//if (!index.parent().isValid())
+// 	//	return;
+// 	//if (!index.parent().parent().isValid()) return;
 
-    QStandardItem * item = new QStandardItem;
-	item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsEditable);
-	_aim_security_root->appendRow(item);
-}
+//     QStandardItem * item = new QStandardItem;
+// 	item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
+// 	_aim_security_root->appendRow(item);
+    
+//     _treeView->edit(item->index());
+// 	item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+// }
 
-void s4SnapViewerWidgetL2Live::openInstrumentTab(mktCodeI_t)
+
+void s4SnapViewerWidgetL2Live::openInstrumentTab(const QString& code)
 {
+    QString mktCode;
+    if (transCode(code, mktCode)){
+        snapInstrument* pInstrument = new snapInstrument(20, this);
+        openSnapTab(code, pInstrument);
+    }
 }
 
 

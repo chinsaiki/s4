@@ -103,6 +103,9 @@
         "coroutine": "cpp",
         "stop_token": "cpp",
         "complex": "cpp",
-        "qtablewidget": "cpp"
+        "qtablewidget": "cpp",
+        "qstringlistmodel": "cpp",
+        "qitemdelegate": "cpp",
+        "qlineedit": "cpp"
     }
 }

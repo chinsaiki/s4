@@ -10,6 +10,7 @@
 
 #include <QTableView>
 #include <QStandardItem>
+#include <QStringListModel>
 
 namespace S4{
 namespace QT{
@@ -29,10 +30,10 @@ public slots:
 	void onStartL2LiveReceiver();
 	void onStopL2LiveReceiver();
 	
-	void openInstrumentTab(mktCodeI_t);
+	void openInstrumentTab(const QString& code);
 	void closeSnapTab(int index);
 
-    void dbTree_doubleClicked(const QModelIndex &index);
+    // void dbTree_doubleClicked(const QModelIndex &index);
 	// void openTdxSnapTab(const std::string& db_name, const std::string& table_name);
 
     // void nextTdxSnap();
@@ -65,6 +66,7 @@ protected:
 	std::shared_ptr<NW::L2_udp_recver_th> _udp_recver_th;
 	s4SnapMarketDataLive* _snapMarketDataLive;
 };
+
 
 }
 }
