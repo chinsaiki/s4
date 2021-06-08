@@ -8,11 +8,11 @@
 namespace S4{
 namespace QT{
 
-class s4SnapMarketDataLive : public QThread//, public DynamicQObject
+class s4SnapMarketDataAgent : public QThread//, public DynamicQObject
 {
     Q_OBJECT
 public:
-    s4SnapMarketDataLive(std::shared_ptr<NW::L2DataQ_t>& pL2DataQ, std::shared_ptr<NW::L2CmdQ_t>& pCmdQ):
+    s4SnapMarketDataAgent(std::shared_ptr<NW::L2DataQ_t>& pL2DataQ, std::shared_ptr<NW::L2CmdQ_t>& pCmdQ):
         _pL2DataQ(pL2DataQ),
         _pCmdQ(pCmdQ)
     {

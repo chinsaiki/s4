@@ -8,7 +8,7 @@
 #include "qt_SnapViewer/s4SnapInstrument.h"
 
 #include "network/L2_udp_recver_th.h"
-#include "s4SnapMarketDataLive.h"
+#include "s4SnapMarketDataAgent.h"
 
 
 QT_BEGIN_NAMESPACE

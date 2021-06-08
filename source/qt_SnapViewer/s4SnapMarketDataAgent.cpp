@@ -1,4 +1,4 @@
-#include "qt_SnapViewer/s4SnapMarketDataLive.h"
+#include "qt_SnapViewer/s4SnapMarketDataAgent.h"
 #include "sbe_ssz.h"
 #include "sbe_ssh.h"
 
@@ -9,7 +9,7 @@ using namespace S4::NW;
 namespace S4{
 namespace QT{
 
-void s4SnapMarketDataLive::run()
+void s4SnapMarketDataAgent::run()
 {
     m_stop = false;
     qDebug() << "run begin";
@@ -79,7 +79,7 @@ void s4SnapMarketDataLive::run()
 }
 
     //增加/删除关注代码
-void s4SnapMarketDataLive::addLive(mktCodeI_t code)
+void s4SnapMarketDataAgent::addLive(mktCodeI_t code)
 {
     if (!_pPtok_cmdQ) return;
     std::shared_ptr<live_cmd_t> pData(new live_cmd_t);
@@ -88,7 +88,7 @@ void s4SnapMarketDataLive::addLive(mktCodeI_t code)
     _pCmdQ->enqueue(*_pPtok_cmdQ, std::move(pData));
 }
 
-void s4SnapMarketDataLive::delLive(mktCodeI_t code)
+void s4SnapMarketDataAgent::delLive(mktCodeI_t code)
 {
     if (!_pPtok_cmdQ) return;
     std::shared_ptr<live_cmd_t> pData(new live_cmd_t);
@@ -97,17 +97,17 @@ void s4SnapMarketDataLive::delLive(mktCodeI_t code)
     _pCmdQ->enqueue(*_pPtok_cmdQ, std::move(pData));
 }
 
- //void s4SnapMarketDataLive::onL2Stats(const struct L2Stats_t&)
+ //void s4SnapMarketDataAgent::onL2Stats(const struct L2Stats_t&)
  //{}
- //void s4SnapMarketDataLive::onL2Data(const NW::L2Data_arPtr_t&)
+ //void s4SnapMarketDataAgent::onL2Data(const NW::L2Data_arPtr_t&)
  //{}
- //void s4SnapMarketDataLive::onL2Data_instrument_snap(const std::string&)
+ //void s4SnapMarketDataAgent::onL2Data_instrument_snap(const std::string&)
  //{}
- //void s4SnapMarketDataLive::onL2Data_index_snap(const std::string&)
+ //void s4SnapMarketDataAgent::onL2Data_index_snap(const std::string&)
  //{}
- //void s4SnapMarketDataLive::onL2Data_order(const std::string&)
+ //void s4SnapMarketDataAgent::onL2Data_order(const std::string&)
  //{}
- //void s4SnapMarketDataLive::onL2Data_exec(const std::string&)
+ //void s4SnapMarketDataAgent::onL2Data_exec(const std::string&)
  //{}
 
 }

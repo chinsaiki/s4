@@ -4,6 +4,7 @@
 #endif
 
 #include "qt_SnapViewer/s4SnapViewerWidgetL2Live.h"
+#include "qt_SnapViewer/s4SnapMarketDataSource.h"
 #include "qt_common/s4qt_itemDelegateNumberOnly.h"
 #include "network/L2_udp_recver_th_native.h"
 
@@ -91,10 +92,14 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
     _stats_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
 	_stats_tv->setMaximumWidth(300);
 
+	QSplitter* splitterStats = new QSplitter(Qt::Orientation::Vertical, this);
+	QWidget* source = new snapMarketDataSource(this);
+	splitterStats->addWidget(source);
+	splitterStats->addWidget(_stats_tv);
 
 	QSplitter* splitter = new QSplitter(this);
 	splitter->addWidget(_treeView);
-	splitter->addWidget(_stats_tv);
+	splitter->addWidget(splitterStats);
 	splitter->addWidget(_tabWidget);
     QList<int> list;
     list<<50<<50<<200;//width 为 50 100 200
@@ -130,10 +135,10 @@ void s4SnapViewerWidgetL2Live::startDataLive()
 	if (!_pL2CmdQ) {
 		_pL2CmdQ = std::make_shared<NW::L2CmdQ_t>(64);
 	}
-	_snapMarketDataLive = new s4SnapMarketDataLive(_pL2DataQ, _pL2CmdQ);
+	_snapMarketDataLive = new s4SnapMarketDataAgent(_pL2DataQ, _pL2CmdQ);
 
 	qRegisterMetaType<struct NW::L2Stats_t>();
-	connect(_snapMarketDataLive, &s4SnapMarketDataLive::signal_L2Stats, _stats_model, &snapTableModel_L2Stats::refresh);
+	connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Stats, _stats_model, &snapTableModel_L2Stats::refresh);
 	_snapMarketDataLive->start();
 }
 
@@ -176,10 +181,10 @@ void s4SnapViewerWidgetL2Live::openInstrumentTab(const QString& code)
     if (_instrument_info_cargo.count(code) == 0){
         snapInstrument* pInstrument = new snapInstrument(10, this);
 	    qRegisterMetaType<std::string>();
-		connect(_snapMarketDataLive, &s4SnapMarketDataLive::signal_L2Data_instrument_snap, pInstrument, &snapInstrument::onL2Data_instrument_snap);
-		connect(_snapMarketDataLive, &s4SnapMarketDataLive::signal_L2Data_index_snap, pInstrument, &snapInstrument::onL2Data_index_snap);
-		connect(_snapMarketDataLive, &s4SnapMarketDataLive::signal_L2Data_order, pInstrument, &snapInstrument::onL2Data_order);
-		connect(_snapMarketDataLive, &s4SnapMarketDataLive::signal_L2Data_exec, pInstrument, &snapInstrument::onL2Data_exec);
+		connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_instrument_snap, pInstrument, &snapInstrument::onL2Data_instrument_snap);
+		connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_index_snap, pInstrument, &snapInstrument::onL2Data_index_snap);
+		connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_order, pInstrument, &snapInstrument::onL2Data_order);
+		connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_exec, pInstrument, &snapInstrument::onL2Data_exec);
         openSnapTab(code, pInstrument);
         snap_info_t info;
         info.code = mktCodeStr_to_mktCodeInt(code.toStdString());

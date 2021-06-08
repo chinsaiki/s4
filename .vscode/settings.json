@@ -106,6 +106,7 @@
         "qtablewidget": "cpp",
         "qstringlistmodel": "cpp",
         "qitemdelegate": "cpp",
-        "qlineedit": "cpp"
+        "qlineedit": "cpp",
+        "qpushbutton": "cpp"
     }
 }

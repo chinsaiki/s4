@@ -145,6 +145,8 @@ set_source_files_properties(${LIB_SOURCE_FILES} PROPERTIES COMPILE_FLAGS "${PEDA
 
 # ## wrap_ui
 file(GLOB_RECURSE UI_FILES "source/*.ui")
+file(GLOB_RECURSE UI_FILES2 "include/*.ui")
+list(APPEND UI_FILES ${UI_FILES2})
 foreach(ui_file ${UI_FILES})
   qt5_wrap_ui(ui_headers ${ui_file})
 endforeach()

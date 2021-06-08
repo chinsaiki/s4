@@ -4,7 +4,7 @@
 #include "types/s4type.h"
 #include "qt_SnapViewer/s4SnapViewerWidget.h"
 #include "network/L2_udp_recver_th.h"
-#include "qt_SnapViewer/s4SnapMarketDataLive.h"
+#include "qt_SnapViewer/s4SnapMarketDataAgent.h"
 #include "qt_SnapViewer/s4SnapTableModel_L2Stats.h"
 #include "qt_common/s4qt_unicTreeView.h"
 
@@ -66,7 +66,7 @@ protected:
 	std::shared_ptr<NW::L2CmdQ_t> _pL2CmdQ;
 
 	std::shared_ptr<NW::L2_udp_recver_th> _udp_recver_th;
-	s4SnapMarketDataLive* _snapMarketDataLive;
+	s4SnapMarketDataAgent* _snapMarketDataLive;
 
 	void startDataLive();
 };
