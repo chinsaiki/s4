@@ -8,23 +8,34 @@
 namespace S4{
 namespace QT{
 
-class s4SnapMarketDataAgent : public QThread//, public DynamicQObject
+    class s4SnapMarketDataAgent;
+class AgentDynamicQObject : public DynamicQObject
+{
+public:
+    AgentDynamicQObject(s4SnapMarketDataAgent *parent);
+
+    DynamicSlot* createSlot(char*) { return NULL; }  //not use
+
+private:
+    s4SnapMarketDataAgent * app;
+};
+
+class s4SnapMarketDataAgent : public QThread
 {
     Q_OBJECT
 public:
-    s4SnapMarketDataAgent(std::shared_ptr<NW::L2DataQ_t>& pL2DataQ, std::shared_ptr<NW::L2CmdQ_t>& pCmdQ):
-        _pL2DataQ(pL2DataQ),
-        _pCmdQ(pCmdQ)
-    {
-        m_stop = false;
-        if (_pCmdQ){
-            _pPtok_cmdQ = std::make_shared<moodycamel::ProducerToken>(*_pCmdQ);
-        }
-    }
+    s4SnapMarketDataAgent(std::shared_ptr<NW::L2DataQ_t>& pL2DataQ, std::shared_ptr<NW::L2CmdQ_t>& pCmdQ, QObject *parent = 0);
+
     void stop()
     {
         m_stop = true;
     }
+
+
+    bool emitDynamicSignal(char *signal, void **arguments);	
+    bool connectDynamicSignal(char *signal, QObject *obj, char *slot);
+
+    // bool connectDynamicSlot(QObject *obj, char *signal, char *slot);
 
 public slots:
     //增加/删除关注代码
@@ -47,7 +58,14 @@ protected:
 
 protected:
     void run();
+	
+protected:
+	AgentDynamicQObject _DynamicQObject;
+	
 };
+
+
+
 
 }
 }

@@ -177,14 +177,21 @@ void s4SnapViewerWidgetL2Live::onStopL2LiveReceiver()
 
 void s4SnapViewerWidgetL2Live::openInstrumentTab(const QString& code)
 {
-    QString mktCode;
     if (_instrument_info_cargo.count(code) == 0){
         snapInstrument* pInstrument = new snapInstrument(10, this);
 	    qRegisterMetaType<std::string>();
-		connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_instrument_snap, pInstrument, &snapInstrument::onL2Data_instrument_snap);
-		connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_index_snap, pInstrument, &snapInstrument::onL2Data_index_snap);
-		connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_order, pInstrument, &snapInstrument::onL2Data_order);
-		connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_exec, pInstrument, &snapInstrument::onL2Data_exec);
+		//connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_instrument_snap, pInstrument, &snapInstrument::onL2Data_instrument_snap);
+		//connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_index_snap, pInstrument, &snapInstrument::onL2Data_index_snap);
+		//connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_order, pInstrument, &snapInstrument::onL2Data_order);
+		//connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_exec, pInstrument, &snapInstrument::onL2Data_exec);
+
+		std::string signalName("signal_L2Data_instrument_snap");
+		signalName += code.toStdString();
+		signalName += "(std::string)";
+		if (!_snapMarketDataLive->connectDynamicSignal(signalName.data(), pInstrument, "onL2Data_instrument_snap(std::string)")) {
+			qDebug() << "connectDynamicSignal fail!";
+		}
+
         openSnapTab(code, pInstrument);
         snap_info_t info;
         info.code = mktCodeStr_to_mktCodeInt(code.toStdString());

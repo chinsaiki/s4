@@ -133,7 +133,7 @@ void L2_udp_recver_th_native::recv_thread(const char* pLocalIp, const uint16_t p
             break;
         }
     } while (!_stop);
-
+    close(_fd);
     report_stats(true);
 }
 

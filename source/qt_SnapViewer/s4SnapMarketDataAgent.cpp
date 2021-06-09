@@ -3,11 +3,24 @@
 #include "sbe_ssh.h"
 
 #include <QDebug>
+#include <QtGlobal>
 
 using namespace S4::NW;
 
 namespace S4{
 namespace QT{
+
+s4SnapMarketDataAgent::s4SnapMarketDataAgent(std::shared_ptr<NW::L2DataQ_t>& pL2DataQ, std::shared_ptr<NW::L2CmdQ_t>& pCmdQ, QObject *parent):
+    QThread(parent),
+    _DynamicQObject(this),
+    _pL2DataQ(pL2DataQ),
+    _pCmdQ(pCmdQ)
+{
+    m_stop = false;
+    if (_pCmdQ){
+        _pPtok_cmdQ = std::make_shared<moodycamel::ProducerToken>(*_pCmdQ);
+    }
+}
 
 void s4SnapMarketDataAgent::run()
 {
@@ -34,30 +47,29 @@ void s4SnapMarketDataAgent::run()
                     SBE_SSZ_header_t* pH = (SBE_SSZ_header_t*)pL2Data->pQdata->pBuffer;
                     std::string s(pL2Data->pQdata->pBuffer, pH->MsgLen);
 
-                    // QString securityID(pH->SecurityID);
-                    // if (pH->SecurityIDSource==101){
-                    //     securityID = "sh" + securityID;
-                    // }else if (pH->SecurityIDSource==102){
-                    //     securityID = "sz" + securityID;
-                    // }
-                    // QString signalName(pH->SecurityID);
-                    // QVector<void *> args(2, 0);
+                    int codeI = std::atoi(pH->SecurityID);
+                    std::string securityID(pureCodeInt_to_pureCodeStr(codeI));
+                    if (pH->SecurityIDSource==101){
+                        securityID = "sh" + securityID;
+                    }else if (pH->SecurityIDSource==102){
+                        securityID = "sz" + securityID;
+                    }
+                    std::string signalName;
+                    QVector<void *> args(2, 0);
+                    args[0] = 0;
+                    args[1] = &s;
 
                     switch (pH->MsgType)
                     {
                     case __MsgType_SSZ_INDEX_SNAP__:
                         emit signal_L2Data_index_snap(s);
-                        // signalName = "signal_L2Data_index_snap" + securityID + "(std::string)";
-                        // args[0] = 0;
-                        // args[1] = &s;    
-                        // emitDynamicSignal(signalName.toStdString().data(), args.data());
+                        signalName = "signal_L2Data_index_snap" + securityID + "(std::string)";
+                        emitDynamicSignal(signalName.data(), args.data());
                         break;
                     case __MsgType_SSZ_INSTRUMENT_SNAP__:
                         emit signal_L2Data_instrument_snap(s);
-                        // signalName = "signal_L2Data_instrument_snap" + securityID;
-                        // args[0] = 0;
-                        // args[1] = &s;    
-                        // emitDynamicSignal(signalName.toStdString().data(), args.data());
+						signalName = "signal_L2Data_instrument_snap" + securityID + "(std::string)";
+						emitDynamicSignal(signalName.data(), args.data());
                         break;
                     case __MsgType_SSZ_EXECUTION__:
                         emit signal_L2Data_exec(s);
@@ -109,6 +121,25 @@ void s4SnapMarketDataAgent::delLive(mktCodeI_t code)
  //{}
  //void s4SnapMarketDataAgent::onL2Data_exec(const std::string&)
  //{}
+
+// bool s4SnapMarketDataAgent::connectDynamicSlot(QObject *obj, char *signal, char *slot)
+// {
+// }
+
+bool s4SnapMarketDataAgent::connectDynamicSignal(char *signal, QObject *obj, char *slot)
+{
+    return _DynamicQObject.connectDynamicSignal(signal, obj, slot);
+}
+
+
+bool s4SnapMarketDataAgent::emitDynamicSignal(char *signal, void **arguments)
+{
+    return _DynamicQObject.emitDynamicSignal(signal, arguments);
+}
+
+
+AgentDynamicQObject::AgentDynamicQObject(s4SnapMarketDataAgent *parent) : DynamicQObject(parent), app(parent)
+{ Q_ASSERT(app != 0); }
 
 }
 }
