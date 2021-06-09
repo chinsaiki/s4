@@ -1,7 +1,7 @@
 #pragma once
 
 #include "types/s4type.h"
-
+#include "qt_common/sharedCharArray_ptr.h"
 
 #include <QWidget>
 #include <QKeyEvent>
@@ -43,6 +43,8 @@ public slots:
 	void onL2Data_index_snap(const std::string&);
 	void onL2Data_order(const std::string&);
 	void onL2Data_exec(const std::string&);
+
+    void slot_testPtr(sharedCharArray_ptr);
 signals:
 	void signal_L2Data_instrument_snap(const std::string&);
 	void signal_L2Data_index_snap(const std::string&);

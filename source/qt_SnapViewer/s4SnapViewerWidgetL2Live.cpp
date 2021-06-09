@@ -187,8 +187,8 @@ void s4SnapViewerWidgetL2Live::openInstrumentTab(const QString& code)
 
 		std::string signalName("signal_L2Data_instrument_snap");
 		signalName += code.toStdString();
-		signalName += "(std::string)";
-		if (!_snapMarketDataLive->connectDynamicSignal(signalName.data(), pInstrument, "onL2Data_instrument_snap(std::string)")) {
+		signalName += "(sharedCharArray_ptr)";
+		if (!_snapMarketDataLive->connectDynamicSignal(signalName.data(), pInstrument, "slot_testPtr(sharedCharArray_ptr)")) {
 			qDebug() << "connectDynamicSignal fail!";
 		}
 

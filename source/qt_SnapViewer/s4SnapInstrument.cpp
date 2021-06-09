@@ -56,6 +56,10 @@ void snapInstrument::addSnaps(const std::vector<tdx_snap_t>& vSnap)
 // 	_K_tab->setInstrument(_data_panel);
 
 // }
+void snapInstrument::slot_testPtr(sharedCharArray_ptr ptr)
+{
+	qDebug() << ptr->curRef();
+}
 
 void snapInstrument::onL2Data_instrument_snap(const std::string& s)
 {

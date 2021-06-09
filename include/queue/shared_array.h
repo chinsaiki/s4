@@ -107,11 +107,11 @@ public:
 		return _sp.get()[n];
 	}
 
-	const size_t size() noexcept{
+	size_t size() noexcept{
 		return _size;
 	};
 
-	const size_t size() const noexcept{
+	size_t size() const noexcept{
 		return _size;
 	};
 

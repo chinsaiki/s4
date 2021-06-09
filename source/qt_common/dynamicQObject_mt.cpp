@@ -21,31 +21,19 @@
 **
 ****************************************************************************/
 
-#include "qt_common/dynamicqobject.h"
+#include "qt_common/dynamicQObject_mt.h"
 
-bool DynamicQObject::connectDynamicSlot(QObject *obj, char *signal, char *slot)
+namespace S4{
+
+Q_DECLARE_METATYPE(sharedCharArray_ptr);
+
+bool DynamicQObject_mt::connectDynamicSignal(char *signal, QObject *obj, char *slot)
 {
-    QByteArray theSignal = QMetaObject::normalizedSignature(signal);
-    QByteArray theSlot = QMetaObject::normalizedSignature(slot);
-    if (!QMetaObject::checkConnectArgs(theSignal, theSlot))
+    QString _signal(signal);
+    QString _slot(slot);
+    if (!_signal.endsWith("(sharedCharArray_ptr)"))
         return false;
 
-    int signalId = obj->metaObject()->indexOfSignal(theSignal);
-    if (signalId < 0) 
-        return false;
-
-    int slotId = slotIndices.value(theSlot, -1);
-    if (slotId < 0) {
-        slotId = slotList.size();
-        slotIndices[theSlot] = slotId;
-        slotList.append(createSlot(theSlot.data()));
-    }
-
-    return QMetaObject::connect(obj, signalId, this, slotId + metaObject()->methodCount());
-}
-
-bool DynamicQObject::connectDynamicSignal(char *signal, QObject *obj, char *slot)
-{
     QByteArray theSignal = QMetaObject::normalizedSignature(signal);
     QByteArray theSlot = QMetaObject::normalizedSignature(slot);
     if (!QMetaObject::checkConnectArgs(theSignal, theSlot))
@@ -59,32 +47,36 @@ bool DynamicQObject::connectDynamicSignal(char *signal, QObject *obj, char *slot
     if (signalId < 0) {
         signalId = signalIndices.size();
         signalIndices[theSignal] = signalId;
+        recverIndices[theSignal] = obj;
+        _slot.remove("(sharedCharArray_ptr)");
+        slotIndices[theSignal] = _slot;
+        return true;
     }
 
-    return QMetaObject::connect(this, signalId + metaObject()->methodCount(), obj, slotId, Qt::QueuedConnection);
+    return false;
 }
 
 
-int DynamicQObject::qt_metacall(QMetaObject::Call c, int id, void **arguments)
-{
-    id = QObject::qt_metacall(c, id, arguments);
-    if (id < 0 || c != QMetaObject::InvokeMetaMethod) 
-        return id;
-    Q_ASSERT(id < slotList.size());
-    
-    slotList[id]->call(sender(), arguments);
-    return -1;
-}
 
-bool DynamicQObject::emitDynamicSignal(char *signal, void **arguments)
+bool DynamicQObject_mt::emitDynamicSignal(char *signal, sharedCharArray_ptr _t1)
 {
+	qRegisterMetaType<sharedCharArray_ptr>();
+
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+
     QByteArray theSignal = QMetaObject::normalizedSignature(signal);
     int signalId = signalIndices.value(theSignal, -1);
     if (signalId >= 0) {
-        QMetaObject::activate(this, metaObject(), signalId + metaObject()->methodCount(), 
-            arguments);
-        return true;
+          return QMetaObject::invokeMethod(
+                      recverIndices.value(theSignal),
+                      slotIndices.value(theSignal).toStdString().data(),
+                      Qt::QueuedConnection,
+                      Q_ARG(sharedCharArray_ptr, _t1)
+          );
     } else {
         return false;
     }
+}
+
+
 }

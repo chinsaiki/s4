@@ -1,4 +1,6 @@
 #include "qt_SnapViewer/s4SnapMarketDataAgent.h"
+#include "qt_common/sharedCharArray_ptr.h"
+
 #include "sbe_ssz.h"
 #include "sbe_ssh.h"
 
@@ -45,7 +47,9 @@ void s4SnapMarketDataAgent::run()
                 emit signal_L2Data(pL2Data);
                 {
                     SBE_SSZ_header_t* pH = (SBE_SSZ_header_t*)pL2Data->pQdata->pBuffer;
-                    std::string s(pL2Data->pQdata->pBuffer, pH->MsgLen);
+                    std::string ss(pL2Data->pQdata->pBuffer, pH->MsgLen);
+                    sharedCharArray_ptr s = make_sharedCharArray_ptr(pH->MsgLen);
+                    memcpy(s->get(), pL2Data->pQdata->pBuffer, pH->MsgLen);
 
                     int codeI = std::atoi(pH->SecurityID);
                     std::string securityID(pureCodeInt_to_pureCodeStr(codeI));
@@ -55,27 +59,26 @@ void s4SnapMarketDataAgent::run()
                         securityID = "sz" + securityID;
                     }
                     std::string signalName;
-                    QVector<void *> args(2, 0);
-                    args[0] = 0;
-                    args[1] = &s;
 
                     switch (pH->MsgType)
                     {
                     case __MsgType_SSZ_INDEX_SNAP__:
-                        emit signal_L2Data_index_snap(s);
-                        signalName = "signal_L2Data_index_snap" + securityID + "(std::string)";
-                        emitDynamicSignal(signalName.data(), args.data());
+                        // emit signal_L2Data_index_snap(s);
+                        signalName = "signal_L2Data_index_snap" + securityID + "(sharedCharArray_ptr)";
+                        if (emitDynamicSignal(signalName.data(), s)) {
+                        }
                         break;
                     case __MsgType_SSZ_INSTRUMENT_SNAP__:
-                        emit signal_L2Data_instrument_snap(s);
-						signalName = "signal_L2Data_instrument_snap" + securityID + "(std::string)";
-						emitDynamicSignal(signalName.data(), args.data());
+                        emit signal_L2Data_instrument_snap(ss);
+						signalName = "signal_L2Data_instrument_snap" + securityID + "(sharedCharArray_ptr)";
+                        if (emitDynamicSignal(signalName.data(), s)) {
+						}
                         break;
                     case __MsgType_SSZ_EXECUTION__:
-                        emit signal_L2Data_exec(s);
+                        // emit signal_L2Data_exec(s);
                         break;
                     case __MsgType_SSZ_ORDER__:
-                        emit signal_L2Data_order(s);
+                        // emit signal_L2Data_order(s);
                         break;
                     default:
                         break;
@@ -132,14 +135,11 @@ bool s4SnapMarketDataAgent::connectDynamicSignal(char *signal, QObject *obj, cha
 }
 
 
-bool s4SnapMarketDataAgent::emitDynamicSignal(char *signal, void **arguments)
+bool s4SnapMarketDataAgent::emitDynamicSignal(char *signal, sharedCharArray_ptr _t1)
 {
-    return _DynamicQObject.emitDynamicSignal(signal, arguments);
+    return _DynamicQObject.emitDynamicSignal(signal, _t1);
 }
 
-
-AgentDynamicQObject::AgentDynamicQObject(s4SnapMarketDataAgent *parent) : DynamicQObject(parent), app(parent)
-{ Q_ASSERT(app != 0); }
 
 }
 }

@@ -1,24 +1,12 @@
 #pragma once
 
 #include "network/L2_udp_recver_th.h"
-#include "qt_common/dynamicqobject.h"
+#include "qt_common/dynamicQObject_mt.h"
 #include <QThread>
 
 
 namespace S4{
 namespace QT{
-
-    class s4SnapMarketDataAgent;
-class AgentDynamicQObject : public DynamicQObject
-{
-public:
-    AgentDynamicQObject(s4SnapMarketDataAgent *parent);
-
-    DynamicSlot* createSlot(char*) { return NULL; }  //not use
-
-private:
-    s4SnapMarketDataAgent * app;
-};
 
 class s4SnapMarketDataAgent : public QThread
 {
@@ -32,7 +20,7 @@ public:
     }
 
 
-    bool emitDynamicSignal(char *signal, void **arguments);	
+    bool emitDynamicSignal(char *signal, sharedCharArray_ptr _t1);	
     bool connectDynamicSignal(char *signal, QObject *obj, char *slot);
 
     // bool connectDynamicSlot(QObject *obj, char *signal, char *slot);
@@ -60,7 +48,7 @@ protected:
     void run();
 	
 protected:
-	AgentDynamicQObject _DynamicQObject;
+	DynamicQObject_mt _DynamicQObject;
 	
 };
 
