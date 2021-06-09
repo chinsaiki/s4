@@ -70,8 +70,8 @@ void s4SnapViewer::action_mode_L2Live()
 		return;
 	}
 	s4SnapViewerWidgetL2Live* pWidget = new s4SnapViewerWidgetL2Live(this);
-	connect(ui->actionOpen, &QAction::triggered, pWidget, &s4SnapViewerWidgetL2Live::onStartL2LiveReceiver);
-	connect(ui->actionClose, &QAction::triggered, pWidget, &s4SnapViewerWidgetL2Live::onStopL2LiveReceiver);
+	//connect(ui->actionOpen, &QAction::triggered, pWidget, &s4SnapViewerWidgetL2Live::onStartL2LiveReceiver);
+	//connect(ui->actionClose, &QAction::triggered, pWidget, &s4SnapViewerWidgetL2Live::onStopL2LiveReceiver);
 
 	this->setCentralWidget(pWidget);
 	this->setWindowTitle(TITLE_L2_LIVE);

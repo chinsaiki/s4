@@ -1,6 +1,7 @@
 #pragma once
 
 #include "types/s4type.h"
+#include "qt_SnapViewer/s4SnapMarketDataSourceCfg.h"
 
 #include <QWidget>
 #include <QKeyEvent>
@@ -8,6 +9,7 @@
 #include <QTabWidget>
 #include <QDebug>
 #include <QMouseEvent>
+#include <QList>
 
 
 
@@ -31,11 +33,13 @@ public:
     snapMarketDataSource(QWidget *parent = nullptr);
     virtual ~snapMarketDataSource();
 
+    QList<snapMarketDataSourceCfg::cfg_t> getCfgs(void);
+
     
 public slots:
-    void onStart(){}
-    void onStop(){}
+	void onStart();
     void onAdd();
+	void onSourceNameChange(QWidget*);
 signals:
     void signal_start();
     void signal_stop();
@@ -43,7 +47,7 @@ signals:
 
 private:
     Ui::snapMarketDataSource *ui;
-
+	bool _started;
 };
 
 

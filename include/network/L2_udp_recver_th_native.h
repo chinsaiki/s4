@@ -27,7 +27,7 @@ protected:
     bool _running = false;
     bool _stop = false;
 private:
-    void recv_thread(const char* pLocalIp, const uint16_t port);
+    void recv_thread();
     bool liveTrans(char* pH);
 
     std::shared_ptr<moodycamel::ConsumerToken> _pCtok_cmdQ;

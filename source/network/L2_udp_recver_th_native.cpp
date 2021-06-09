@@ -3,6 +3,9 @@
 #include "common/s4time.h"
 #include "sbe_ssz.h"
 #include "sbe_ssh.h"
+#include "common/s4logger.h"
+
+CREATE_LOCAL_LOGGER("L2Udp-Native")
 
 namespace S4
 {
@@ -17,11 +20,14 @@ bool L2_udp_recver_th_native::start(const char* pLocalIp, const uint16_t port)
 
     memset(&_stats, 0, sizeof(_stats));
 
+	_fd = SockUtil::bindUdpSock(port, pLocalIp);
+	if (_fd < 0)
+		return false;
+
     _pThread = std::make_shared<std::thread>(
-        [&](const char* ip, const uint16_t pt){
-            recv_thread(ip, pt);
-        }, 
-        pLocalIp, port
+        [&](){
+            recv_thread();
+        }
     );
 
     return true;
@@ -40,11 +46,10 @@ bool L2_udp_recver_th_native::stop()
     return true;
 }
 
-void L2_udp_recver_th_native::recv_thread(const char* pLocalIp, const uint16_t port)
+void L2_udp_recver_th_native::recv_thread()
 {
-    _fd = SockUtil::bindUdpSock(port, pLocalIp);
-    if (_fd < 0)
-        return;
+
+    LCL_INFO("START");
 
     char_array_t recv_buffer(4096);
     int recv_len;
@@ -135,6 +140,9 @@ void L2_udp_recver_th_native::recv_thread(const char* pLocalIp, const uint16_t p
     } while (!_stop);
     close(_fd);
     report_stats(true);
+
+    LCL_INFO("STOP");
+
 }
 
 bool L2_udp_recver_th_native::liveTrans(char* pH)

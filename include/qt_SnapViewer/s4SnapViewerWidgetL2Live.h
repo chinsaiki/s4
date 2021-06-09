@@ -7,6 +7,7 @@
 #include "qt_SnapViewer/s4SnapMarketDataAgent.h"
 #include "qt_SnapViewer/s4SnapTableModel_L2Stats.h"
 #include "qt_common/s4qt_unicTreeView.h"
+#include "qt_SnapViewer/s4SnapMarketDataSource.h"
 
 #include <QTableView>
 #include <QStandardItem>
@@ -27,8 +28,8 @@ public:
     virtual ~s4SnapViewerWidgetL2Live();
 
 public slots:
-	void onStartL2LiveReceiver();
-	void onStopL2LiveReceiver();
+	void slot_startMDSource();
+	void slot_stopMDSource();
 	
 	void setCurrentInstrument(const QString& code);
 	void openInstrumentTab(const QString& code);
@@ -68,7 +69,9 @@ protected:
 	std::shared_ptr<NW::L2_udp_recver_th> _udp_recver_th;
 	s4SnapMarketDataAgent* _snapMarketDataLive;
 
-	void startDataLive();
+	snapMarketDataSource* _marketDataSource;
+
+	void startMDAgent();
 };
 
 

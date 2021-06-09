@@ -22,22 +22,35 @@ QT_END_NAMESPACE
 namespace S4{
 namespace QT{
     
-//tabs, = [market]+[basic]
 
 class snapMarketDataSourceCfg: public QWidget
 {
     Q_OBJECT
 public:
-    snapMarketDataSourceCfg(QWidget *parent = nullptr);
+    snapMarketDataSourceCfg(const QString& Label, QWidget *parent = nullptr);
     virtual ~snapMarketDataSourceCfg();
 
-    
-public slots:
+    struct cfg_t{
+        std::string Name;
+        std::string IP;
+        uint16_t Port;
+        std::string SourceType;
+    };
 
-    
+    struct cfg_t getCfg() const;
+
+	QString label() const;
+public slots:
+    void slot_onButtom();
+	void slot_disableEdit();
+	void slot_enableEdit();
+signals:
+    void signal_fixed(QWidget* );
 private:
     Ui::snapMarketDataSourceCfg *ui;
 
+    bool _editable = true;
+    
 };
 
 

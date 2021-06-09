@@ -4,7 +4,6 @@
 #endif
 
 #include "qt_SnapViewer/s4SnapViewerWidgetL2Live.h"
-#include "qt_SnapViewer/s4SnapMarketDataSource.h"
 #include "qt_common/s4qt_itemDelegateNumberOnly.h"
 #include "network/L2_udp_recver_th_native.h"
 
@@ -74,7 +73,7 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
 	_treeView->setStyle(QStyleFactory::create("windows"));
 	_treeView->setSortingEnabled(true);
 	_treeView->setMaximumWidth(150);
-	_treeView->setItemDelegate( new itemDelegateNumberOnly);
+	_treeView->setItemDelegate( new itemDelegateNumberOnly(0, 999999, this));
     connect(_treeView->itemDelegate(), &QAbstractItemDelegate::closeEditor, (unicTreeView*)_treeView, &unicTreeView::onItemChanged);
 
 	_tabWidget = new QTabWidget(this);
@@ -93,8 +92,8 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
 	_stats_tv->setMaximumWidth(300);
 
 	QSplitter* splitterStats = new QSplitter(Qt::Orientation::Vertical, this);
-	QWidget* source = new snapMarketDataSource(this);
-	splitterStats->addWidget(source);
+	_marketDataSource = new snapMarketDataSource(this);
+	splitterStats->addWidget(_marketDataSource);
 	splitterStats->addWidget(_stats_tv);
 
 	QSplitter* splitter = new QSplitter(this);
@@ -125,9 +124,12 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
     ((unicTreeView*)_treeView)->onSetCurrentRoot(_aim_security_root);
 	((unicTreeView*)_treeView)->onSetTextFormater(&transCode);
 
-    startDataLive();
+	_marketDataSource->onAdd();
+	connect(_marketDataSource, &snapMarketDataSource::signal_start, this, &s4SnapViewerWidgetL2Live::slot_startMDSource);
+	connect(_marketDataSource, &snapMarketDataSource::signal_stop, this, &s4SnapViewerWidgetL2Live::slot_stopMDSource);
+    startMDAgent();
 }
-void s4SnapViewerWidgetL2Live::startDataLive()
+void s4SnapViewerWidgetL2Live::startMDAgent()
 {
 	if (!_pL2DataQ) {
 		_pL2DataQ = std::make_shared<NW::L2DataQ_t>(1024, 2048, true);
@@ -143,18 +145,20 @@ void s4SnapViewerWidgetL2Live::startDataLive()
 }
 
 
-void s4SnapViewerWidgetL2Live::onStartL2LiveReceiver()
+void s4SnapViewerWidgetL2Live::slot_startMDSource()
 {
+	QList<snapMarketDataSourceCfg::cfg_t> sourceCfgs = _marketDataSource->getCfgs();
+
 	if (!_udp_recver_th) {
 		_udp_recver_th = std::make_shared<NW::L2_udp_recver_th_native>(_pL2DataQ, _pL2CmdQ);
 	}
-	_udp_recver_th->start("0.0.0.0", 8888);
+	_udp_recver_th->start(sourceCfgs[0].IP.c_str(), sourceCfgs[0].Port);
 	for (int i = 0; i < _tabWidget->count(); ++i) {
 		_snapMarketDataLive->addLive(mktCodeStr_to_mktCodeInt(_tabWidget->tabText(i).toStdString()));
 	}
 }
 
-void s4SnapViewerWidgetL2Live::onStopL2LiveReceiver()
+void s4SnapViewerWidgetL2Live::slot_stopMDSource()
 {
 	if (_udp_recver_th) {
 		_udp_recver_th->stop();
@@ -241,6 +245,7 @@ void s4SnapViewerWidgetL2Live::closeSnapTab(int index)
 
 s4SnapViewerWidgetL2Live::~s4SnapViewerWidgetL2Live()
 {
+	slot_stopMDSource();
 	_snapMarketDataLive->stop();
 }
 
