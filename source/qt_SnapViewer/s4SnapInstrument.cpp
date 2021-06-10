@@ -61,11 +61,11 @@ void snapInstrument::slot_testPtr(const sharedCharArray_ptr& ptr)
 	qDebug() << ptr->curRef();
 }
 
-void snapInstrument::onL2Data_instrument_snap(const std::string& s)
+void snapInstrument::onL2Data_instrument_snap(const sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_instrument_snap(s);
 }
-void snapInstrument::onL2Data_index_snap(const std::string& s)
+void snapInstrument::onL2Data_index_snap(const sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_index_snap(s);
 }
@@ -73,7 +73,7 @@ void snapInstrument::onL2Data_order(const sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_order(s);
 }
-void snapInstrument::onL2Data_exec(const std::string& s)
+void snapInstrument::onL2Data_exec(const sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_exec(s);
 }

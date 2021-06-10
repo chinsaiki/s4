@@ -99,7 +99,7 @@ namespace S4
             const SBE_SSH_header_t* pH = (SBE_SSH_header_t*)l2data->get();
             unionOrderType_t data;
 
-            if (pH->SecurityIDSource == 101 && pH->MsgType == __MsgType_SSH_ORDER__ && pH->MsgLen == sizeof(SBE_SSH_ord_t)){
+            if (pH->SecurityIDSource == 101 && pH->MsgType == __MsgType_SSH_EXECUTION__ && pH->MsgLen == sizeof(SBE_SSH_exe_t)){
                 const SBE_SSH_exe_t* pExec = (SBE_SSH_exe_t*)l2data->get();
                 data.BidApplSeqNum = pExec->TradeBuyNo;
                 data.OfferApplSeqNum = pExec->TradeSellNo;
@@ -108,7 +108,7 @@ namespace S4
                 data.ExecType = pExec->TradeBSFlag;
                 data.TransactTime = pExec->TradeTime;
             }else 
-            if (pH->SecurityIDSource == 102 && pH->MsgType == __MsgType_SSZ_ORDER__ && pH->MsgLen == sizeof(SBE_SSZ_ord_t)){
+            if (pH->SecurityIDSource == 102 && pH->MsgType == __MsgType_SSZ_EXECUTION__ && pH->MsgLen == sizeof(SBE_SSZ_exe_t)){
                 const SBE_SSZ_exe_t* pExec = (SBE_SSZ_exe_t*)l2data->get();
                 data.BidApplSeqNum = pExec->BidApplSeqNum;
                 data.OfferApplSeqNum = pExec->OfferApplSeqNum;
@@ -117,14 +117,24 @@ namespace S4
                 data.ExecType = pExec->ExecType;
                 data.TransactTime = pExec->TransactTime;
             }
-            beginInsertRows({}, 0, 0);
-            _data.append(data);
-            endInsertRows();
+
+            if (_data.size() < 200){
+                beginInsertRows({}, 0, 0);
+                    _data.push_front(data);
+                endInsertRows();
+            }else{
+                beginResetModel();
+                    _data.push_front(data);
+                    while(_data.size() > 200){
+                        _data.pop_back();
+                    }
+                endResetModel();
+            }
 
             _timeLine->stop();
             auto now = QDateTime::currentDateTime();
-            for (size_t i = mapTimeout.size(); i > 0; ++i) {
-                if (mapTimeout[i-1].toDateTime().msecsTo(now) <= itemFormatDelegate::update_scope){
+            for (size_t i = mapTimeout.size(); i > 0; --i) {
+                if (mapTimeout[i-1].toDateTime().msecsTo(now) <= itemFormatDelegate::update_scope && i-1 < 200){
                     mapTimeout.insert(i, mapTimeout[i-1]);
                 }else{
                     mapTimeout.remove(i-1);

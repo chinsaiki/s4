@@ -33,10 +33,10 @@ public slots:
 signals:
 	void signal_L2Stats(const struct NW::L2Stats_t&);
 	void signal_L2Data(const NW::L2Data_arPtr_t&);
-	void signal_L2Data_instrument_snap(const std::string&);
-	void signal_L2Data_index_snap(const std::string&);
+	void signal_L2Data_instrument_snap(const sharedCharArray_ptr&);
+	void signal_L2Data_index_snap(const sharedCharArray_ptr&);
 	void signal_L2Data_order(const sharedCharArray_ptr&);
-	void signal_L2Data_exec(const std::string&);
+	void signal_L2Data_exec(const sharedCharArray_ptr&);
 
 protected:
     volatile bool m_stop;

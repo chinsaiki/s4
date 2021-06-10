@@ -4,6 +4,7 @@
 #include "types/s4type.h"
 #include "types/s4convertors.h"
 #include "qt_common/s4qt_itemFormatDelegate.h"
+#include "qt_common/sharedCharArray_ptr.h"
 #include <QDateTime>
 #include <QTimeLine>
 #include <QDebug>
@@ -121,16 +122,16 @@ namespace S4
         }
 
         
-        void refreshL2(const std::string& l2data){
-            size_t sbe_size = l2data.size();
+        void refreshL2(const sharedCharArray_ptr& l2data){
+            size_t sbe_size = l2data->size();
             if (sbe_size < sizeof(SBE_SSH_header_t)){
                 return;
             }
-            const SBE_SSH_header_t* pH = (SBE_SSH_header_t*)l2data.data();
+            const SBE_SSH_header_t* pH = (SBE_SSH_header_t*)l2data->get();
             std::vector<QVariant> data;
 
             if (pH->SecurityIDSource == 101 && pH->MsgType == __MsgType_SSH_INSTRUMENT_SNAP__ && pH->MsgLen == sizeof(SBE_SSH_instrument_snap_t)){
-                const SBE_SSH_instrument_snap_t* pSnap = (SBE_SSH_instrument_snap_t*)l2data.data();
+                const SBE_SSH_instrument_snap_t* pSnap = (SBE_SSH_instrument_snap_t*)l2data->get();
                 for (auto& key : _row_names){
                     if (key == dataType_t::Price) data.push_back(L2_iPrice_snap_to_fPrice(pSnap->LastPx));
                     if (key == dataType_t::LastClose) data.push_back(L2_iPrice_tick_to_fPrice(pSnap->PrevClosePx));
@@ -147,7 +148,7 @@ namespace S4
                 }
             }else 
             if (pH->SecurityIDSource == 102 && pH->MsgType == __MsgType_SSZ_INSTRUMENT_SNAP__ && pH->MsgLen == sizeof(SBE_SSZ_instrument_snap_t)){
-                const SBE_SSZ_instrument_snap_t* pSnap = (SBE_SSZ_instrument_snap_t*)l2data.data();
+                const SBE_SSZ_instrument_snap_t* pSnap = (SBE_SSZ_instrument_snap_t*)l2data->get();
                 for (auto& key : _row_names){
                     if (key == dataType_t::Price) data.push_back(L2_iPrice_snap_to_fPrice(pSnap->LastPx));
                     if (key == dataType_t::LastClose) data.push_back(L2_iPrice_tick_to_fPrice(pSnap->PrevClosePx));

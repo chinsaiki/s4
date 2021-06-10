@@ -118,14 +118,24 @@ namespace S4
                 data.OrdType = pOrder->OrdType;
                 data.OrderTime = pOrder->TransactTime;
             }
-            beginInsertRows({}, 0, 0);
-            _data.append(data);
-            endInsertRows();
+            
+            if (_data.size() < 200){
+                beginInsertRows({}, 0, 0);
+                    _data.push_front(data);
+                endInsertRows();
+            }else{
+                beginResetModel();
+                    _data.push_front(data);
+                    while(_data.size() > 200){
+                        _data.pop_back();
+                    }
+                endResetModel();
+            }
 
             _timeLine->stop();
             auto now = QDateTime::currentDateTime();
             for (size_t i = mapTimeout.size(); i > 0; --i) {
-                if (mapTimeout[i-1].toDateTime().msecsTo(now) <= itemFormatDelegate::update_scope){
+                if (mapTimeout[i-1].toDateTime().msecsTo(now) <= itemFormatDelegate::update_scope && i - 1 < 200){
                     mapTimeout.insert(i, mapTimeout[i-1]);
                 }else{
                     mapTimeout.remove(i-1);

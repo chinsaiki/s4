@@ -47,7 +47,6 @@ void s4SnapMarketDataAgent::run()
                 emit signal_L2Data(pL2Data);
                 {
                     SBE_SSZ_header_t* pH = (SBE_SSZ_header_t*)pL2Data->pQdata->pBuffer;
-                    std::string ss(pL2Data->pQdata->pBuffer, pH->MsgLen);
                     sharedCharArray_ptr s = make_sharedCharArray_ptr(pH->MsgLen);
                     memcpy(s->get(), pL2Data->pQdata->pBuffer, pH->MsgLen);
 
@@ -69,13 +68,16 @@ void s4SnapMarketDataAgent::run()
                         }
                         break;
                     case __MsgType_SSZ_INSTRUMENT_SNAP__:
-                        emit signal_L2Data_instrument_snap(ss);
+                        // emit signal_L2Data_instrument_snap(s);
 						signalName = "signal_L2Data_instrument_snap" + securityID + "(sharedCharArray_ptr)";
                         if (emitDynamicSignal(signalName.data(), s)) {
 						}
                         break;
                     case __MsgType_SSZ_EXECUTION__:
                         // emit signal_L2Data_exec(s);
+                        signalName = "signal_L2Data_exec" + securityID + "(sharedCharArray_ptr)";
+                        if (emitDynamicSignal(signalName.data(), s)) {
+                        }
                         break;
                     case __MsgType_SSZ_ORDER__:
                         // emit signal_L2Data_order(s);

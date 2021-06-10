@@ -192,10 +192,10 @@ void s4SnapViewerWidgetL2Live::slot_stopMDSource()
 
 std::vector<std::string> dynamic_ss = 
 {
-	// "L2Data_instrument_snap",
+	"L2Data_instrument_snap",
 	// "L2Data_index_snap",
 	"L2Data_order",
-	// "L2Data_exec",
+	"L2Data_exec",
 };
 
 
@@ -204,10 +204,6 @@ void s4SnapViewerWidgetL2Live::openInstrumentTab(const QString& code)
     if (_instrument_info_cargo.count(code) == 0){
         snapInstrument* pInstrument = new snapInstrument(10, this);
 	    qRegisterMetaType<std::string>();
-		//connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_instrument_snap, pInstrument, &snapInstrument::onL2Data_instrument_snap);
-		//connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_index_snap, pInstrument, &snapInstrument::onL2Data_index_snap);
-		//connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_order, pInstrument, &snapInstrument::onL2Data_order);
-		//connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_exec, pInstrument, &snapInstrument::onL2Data_exec);
 
 		for (auto& ss_name : dynamic_ss){
 			std::string signalName("signal_");

@@ -86,7 +86,7 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
 	_exec_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
 	_exec_tv->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);	//限制选择
 	_exec_tv->setMaximumWidth(750);
-	//connect(this, &snapInstrument_tableMarket::signal_L2Data_exec, execs, &snapTableModel_exec::refreshL2);
+	connect(this, &snapInstrument_tableMarket::signal_L2Data_exec, execs, &snapTableModel_exec::refreshL2);
 
 	//整体布局
 	QSplitter* splitter = new QSplitter(this);	//横排
@@ -116,11 +116,11 @@ void snapInstrument_tableMarket::addSnaps(const std::vector<tdx_snap_t>& vSnap)
     ((snapTableModel_snapInfo*)infos)->refresh(vSnap.back());
 }
 
-void snapInstrument_tableMarket::onL2Data_instrument_snap(const std::string& s)
+void snapInstrument_tableMarket::onL2Data_instrument_snap(const sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_instrument_snap(s);
 }
-void snapInstrument_tableMarket::onL2Data_index_snap(const std::string& s)
+void snapInstrument_tableMarket::onL2Data_index_snap(const sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_index_snap(s);
 }
@@ -128,7 +128,7 @@ void snapInstrument_tableMarket::onL2Data_order(const sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_order(s);
 }
-void snapInstrument_tableMarket::onL2Data_exec(const std::string& s)
+void snapInstrument_tableMarket::onL2Data_exec(const sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_exec(s);
 }
