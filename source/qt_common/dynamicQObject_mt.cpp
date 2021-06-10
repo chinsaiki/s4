@@ -27,7 +27,7 @@ namespace S4{
 
 Q_DECLARE_METATYPE(sharedCharArray_ptr);
 
-bool DynamicQObject_mt::connectDynamicSignal(char *signal, QObject *obj, char *slot)
+bool DynamicQObject_mt::connectDynamicSignal(const char *signal, QObject *obj, const char *slot)
 {
     QString _signal(signal);
     QString _slot(slot);
@@ -58,7 +58,7 @@ bool DynamicQObject_mt::connectDynamicSignal(char *signal, QObject *obj, char *s
 
 
 
-bool DynamicQObject_mt::emitDynamicSignal(char *signal, sharedCharArray_ptr _t1)
+bool DynamicQObject_mt::emitDynamicSignal(const char *signal, sharedCharArray_ptr _t1)
 {
 	qRegisterMetaType<sharedCharArray_ptr>();
 

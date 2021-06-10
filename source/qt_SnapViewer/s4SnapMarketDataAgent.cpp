@@ -79,6 +79,9 @@ void s4SnapMarketDataAgent::run()
                         break;
                     case __MsgType_SSZ_ORDER__:
                         // emit signal_L2Data_order(s);
+                        signalName = "signal_L2Data_order" + securityID + "(sharedCharArray_ptr)";
+                        if (emitDynamicSignal(signalName.data(), s)) {
+                        }
                         break;
                     default:
                         break;
@@ -112,30 +115,18 @@ void s4SnapMarketDataAgent::delLive(mktCodeI_t code)
     _pCmdQ->enqueue(*_pPtok_cmdQ, std::move(pData));
 }
 
- //void s4SnapMarketDataAgent::onL2Stats(const struct L2Stats_t&)
- //{}
- //void s4SnapMarketDataAgent::onL2Data(const NW::L2Data_arPtr_t&)
- //{}
- //void s4SnapMarketDataAgent::onL2Data_instrument_snap(const std::string&)
- //{}
- //void s4SnapMarketDataAgent::onL2Data_index_snap(const std::string&)
- //{}
- //void s4SnapMarketDataAgent::onL2Data_order(const std::string&)
- //{}
- //void s4SnapMarketDataAgent::onL2Data_exec(const std::string&)
- //{}
 
 // bool s4SnapMarketDataAgent::connectDynamicSlot(QObject *obj, char *signal, char *slot)
 // {
 // }
 
-bool s4SnapMarketDataAgent::connectDynamicSignal(char *signal, QObject *obj, char *slot)
+bool s4SnapMarketDataAgent::connectDynamicSignal(const char *signal, QObject *obj, const char *slot)
 {
     return _DynamicQObject.connectDynamicSignal(signal, obj, slot);
 }
 
 
-bool s4SnapMarketDataAgent::emitDynamicSignal(char *signal, sharedCharArray_ptr _t1)
+bool s4SnapMarketDataAgent::emitDynamicSignal(const char *signal, sharedCharArray_ptr _t1)
 {
     return _DynamicQObject.emitDynamicSignal(signal, _t1);
 }

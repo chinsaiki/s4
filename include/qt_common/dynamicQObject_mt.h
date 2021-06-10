@@ -38,8 +38,8 @@ class DynamicQObject_mt: public QObject
 public:
     DynamicQObject_mt(QObject *parent = 0) : QObject(parent) { }
 
-    bool emitDynamicSignal(char *signal, sharedCharArray_ptr _t1);	
-    bool connectDynamicSignal(char *signal, QObject *obj, char *slot);
+    bool emitDynamicSignal(const char *signal, sharedCharArray_ptr _t1);
+    bool connectDynamicSignal(const char *signal, QObject *obj, const char *slot);
 
     //TODO: disconnect
 private:

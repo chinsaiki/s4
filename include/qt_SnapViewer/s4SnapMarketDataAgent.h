@@ -20,8 +20,8 @@ public:
     }
 
 
-    bool emitDynamicSignal(char *signal, sharedCharArray_ptr _t1);	
-    bool connectDynamicSignal(char *signal, QObject *obj, char *slot);
+    bool emitDynamicSignal(const char *signal, sharedCharArray_ptr _t1);
+    bool connectDynamicSignal(const char *signal, QObject *obj, const char *slot);
 
     // bool connectDynamicSlot(QObject *obj, char *signal, char *slot);
 
@@ -35,7 +35,7 @@ signals:
 	void signal_L2Data(const NW::L2Data_arPtr_t&);
 	void signal_L2Data_instrument_snap(const std::string&);
 	void signal_L2Data_index_snap(const std::string&);
-	void signal_L2Data_order(const std::string&);
+	void signal_L2Data_order(const sharedCharArray_ptr&);
 	void signal_L2Data_exec(const std::string&);
 
 protected:

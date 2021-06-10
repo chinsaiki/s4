@@ -182,6 +182,7 @@ void L2_udp_recver_th_native::proc_cmdQ()
         }
         if (++n >= s)break;
     }
+    _stats.live_code_nb = _live_list.size();
     
 }
 

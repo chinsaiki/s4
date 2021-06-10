@@ -106,8 +106,8 @@ struct SBE_SSZ_exe_t
     int32_t         LastPx;
     int64_t         LastQty;
     int8_t          ExecType;
-    uint64_t         TransactTime;
-    uint8_t          Resv[3];
+    uint64_t        TransactTime;
+    uint8_t         Resv[3];
 }PACKED;
 
 

@@ -35,7 +35,7 @@ void snapInstrument_table::onL2Data_index_snap(const std::string& s)
 {
 	emit signal_L2Data_index_snap(s);
 }
-void snapInstrument_table::onL2Data_order(const std::string& s)
+void snapInstrument_table::onL2Data_order(const sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_order(s);
 }

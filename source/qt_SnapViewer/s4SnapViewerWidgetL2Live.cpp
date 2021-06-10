@@ -104,17 +104,14 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
 	QSplitter* splitterStats = new QSplitter(Qt::Orientation::Vertical, this);	//竖排
 	splitterStats->addWidget(_marketDataSource);
 	splitterStats->addWidget(_stats_tv);
-    QList<int> list;
-    list<<150<<200;//width 为 1:2
-	splitterStats->setSizes(list);
+	splitterStats->setSizes({150, 200});
 
 	//整体布局
 	QSplitter* splitter = new QSplitter(this);	//横排
 	splitter->addWidget(splitterStats);
 	splitter->addWidget(_treeView);
 	splitter->addWidget(_tabWidget);
-    list<<50<<50<<200;//width 为 1:1:4
-    splitter->setSizes(list);
+    splitter->setSizes({50, 50, 200});
 
     //布局放进网格，使填充满
 	QGridLayout *pLayout = new QGridLayout(this);
@@ -193,6 +190,14 @@ void s4SnapViewerWidgetL2Live::slot_stopMDSource()
 // 	item->setFlags(item->flags() ^ Qt::ItemIsEditable);
 // }
 
+std::vector<std::string> dynamic_ss = 
+{
+	// "L2Data_instrument_snap",
+	// "L2Data_index_snap",
+	"L2Data_order",
+	// "L2Data_exec",
+};
+
 
 void s4SnapViewerWidgetL2Live::openInstrumentTab(const QString& code)
 {
@@ -204,11 +209,18 @@ void s4SnapViewerWidgetL2Live::openInstrumentTab(const QString& code)
 		//connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_order, pInstrument, &snapInstrument::onL2Data_order);
 		//connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Data_exec, pInstrument, &snapInstrument::onL2Data_exec);
 
-		std::string signalName("signal_L2Data_instrument_snap");
-		signalName += code.toStdString();
-		signalName += "(sharedCharArray_ptr)";
-		if (!_snapMarketDataLive->connectDynamicSignal(signalName.data(), pInstrument, "slot_testPtr(sharedCharArray_ptr)")) {
-			qDebug() << "connectDynamicSignal fail!";
+		for (auto& ss_name : dynamic_ss){
+			std::string signalName("signal_");
+			signalName += ss_name;
+			signalName += code.toStdString();
+			signalName += "(sharedCharArray_ptr)";
+			std::string slotName("on");
+			slotName += ss_name;
+			slotName += "(sharedCharArray_ptr)";
+			if (!_snapMarketDataLive->connectDynamicSignal(signalName.data(), pInstrument, slotName.c_str())) {
+				qDebug() << "connectDynamicSignal fail!";
+			}
+
 		}
 
         openSnapTab(code, pInstrument);
