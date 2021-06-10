@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <QTableView>
 #include "types/s4type.h"
@@ -46,7 +46,7 @@ namespace S4
             dataType_t::CurrentVolume,
             dataType_t::SellVolume,
             dataType_t::BuyVolume,
-            dataType_t::Active,
+            // dataType_t::Active,
             dataType_t::LocalTime,
             };
         std::vector<QVariant> _data;
@@ -92,8 +92,8 @@ namespace S4
             if ((size_t)section >= 2)
                 return {};
             switch (section) {
-            case 0: return "Key";
-            case 1: return "Value";
+            case 0: return "";
+            case 1: return "";
             //case 2: return "Reg.#";
             default: return {};
             }
@@ -110,11 +110,11 @@ namespace S4
                 if (key == dataType_t::High) data.push_back(iPrice_to_fPrice(snap.high));
                 if (key == dataType_t::Low) data.push_back(iPrice_to_fPrice(snap.low));
                 if (key == dataType_t::TotalVolume) data.push_back(snap.vol);
-                if (key == dataType_t::TotalAmount) data.push_back(QString::number((snap.amount)/_KW) + " KW");
+                if (key == dataType_t::TotalAmount) data.push_back(QString::number((snap.amount)/_KW) + " 千万");
                 if (key == dataType_t::CurrentVolume) data.push_back(snap.cur_vol);
                 if (key == dataType_t::SellVolume) data.push_back(snap.s_vol);
                 if (key == dataType_t::BuyVolume) data.push_back(snap.b_vol);
-                if (key == dataType_t::Active) data.push_back(snap.active1);
+                // if (key == dataType_t::Active) data.push_back(snap.active1);
                 if (key == dataType_t::LocalTime) data.push_back(snap.minuSec);
             }
 
@@ -139,11 +139,11 @@ namespace S4
                     if (key == dataType_t::High) data.push_back(L2_iPrice_snap_to_fPrice(pSnap->HighPx));
                     if (key == dataType_t::Low) data.push_back(L2_iPrice_snap_to_fPrice(pSnap->LowPx));
                     if (key == dataType_t::TotalVolume) data.push_back(QVariant::fromValue(pSnap->TotalVolumeTrade/L2_Qty_precision));
-                    if (key == dataType_t::TotalAmount) data.push_back(QString::number((pSnap->TotalValueTrade/L2_Amt_precision)/_KW) + " KW");
-                    if (key == dataType_t::CurrentVolume) data.push_back(0);
+                    if (key == dataType_t::TotalAmount) data.push_back(QString::number((pSnap->TotalValueTrade/L2_Amt_precision)/_KW) + " 千万");
+                    if (key == dataType_t::CurrentVolume) data.push_back(pSnap->NumTrades);
                     if (key == dataType_t::SellVolume) data.push_back(QVariant::fromValue(pSnap->AskWeightSize/L2_Qty_precision));
                     if (key == dataType_t::BuyVolume) data.push_back(QVariant::fromValue(pSnap->BidWeightSize/L2_Qty_precision));
-                    if (key == dataType_t::Active) data.push_back(pSnap->NumTrades);
+                    // if (key == dataType_t::Active) data.push_back();
                     if (key == dataType_t::LocalTime) data.push_back(pSnap->DataTimeStamp);
                 }
             }else 
@@ -156,11 +156,11 @@ namespace S4
                     if (key == dataType_t::High) data.push_back(L2_iPrice_snap_to_fPrice(pSnap->HighPx));
                     if (key == dataType_t::Low) data.push_back(L2_iPrice_snap_to_fPrice(pSnap->LowPx));
                     if (key == dataType_t::TotalVolume) data.push_back(QVariant::fromValue(pSnap->TotalVolumeTrade/L2_Qty_precision));
-                    if (key == dataType_t::TotalAmount) data.push_back(QString::number((pSnap->TotalValueTrade/L2_Amt_precision)/_KW) + " KW");
-                    if (key == dataType_t::CurrentVolume) data.push_back(0);
+                    if (key == dataType_t::TotalAmount) data.push_back(QString::number((pSnap->TotalValueTrade/L2_Amt_precision)/_KW) + " 千万");
+                    if (key == dataType_t::CurrentVolume) data.push_back(pSnap->NumTrades);
                     if (key == dataType_t::SellVolume) data.push_back(QVariant::fromValue(pSnap->AskWeightSize/L2_Qty_precision));
                     if (key == dataType_t::BuyVolume) data.push_back(QVariant::fromValue(pSnap->BidWeightSize/L2_Qty_precision));
-                    if (key == dataType_t::Active) data.push_back(QVariant::fromValue(pSnap->NumTrades));
+                    // if (key == dataType_t::Active) data.push_back();
                     if (key == dataType_t::LocalTime) data.push_back(QVariant::fromValue(pSnap->TransactTime));
 		        }
             }
@@ -210,18 +210,18 @@ namespace S4
         {
             switch (t)
             {
-            case dataType_t::Price: return "Price";
-            case dataType_t::LastClose: return "Last Close";
-            case dataType_t::Open: return "Open";
-            case dataType_t::High: return "High";
-            case dataType_t::Low: return "Low";
-            case dataType_t::TotalVolume: return "Total Volume";
-            case dataType_t::TotalAmount: return "Total Amount";
-            case dataType_t::CurrentVolume: return "Current Volume";
-            case dataType_t::SellVolume: return "Sell Volume";
-            case dataType_t::BuyVolume: return "Buy Volume";
-            case dataType_t::Active: return "Active";
-            case dataType_t::LocalTime: return "Local Time";
+            case dataType_t::Price: return QStringLiteral("价格");
+            case dataType_t::LastClose: return QStringLiteral("昨收");
+            case dataType_t::Open: return QStringLiteral("开盘价");
+            case dataType_t::High: return QStringLiteral("最高");
+            case dataType_t::Low: return QStringLiteral("最低");
+            case dataType_t::TotalVolume: return QStringLiteral("总量");
+            case dataType_t::TotalAmount: return QStringLiteral("总额");
+            case dataType_t::CurrentVolume: return QStringLiteral("现量");
+            case dataType_t::SellVolume: return QStringLiteral("委卖量");
+            case dataType_t::BuyVolume: return QStringLiteral("委买量");
+            case dataType_t::Active: return QStringLiteral("Active");
+            case dataType_t::LocalTime: return QStringLiteral("时间戳");
             default:return "";
             }
         }

@@ -1,6 +1,7 @@
-#pragma once
+﻿#pragma once
 
 #include "types/s4type.h"
+#include "common/s4time.h"
 #include "types/s4convertors.h"
 #include "qt_common/s4qt_itemFormatDelegate.h"
 #include "network/L2_udp_recver_th.h"
@@ -92,8 +93,8 @@ namespace S4
             if ((size_t)section >= 2)
                 return {};
             switch (section) {
-            case 0: return "Key";
-            case 1: return "Value";
+            case 0: return "";
+            case 1: return "";
             //case 2: return "Reg.#";
             default: return {};
             }
@@ -112,7 +113,7 @@ namespace S4
                     case dataType_t::recv_order_cnt : data.emplace_back(stats.recv_order_cnt); break;
                     case dataType_t::recv_exec_cnt : data.emplace_back(stats.recv_exec_cnt); break;
                     case dataType_t::recv_unknown_cnt : data.emplace_back(stats.recv_unknown_cnt); break;
-                    case dataType_t::last_frame_time_ms : data.emplace_back(stats.last_frame_time_ms); break;
+                    case dataType_t::last_frame_time_ms : data.emplace_back(utc_to_str(stats.last_frame_time_ms).c_str()); break;
                     case dataType_t::live_code_nb : data.emplace_back(stats.live_code_nb); break;
                     case dataType_t::live_instrument_snap_cnt : data.emplace_back(stats.live_instrument_snap_cnt); break;
                     case dataType_t::live_index_snap_cnt : data.emplace_back(stats.live_index_snap_cnt); break;
@@ -166,19 +167,19 @@ namespace S4
         {
             switch (t)
             {
-            case dataType_t::recv_frame_cnt : return "recv_frame_cnt";
-            case dataType_t::recv_heartbeat_cnt : return "recv_heartbeat_cnt";
-            case dataType_t::recv_instrument_snap_cnt : return "recv_instrument_snap_cnt";
-            case dataType_t::recv_index_snap_cnt : return "recv_index_snap_cnt";
-            case dataType_t::recv_order_cnt : return "recv_order_cnt";
-            case dataType_t::recv_exec_cnt : return "recv_exec_cnt";
-            case dataType_t::recv_unknown_cnt : return "recv_unknown_cnt";
-            case dataType_t::last_frame_time_ms : return "last_frame_time_ms";
-            case dataType_t::live_code_nb : return "live_code_nb";
-            case dataType_t::live_instrument_snap_cnt : return "live_instrument_snap_cnt";
-            case dataType_t::live_index_snap_cnt : return "live_index_snap_cnt";
-            case dataType_t::live_order_cnt : return "live_order_cnt";
-            case dataType_t::live_exec_cnt : return "live_exec_cnt";
+            case dataType_t::recv_frame_cnt : return QStringLiteral("L2消息");
+            case dataType_t::recv_heartbeat_cnt : return QStringLiteral("心跳");
+            case dataType_t::recv_instrument_snap_cnt : return QStringLiteral("行情快照");
+            case dataType_t::recv_index_snap_cnt : return QStringLiteral("指数快照");
+            case dataType_t::recv_order_cnt : return QStringLiteral("逐笔委托");
+            case dataType_t::recv_exec_cnt : return QStringLiteral("逐笔成交");
+            case dataType_t::recv_unknown_cnt : return QStringLiteral("其它");
+            case dataType_t::last_frame_time_ms : return QStringLiteral("最后接收时间");
+            case dataType_t::live_code_nb : return QStringLiteral("关注标的数目");
+            case dataType_t::live_instrument_snap_cnt : return QStringLiteral("关注标的行情快照");
+            case dataType_t::live_index_snap_cnt : return QStringLiteral("关注标的指数快照");
+            case dataType_t::live_order_cnt : return QStringLiteral("关注标的逐笔委托");
+            case dataType_t::live_exec_cnt : return QStringLiteral("关注标的逐笔成交");
             default:return "";
             }
         }

@@ -42,8 +42,8 @@ namespace S4
             int64_t         OrderNo;    //
             int32_t         Price;      //
             int64_t         OrderQty;
-            int8_t          Side;       //'B', 'S'
-            int8_t          OrdType;    //'A', 'D'
+            QString         Side;       //'B', 'S'
+            QString         OrdType;    //'A', 'D'
             uint32_t        OrderTime;
         };
 
@@ -103,19 +103,19 @@ namespace S4
             if (pH->SecurityIDSource == 101 && pH->MsgType == __MsgType_SSH_ORDER__ && pH->MsgLen == sizeof(SBE_SSH_ord_t)){
                 const SBE_SSH_ord_t* pOrder = (SBE_SSH_ord_t*)l2data->get();
                 data.OrderNo = pOrder->OrderNo;
-                data.Price = pOrder->Price;
-                data.OrderQty = pOrder->OrderQty;
-                data.Side = pOrder->Side;
-                data.OrdType = pOrder->OrdType;
+                data.Price = L2_iPrice_tick_to_fPrice(pOrder->Price);
+                data.OrderQty = L2_Qty_to_hand(pOrder->OrderQty);
+                data.Side = sshSideString(pOrder->Side);
+                data.OrdType = sshOrderTypeString(pOrder->OrdType);
                 data.OrderTime = pOrder->OrderTime;
             }else 
             if (pH->SecurityIDSource == 102 && pH->MsgType == __MsgType_SSZ_ORDER__ && pH->MsgLen == sizeof(SBE_SSZ_ord_t)){
                 const SBE_SSZ_ord_t* pOrder = (SBE_SSZ_ord_t*)l2data->get();
                 data.OrderNo = pH->ApplSeqNum;
-                data.Price = pOrder->Price;
-                data.OrderQty = pOrder->OrderQty;
-                data.Side = pOrder->Side;
-                data.OrdType = pOrder->OrdType;
+                data.Price = L2_iPrice_tick_to_fPrice(pOrder->Price);
+                data.OrderQty = L2_Qty_to_hand(pOrder->OrderQty);
+                data.Side = sszSideString(pOrder->Side);
+                data.OrdType = sszOrderTypeString(pOrder->OrdType);
                 data.OrderTime = pOrder->TransactTime;
             }
             
@@ -168,13 +168,70 @@ namespace S4
         {
             switch (t)
             {
-            case dataType_t::OrderNo: return "OrderNo";
-            case dataType_t::Price: return "Price Close";
-            case dataType_t::OrderQty: return "OrderQty";
-            case dataType_t::Side: return "Side";
-            case dataType_t::OrdType: return "OrdType";
-            case dataType_t::OrderTime: return "OrderTime";
+            case dataType_t::OrderNo: return QStringLiteral("订单编号");
+            case dataType_t::Price: return QStringLiteral("价格");
+            case dataType_t::OrderQty: return QStringLiteral("手数");
+            case dataType_t::Side: return QStringLiteral("方向");
+            case dataType_t::OrdType: return QStringLiteral("类型");
+            case dataType_t::OrderTime: return QStringLiteral("时间戳");
             default:return "";
+            }
+        }
+
+        
+        QString sszOrderTypeString(uint8_t OrderType) const
+        {
+            if (OrderType == '1'){
+                return QStringLiteral("市价单");
+            }else if (OrderType == '2'){
+                return QStringLiteral("限价单");
+            }else if (OrderType == '2'){
+                return QStringLiteral("本方最优");
+            }else{
+                return QStringLiteral("未知类型") + QString::number(OrderType);
+            }
+        }
+
+        QString sshOrderTypeString(uint8_t OrderType) const
+        {
+            if (OrderType == '1'){
+                return QStringLiteral("市价单");
+            }else if (OrderType == '2'){
+                return QStringLiteral("限价单");
+            }else if (OrderType == '2'){
+                return QStringLiteral("本方最优");
+            }else{
+                return QStringLiteral("未知类型") + QString::number(OrderType);
+            }
+        }
+        
+        QString sszSideString(uint8_t Side) const
+        {
+            if (Side == '1'){
+                return QStringLiteral("买入");
+            }else if (Side == '2'){
+                return QStringLiteral("卖出");
+            }else if (Side == '2'){
+                return QStringLiteral("借出");
+            }else if (Side == '2'){
+                return QStringLiteral("贷入");
+            }else{
+                return QStringLiteral("未知类型") + QString::number(Side);
+            }
+        }
+
+        QString sshSideString(uint8_t Side) const
+        {
+            if (Side == '1'){
+                return QStringLiteral("买入");
+            }else if (Side == '2'){
+                return QStringLiteral("卖出");
+            }else if (Side == '2'){
+                return QStringLiteral("借出");
+            }else if (Side == '2'){
+                return QStringLiteral("贷入");
+            }else{
+                return QStringLiteral("未知类型") + QString::number(Side);
             }
         }
     };

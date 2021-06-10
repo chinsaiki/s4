@@ -22,7 +22,7 @@ namespace QT {
 
 //CREATE_LOCAL_LOGGER("qt_SnapViewer")
 
-#define DBTREE_ROOT_NAME QStringLiteral("实时数据源")
+#define DBTREE_ROOT_NAME QStringLiteral("关注标的列表")
 
 s4SnapViewerWidget::s4SnapViewerWidget(QWidget *parent) :
 	QWidget(parent)

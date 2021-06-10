@@ -27,7 +27,6 @@ s4SnapMarketDataAgent::s4SnapMarketDataAgent(std::shared_ptr<NW::L2DataQ_t>& pL2
 void s4SnapMarketDataAgent::run()
 {
     m_stop = false;
-    qDebug() << "run begin";
     std::vector<L2Data_arPtr_t> pv;
     bool got_data;
     while (!m_stop)
@@ -95,7 +94,6 @@ void s4SnapMarketDataAgent::run()
             }
         }
     }
-    qDebug() << "run end";
 }
 
     //增加/删除关注代码

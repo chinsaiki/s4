@@ -20,7 +20,7 @@ namespace S4
         Q_OBJECT
         QMap<int, QVariant> mapTimeout;
 
-        std::vector<QString> _title = {"Side", "Price", "Volume"};
+        std::vector<QString> _title = {QStringLiteral("档位"), QStringLiteral("价格"), QStringLiteral("手数")};
         const int _side_levels_nb;
         
         struct Level_t
@@ -62,11 +62,11 @@ namespace S4
 				return {}; // && role != Qt::EditRole
             int side_index = index.row() < _side_levels_nb ? _side_levels_nb - index.row() - 1 : index.row() - _side_levels_nb;
             const auto &levle = index.row() < _side_levels_nb ? _ask[side_index] : _bid[side_index];
-            const QString side = index.row() < _side_levels_nb ? "BID":"ASK";
+            const QString side = index.row() < _side_levels_nb ? QStringLiteral("买"):QStringLiteral("卖");
             switch (index.column())
             {
             case 0:
-                return side + QString::number(side_index+1);
+                return side + numberString(side_index+1);
             case 1:
                 return levle.price;
             case 2:
@@ -178,6 +178,34 @@ namespace S4
             }
             if (mapTimeout.size())
                 _timeLine->start();
+        }
+
+        QString numberString(int n) const {
+            switch (n)
+            {
+            case 0:
+                return QStringLiteral("零");
+            case 1:
+                return QStringLiteral("一");
+            case 2:
+                return QStringLiteral("二");
+            case 3:
+                return QStringLiteral("三");
+            case 4:
+                return QStringLiteral("四");
+            case 5:
+                return QStringLiteral("五");
+            case 6:
+                return QStringLiteral("六");
+            case 7:
+                return QStringLiteral("七");
+            case 8:
+                return QStringLiteral("八");
+            case 9:
+                return QStringLiteral("九");
+            default:
+                return {};
+            };
         }
     };
 

@@ -11,7 +11,7 @@
 namespace S4 {
 namespace QT {
 
-
+//指标和K线画布的基类
 class Kinstrument_scene : public QGraphicsScene
 {
     Q_OBJECT

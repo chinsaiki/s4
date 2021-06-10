@@ -42,12 +42,12 @@ snapMarketDataSource::snapMarketDataSource(QWidget *parent) :
 void snapMarketDataSource::onStart()
 {
 	if (_started) {
-		ui->StartButton->setText("Start");
+		ui->StartButton->setText(QStringLiteral("开始"));
 		emit signal_stop();
 		_started = false;
 	}
 	else {
-		ui->StartButton->setText("Stop");
+		ui->StartButton->setText(QStringLiteral("停止"));
 		emit signal_start();
 		_started = true;
 	}

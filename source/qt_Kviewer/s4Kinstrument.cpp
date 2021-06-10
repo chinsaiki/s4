@@ -13,8 +13,8 @@ Kinstrument::Kinstrument(QWidget *parent) :
 
 	_indicator_tab = new Kinstrument_indicator_tab(this);
 
-	connect(_K_tab, SIGNAL(paint_indicator(Kinstrument_indicator_scene::ind_type, timeMode_t)),
-		_indicator_tab, SLOT(paint(Kinstrument_indicator_scene::ind_type, timeMode_t)));
+	connect(_K_tab, &Kinstrument_Kline_tab::paint_indicator,
+		_indicator_tab, &Kinstrument_indicator_tab::paint);
 
 	connect(_K_tab, SIGNAL(signalViewEvent(std::shared_ptr<view_event>)), _indicator_tab, SLOT(slotViewEvent(std::shared_ptr<view_event>)));
 

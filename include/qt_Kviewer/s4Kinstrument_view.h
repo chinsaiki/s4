@@ -15,7 +15,7 @@
 namespace S4 {
 namespace QT {
 
-
+//指标和K线视图的基类
 class Kinstrument_view : public QGraphicsView
 {
     Q_OBJECT

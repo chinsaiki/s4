@@ -43,7 +43,7 @@ namespace S4
             int64_t         OfferApplSeqNum;
             int32_t         LastPx;
             int64_t         LastQty;
-            int8_t          ExecType;
+            QString         ExecType;
             uint64_t        TransactTime;
         };
 
@@ -103,18 +103,18 @@ namespace S4
                 const SBE_SSH_exe_t* pExec = (SBE_SSH_exe_t*)l2data->get();
                 data.BidApplSeqNum = pExec->TradeBuyNo;
                 data.OfferApplSeqNum = pExec->TradeSellNo;
-                data.LastPx = pExec->LastPx;
-                data.LastQty = pExec->LastQty;
-                data.ExecType = pExec->TradeBSFlag;
+                data.LastPx = L2_iPrice_tick_to_fPrice(pExec->LastPx);
+                data.LastQty = L2_Qty_to_hand(pExec->LastQty);
+                data.ExecType = sshExecTypeString(pExec->TradeBSFlag);
                 data.TransactTime = pExec->TradeTime;
             }else 
             if (pH->SecurityIDSource == 102 && pH->MsgType == __MsgType_SSZ_EXECUTION__ && pH->MsgLen == sizeof(SBE_SSZ_exe_t)){
                 const SBE_SSZ_exe_t* pExec = (SBE_SSZ_exe_t*)l2data->get();
                 data.BidApplSeqNum = pExec->BidApplSeqNum;
                 data.OfferApplSeqNum = pExec->OfferApplSeqNum;
-                data.LastPx = pExec->LastPx;
-                data.LastQty = pExec->LastQty;
-                data.ExecType = pExec->ExecType;
+                data.LastPx = L2_iPrice_tick_to_fPrice(pExec->LastPx);
+                data.LastQty = L2_Qty_to_hand(pExec->LastQty);
+                data.ExecType = sszExecTypeString(pExec->ExecType);
                 data.TransactTime = pExec->TransactTime;
             }
 
@@ -167,13 +167,35 @@ namespace S4
         {
             switch (t)
             {
-            case dataType_t::BidApplSeqNum: return "BidApplSeqNum";
-            case dataType_t::OfferApplSeqNum: return "OfferApplSeqNum";
-            case dataType_t::LastPx: return "LastPx";
-            case dataType_t::LastQty: return "LastQty";
-            case dataType_t::ExecType: return "ExecType";
-            case dataType_t::TransactTime: return "TransactTime";
+            case dataType_t::BidApplSeqNum: return QStringLiteral("买方订单号");
+            case dataType_t::OfferApplSeqNum: return QStringLiteral("卖方订单号");
+            case dataType_t::LastPx: return QStringLiteral("价格");
+            case dataType_t::LastQty: return QStringLiteral("手数");
+            case dataType_t::ExecType: return QStringLiteral("类型");
+            case dataType_t::TransactTime: return QStringLiteral("时间戳");
             default:return "";
+            }
+        }
+
+        QString sszExecTypeString(uint8_t ExecType) const
+        {
+            if (ExecType == '1'){
+                return QStringLiteral("成交");
+            }else if (ExecType == '2'){
+                return QStringLiteral("撤单");
+            }else{
+                return QStringLiteral("未知类型") + QString::number(ExecType);
+            }
+        }
+
+        QString sshExecTypeString(uint8_t ExecType) const
+        {
+            if (ExecType == 'B'){
+                return QStringLiteral("外盘");
+            }else if (ExecType == 'S'){
+                return QStringLiteral("内盘");
+            }else{
+                return QStringLiteral("未知类型") + QString::number(ExecType);
             }
         }
     };

@@ -1,4 +1,4 @@
-#include "qt_SnapViewer/s4SnapInstrument_table.h"
+﻿#include "qt_SnapViewer/s4SnapInstrument_table.h"
 #include "qt_SnapViewer/s4SnapInstrument_tableMarket.h"
 #include "qt_SnapViewer/s4SnapInstrument_tableBasic.h"
 namespace S4{
@@ -12,8 +12,8 @@ snapInstrument_table::snapInstrument_table(int snapLeves_nb, QWidget *parent):
     _market = new snapInstrument_tableMarket(snapLeves_nb, this);
     _basic = new snapInstrument_tableBasic(this);
 
-	addTab(_market, "market");
-	addTab(_basic, "basic");
+	addTab(_market, QStringLiteral("L2行情数据"));
+	addTab(_basic, QStringLiteral("基本面"));
 	setCurrentIndex(0);
 
 	connect(this, &snapInstrument_table::signal_L2Data_instrument_snap, (snapInstrument_tableMarket*)_market, &snapInstrument_tableMarket::onL2Data_instrument_snap);
