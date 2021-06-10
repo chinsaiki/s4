@@ -4,6 +4,7 @@
 
 #include <QGridLayout>
 #include <QHeaderView>
+#include <QSplitter>
 
 namespace S4{
 namespace QT{
@@ -23,6 +24,8 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
     // _level_tv->verticalHeader()->setMaximumHeight(24);
     // _level_tv->verticalHeader()->setMinimumHeight(5);
     _level_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
+	_level_tv->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);	//限制选择
+	_level_tv->setMaximumWidth(250);
     connect(this, &snapInstrument_tableMarket::signal_L2Data_instrument_snap, levels, &snapTableModel_level::refreshL2);
 
     _info_tv = new QTableView(this);
@@ -34,47 +37,44 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
     // _info_tv->verticalHeader()->setMaximumHeight(24);
     // _info_tv->verticalHeader()->setMinimumHeight(5);
     _info_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
+	_info_tv->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);	//限制选择
+	_info_tv->setMaximumWidth(250);
     connect(this, &snapInstrument_tableMarket::signal_L2Data_instrument_snap, infos, &snapTableModel_snapInfo::refreshL2);
 
     {
-        // const int nNumRows = levels->rowCount(QModelIndex());
-        // int nRowHeight = _level_tv->rowHeight(0);
-        // int nTableHeight = (nNumRows * nRowHeight) + _level_tv->horizontalHeader()->height() + 2 * _level_tv->frameWidth();
-        // _level_tv->setMinimumHeight(nTableHeight);
-        // _level_tv->setMaximumHeight(nTableHeight);
-        // _level_tv->resizeColumnsToContents();
-        // _level_tv->resizeRowsToContents();
+        const int nNumRows = levels->rowCount(QModelIndex());
+        _level_tv->resizeRowsToContents();
+        _level_tv->resizeColumnsToContents();
+        int nRowHeight = _level_tv->rowHeight(0);
+        int nTableHeight = (nNumRows * nRowHeight) + _level_tv->horizontalHeader()->height() + 2 * _level_tv->frameWidth();
+        _level_tv->setMinimumHeight(nTableHeight);
+        _level_tv->setMaximumHeight(nTableHeight);
 
     }
     
     {
-        // const int nNumRows = infos->rowCount(QModelIndex());
-        // int nRowHeight = _info_tv->rowHeight(0);
-        // int nTableHeight = (nNumRows * nRowHeight) + _info_tv->horizontalHeader()->height() + 2 * _info_tv->frameWidth();
-        // _info_tv->setMinimumHeight(nTableHeight);
-        // _info_tv->setMaximumHeight(nTableHeight);
-        // _info_tv->resizeColumnsToContents();
-        // _info_tv->resizeRowsToContents();
+        const int nNumRows = infos->rowCount(QModelIndex());
+        _info_tv->resizeRowsToContents();
+        _info_tv->resizeColumnsToContents();
+        int nRowHeight = _info_tv->rowHeight(0);
+        int nTableHeight = (nNumRows * nRowHeight) + _info_tv->horizontalHeader()->height() + 2 * _info_tv->frameWidth();
+        _info_tv->setMinimumHeight(nTableHeight);
+        _info_tv->setMaximumHeight(nTableHeight);
     }
 
-    //网格分割
-	QGridLayout *pLayout = new QGridLayout();
-	// pLayout->addWidget(_K_tab, 0, 0, 3, 6);			//3x6 row x col
-	// pLayout->addWidget(_cyc_tab, 0, 6, 3, 1);		//3x1
-	// pLayout->addWidget(_indicator_tab, 3, 0, 1, 6);	//1x6
-	// pLayout->addWidget(_basic_tab, 3, 6, 1, 1);		//1x1
-    pLayout->addWidget(_level_tv, 0, 0);
-    pLayout->addWidget(_info_tv, 20, 0);
+	//整体布局
+	QSplitter* splitter = new QSplitter(this);	//横排
+	splitter->addWidget(_level_tv);
+	splitter->addWidget(_info_tv);
+    QList<int> list;
+    list<<50<<50;//width 为 1:1:4
+    splitter->setSizes(list);
 
-	// _cyc_tab->setMaximumWidth(400);
-	// _basic_tab->setMaximumWidth(400);
-
-	// pLayout->setRowStretch(0, 3);			//
-	// pLayout->setRowStretch(3, 1);			//
-	// pLayout->setColumnStretch(0, 3);			//0列的拉伸系数
-	// pLayout->setColumnStretch(6, 1);			//6列的拉伸系数 (0=不拉伸)
-
+    //布局放进网格，使填充满
+	QGridLayout *pLayout = new QGridLayout(this);
+    pLayout->addWidget(splitter);
 	setLayout(pLayout);
+
 }
 
 

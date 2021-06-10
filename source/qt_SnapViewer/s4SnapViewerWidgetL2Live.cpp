@@ -69,64 +69,76 @@ bool transCode(const QString& raw_code, QString& mktCode)
 s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
     s4SnapViewerWidget(parent)
 {
+	//树表用于注册所关注的代码
 	_treeView = new unicTreeView(this);
 	_treeView->setStyle(QStyleFactory::create("windows"));
 	_treeView->setSortingEnabled(true);
 	_treeView->setMaximumWidth(150);
-	_treeView->setItemDelegate( new itemDelegateNumberOnly(0, 999999, this));
+	_treeView->setItemDelegate( new itemDelegateNumberOnly(0, 999999, this));	//可输入范围 TODO: 允许sz/sh前缀，显示备选
+	//编辑结束后触发代码合法性检查和自动补全
     connect(_treeView->itemDelegate(), &QAbstractItemDelegate::closeEditor, (unicTreeView*)_treeView, &unicTreeView::onItemChanged);
 
+	//Tab用于显示行情
 	_tabWidget = new QTabWidget(this);
     _tabWidget->setTabsClosable(true);
 
-    itemFormatDelegate* delegate = new itemFormatDelegate(this);
+	//表格用于显示市场数据状态
     _stats_tv = new QTableView(this);
-    _stats_tv->setItemDelegate(delegate);
-    _stats_model = new snapTableModel_L2Stats(_stats_tv);
+    _stats_tv->setItemDelegate(new itemFormatDelegate(this));	//高亮变化值
+    _stats_model = new snapTableModel_L2Stats(this);
     _stats_tv->setModel(_stats_model);
     _stats_tv->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     _stats_tv->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    // _stats_tv->verticalHeader()->setMaximumHeight(24);
-    // _stats_tv->verticalHeader()->setMinimumHeight(5);
-    _stats_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
+    // _stats_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
+	_stats_tv->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);	//限制选择
 	_stats_tv->setMaximumWidth(300);
 
-	QSplitter* splitterStats = new QSplitter(Qt::Orientation::Vertical, this);
+	//市场数据源 配置面板
 	_marketDataSource = new snapMarketDataSource(this);
+	_marketDataSource->onAdd();	//新增一个配置
+
+	//数据源与统计列布局
+	QSplitter* splitterStats = new QSplitter(Qt::Orientation::Vertical, this);	//竖排
 	splitterStats->addWidget(_marketDataSource);
 	splitterStats->addWidget(_stats_tv);
-
-	QSplitter* splitter = new QSplitter(this);
-	splitter->addWidget(_treeView);
-	splitter->addWidget(splitterStats);
-	splitter->addWidget(_tabWidget);
     QList<int> list;
-    list<<50<<50<<200;//width 为 50 100 200
+    list<<150<<200;//width 为 1:2
+	splitterStats->setSizes(list);
+
+	//整体布局
+	QSplitter* splitter = new QSplitter(this);	//横排
+	splitter->addWidget(splitterStats);
+	splitter->addWidget(_treeView);
+	splitter->addWidget(_tabWidget);
+    list<<50<<50<<200;//width 为 1:1:4
     splitter->setSizes(list);
 
-    //网格分割
+    //布局放进网格，使填充满
 	QGridLayout *pLayout = new QGridLayout(this);
     pLayout->addWidget(splitter);
 	setLayout(pLayout);
 
-	connect(_tabWidget, &QTabWidget::tabCloseRequested, this, &s4SnapViewerWidget::closeSnapTab);
-	connect(_tabWidget, &QTabWidget::tabCloseRequested, this, &s4SnapViewerWidgetL2Live::closeSnapTab);
-
-	// connect((unicTreeView*)_treeView, &unicTreeView::, this, &s4SnapViewerWidgetL2Live::dbTree_doubleClicked);
-	connect((unicTreeView*)_treeView, &unicTreeView::signal_newItem, this, &s4SnapViewerWidgetL2Live::openInstrumentTab);
-	connect((unicTreeView*)_treeView, &unicTreeView::signal_delItem, this, &s4SnapViewerWidgetL2Live::closeInstrumentTab);
-	connect((unicTreeView*)_treeView, &unicTreeView::signal_selectItem, this, &s4SnapViewerWidgetL2Live::setCurrentInstrument);
-	connect(this, &s4SnapViewerWidgetL2Live::signal_closeSnapTab, (unicTreeView*)_treeView, &unicTreeView::onDelItem);
-
+	//新建关注的代码列表，注册进树管理模块
 	newTree(AIM_SECURITY_TREE_NAME, {});
 	_aim_security_root = _tree_model->findItems(AIM_SECURITY_TREE_NAME).first();
 	_aim_security_root->setFlags(_aim_security_root->flags() & (~Qt::ItemIsEditable));
     ((unicTreeView*)_treeView)->onSetCurrentRoot(_aim_security_root);
 	((unicTreeView*)_treeView)->onSetTextFormater(&transCode);
 
-	_marketDataSource->onAdd();
+	//代码行情tab关闭后，触发清理
+	connect(_tabWidget, &QTabWidget::tabCloseRequested, this, &s4SnapViewerWidgetL2Live::closeSnapTab);
+	connect(this, &s4SnapViewerWidgetL2Live::signal_closeSnapTab, (unicTreeView*)_treeView, &unicTreeView::onDelItem);	//传递tab的名称，即代码
+
+	//关注的代码，新增、删除、选中时，触发tab动作
+	connect((unicTreeView*)_treeView, &unicTreeView::signal_newItem, this, &s4SnapViewerWidgetL2Live::openInstrumentTab);
+	connect((unicTreeView*)_treeView, &unicTreeView::signal_delItem, this, &s4SnapViewerWidgetL2Live::closeInstrumentTab);
+	connect((unicTreeView*)_treeView, &unicTreeView::signal_selectItem, this, &s4SnapViewerWidgetL2Live::setCurrentInstrument);
+
+	//市场数据源按下启动/停止时，触发建立/断开网络连接
 	connect(_marketDataSource, &snapMarketDataSource::signal_start, this, &s4SnapViewerWidgetL2Live::slot_startMDSource);
 	connect(_marketDataSource, &snapMarketDataSource::signal_stop, this, &s4SnapViewerWidgetL2Live::slot_stopMDSource);
+
+	//开启市场数据代理线程
     startMDAgent();
 }
 void s4SnapViewerWidgetL2Live::startMDAgent()
