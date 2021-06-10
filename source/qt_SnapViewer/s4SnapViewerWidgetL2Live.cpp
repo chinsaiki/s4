@@ -82,6 +82,12 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
 	_tabWidget = new QTabWidget(this);
     _tabWidget->setTabsClosable(true);
 
+	//市场数据源 配置面板
+	_marketDataSource = new snapMarketDataSource(this);
+	_marketDataSource->setMaximumWidth(260);
+	_marketDataSource->setMaximumHeight(220);
+	_marketDataSource->onAdd();	//新增一个配置
+
 	//表格用于显示市场数据状态
     _stats_tv = new QTableView(this);
     _stats_tv->setItemDelegate(new itemFormatDelegate(this));	//高亮变化值
@@ -91,11 +97,8 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
     _stats_tv->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     // _stats_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
 	_stats_tv->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);	//限制选择
-	_stats_tv->setMaximumWidth(300);
+	_stats_tv->setMaximumWidth(260);
 
-	//市场数据源 配置面板
-	_marketDataSource = new snapMarketDataSource(this);
-	_marketDataSource->onAdd();	//新增一个配置
 
 	//数据源与统计列布局
 	QSplitter* splitterStats = new QSplitter(Qt::Orientation::Vertical, this);	//竖排
