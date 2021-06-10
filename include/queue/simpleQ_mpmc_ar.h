@@ -314,12 +314,13 @@ protected:
 };
 
 inline void simpleQ_mpmc_ar_test() {
-#if defined(__linux__)
-#define C_P64 "l"
-#else
-#define C_P64 "I64"
+#ifndef C_P64
+#  if defined(__linux__)
+#    define C_P64 "l"
+#  else
+#    define C_P64 "I64"
+#  endif
 #endif
-
     struct header_t
 	{
 		size_t length = 0;
