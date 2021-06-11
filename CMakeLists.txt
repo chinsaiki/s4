@@ -117,8 +117,6 @@ message(STATUS "OpenSSL version: ${OPENSSL_VERSION} ${OPENSSL_INCLUDE_DIR} ${OPE
 #   message(STATUS "iomp5_LIBRARY= ${iomp5_LIBRARY}")
 # endif()
 
-
-
 ## Link libraries
 list(APPEND LINKLIBS ${OPENSSL_LIBRARIES})
 if(WIN32)
@@ -254,8 +252,36 @@ endif()
 #           "${PROJECT_SOURCE_DIR}/build/S4_autogen/include_Debug/${ui_name}.h")                 # <--this is out-file path
 # endforeach()
 
+add_custom_command(TARGET ${PROJECT_NAME}
+  PRE_BUILD
+  COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_CURRENT_BINARY_DIR}/windeployqt"
+)
+
 ## Additional module components: benchmarks, examples, plugins, tests, tools and install
 if(NOT AI_basic_MODULE)
+
+  ## for QT public
+  if(Qt5_FOUND AND WIN32 AND TARGET Qt5::qmake AND NOT TARGET Qt5::windeployqt)
+      get_target_property(_qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
+
+      execute_process(
+          COMMAND "${_qt5_qmake_location}" -query QT_INSTALL_PREFIX
+          RESULT_VARIABLE return_code
+          OUTPUT_VARIABLE qt5_install_prefix
+          OUTPUT_STRIP_TRAILING_WHITESPACE
+      )
+
+      set(imported_location "${qt5_install_prefix}/bin/windeployqt.exe")
+
+      if(EXISTS ${imported_location})
+          add_executable(Qt5::windeployqt IMPORTED)
+
+          set_target_properties(Qt5::windeployqt PROPERTIES
+              IMPORTED_LOCATION ${imported_location}
+          )
+      endif()
+  endif()
+
   # Application
   file(GLOB APP_HEADER_FILES "application/*.h")
   file(GLOB APP_INLINE_FILES "application/*.inl")
@@ -269,6 +295,20 @@ if(NOT AI_basic_MODULE)
     set_target_properties(${APP_TARGET} PROPERTIES FOLDER application)
     list(APPEND INSTALL_TARGETS ${APP_TARGET})
     list(APPEND INSTALL_TARGETS_PDB ${APP_TARGET})
+
+    ## QT public
+    if(${APP_NAME} MATCHES "^qt")
+      message(STATUS "QT deploy:${APP_NAME}")
+      if(TARGET Qt5::windeployqt)
+        # execute windeployqt in a tmp directory after build
+        add_custom_command(TARGET ${APP_TARGET}
+            POST_BUILD
+            COMMAND set PATH=%PATH%$<SEMICOLON>${qt5_install_prefix}/bin
+            COMMAND Qt5::windeployqt --dir "${CMAKE_CURRENT_BINARY_DIR}/windeployqt" "$<TARGET_FILE_DIR:${APP_TARGET}>/$<TARGET_FILE_NAME:${APP_TARGET}>"
+        )
+      endif()
+    endif()
+
   endforeach()
   
   # Install
@@ -277,10 +317,23 @@ if(NOT AI_basic_MODULE)
     LIBRARY DESTINATION "${PROJECT_SOURCE_DIR}/bin"
     ARCHIVE DESTINATION "${PROJECT_SOURCE_DIR}/bin")
 
-  # Install *.pdb files
-  if(MSVC)
-    foreach(INSTALL_TARGET_PDB ${INSTALL_TARGETS_PDB})
-      install(FILES $<TARGET_PDB_FILE:${INSTALL_TARGET_PDB}> DESTINATION "${PROJECT_SOURCE_DIR}/bin")
-    endforeach()
+  if(TARGET Qt5::windeployqt)
+    # copy deployment directory during installation
+    install(
+        DIRECTORY
+        "${CMAKE_CURRENT_BINARY_DIR}/windeployqt/"
+        DESTINATION "${PROJECT_SOURCE_DIR}/bin/"
+    )
   endif()
+
+  set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP TRUE)
+
+  include(InstallRequiredSystemLibraries)
+
+  install(
+      PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
+      DESTINATION "${PROJECT_SOURCE_DIR}/bin/"
+  )
+
 endif()
+
