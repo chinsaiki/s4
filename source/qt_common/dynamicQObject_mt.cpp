@@ -23,9 +23,11 @@
 
 #include "qt_common/dynamicQObject_mt.h"
 
+Q_DECLARE_METATYPE(S4::sharedCharArray_ptr)
+
+
 namespace S4{
 
-Q_DECLARE_METATYPE(sharedCharArray_ptr);
 
 bool DynamicQObject_mt::connectDynamicSignal(const char *signal, QObject *obj, const char *slot)
 {
@@ -61,8 +63,6 @@ bool DynamicQObject_mt::connectDynamicSignal(const char *signal, QObject *obj, c
 bool DynamicQObject_mt::emitDynamicSignal(const char *signal, sharedCharArray_ptr _t1)
 {
 	qRegisterMetaType<sharedCharArray_ptr>();
-
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
 
     QByteArray theSignal = QMetaObject::normalizedSignature(signal);
     int signalId = signalIndices.value(theSignal, -1);

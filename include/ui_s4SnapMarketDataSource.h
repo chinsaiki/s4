@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 's4SnapMarketDataSource.ui'
 **
-** Created by: Qt User Interface Compiler version 5.11.1
+** Created by: Qt User Interface Compiler version 5.12.9
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -29,22 +29,22 @@ public:
     void setupUi(QWidget *snapMarketDataSource)
     {
         if (snapMarketDataSource->objectName().isEmpty())
-            snapMarketDataSource->setObjectName(QStringLiteral("snapMarketDataSource"));
+            snapMarketDataSource->setObjectName(QString::fromUtf8("snapMarketDataSource"));
         snapMarketDataSource->resize(400, 300);
         StartButton = new QPushButton(snapMarketDataSource);
-        StartButton->setObjectName(QStringLiteral("StartButton"));
+        StartButton->setObjectName(QString::fromUtf8("StartButton"));
         StartButton->setGeometry(QRect(0, 0, 50, 23));
         AddButton = new QPushButton(snapMarketDataSource);
-        AddButton->setObjectName(QStringLiteral("AddButton"));
+        AddButton->setObjectName(QString::fromUtf8("AddButton"));
         AddButton->setGeometry(QRect(55, 0, 50, 23));
         ImportButton = new QPushButton(snapMarketDataSource);
-        ImportButton->setObjectName(QStringLiteral("ImportButton"));
+        ImportButton->setObjectName(QString::fromUtf8("ImportButton"));
         ImportButton->setGeometry(QRect(110, 0, 50, 23));
         ExportButton = new QPushButton(snapMarketDataSource);
-        ExportButton->setObjectName(QStringLiteral("ExportButton"));
+        ExportButton->setObjectName(QString::fromUtf8("ExportButton"));
         ExportButton->setGeometry(QRect(165, 0, 50, 23));
         tabWidget = new QTabWidget(snapMarketDataSource);
-        tabWidget->setObjectName(QStringLiteral("tabWidget"));
+        tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
         tabWidget->setGeometry(QRect(0, 30, 401, 261));
 
         retranslateUi(snapMarketDataSource);

@@ -23,13 +23,14 @@
 
 using namespace std;
 
+Q_DECLARE_METATYPE(S4::NW::L2Stats_t)
+Q_DECLARE_METATYPE(std::string)
+
 namespace S4 {
 namespace QT {
 
 //CREATE_LOCAL_LOGGER("qt_SnapViewer")
 #define AIM_SECURITY_TREE_NAME QStringLiteral("双击添加代码")
-Q_DECLARE_METATYPE(NW::L2Stats_t);
-Q_DECLARE_METATYPE(std::string);
 
 bool transCode(const QString& raw_code, QString& mktCode)
 {

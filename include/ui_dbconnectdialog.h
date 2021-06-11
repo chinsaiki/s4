@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'dbconnectdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.11.1
+** Created by: Qt User Interface Compiler version 5.12.9
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -38,7 +38,7 @@ public:
     void setupUi(QDialog *DbConnectDialog)
     {
         if (DbConnectDialog->objectName().isEmpty())
-            DbConnectDialog->setObjectName(QStringLiteral("DbConnectDialog"));
+            DbConnectDialog->setObjectName(QString::fromUtf8("DbConnectDialog"));
         DbConnectDialog->resize(400, 431);
         QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
         sizePolicy.setHorizontalStretch(0);
@@ -47,11 +47,11 @@ public:
         DbConnectDialog->setSizePolicy(sizePolicy);
         DbConnectDialog->setModal(true);
         verticalLayout_2 = new QVBoxLayout(DbConnectDialog);
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         label = new QLabel(DbConnectDialog);
-        label->setObjectName(QStringLiteral("label"));
+        label->setObjectName(QString::fromUtf8("label"));
         QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
         sizePolicy1.setHorizontalStretch(1);
         sizePolicy1.setVerticalStretch(1);
@@ -62,7 +62,7 @@ public:
 
         comboBox = new QComboBox(DbConnectDialog);
         comboBox->addItem(QString());
-        comboBox->setObjectName(QStringLiteral("comboBox"));
+        comboBox->setObjectName(QString::fromUtf8("comboBox"));
         sizePolicy1.setHeightForWidth(comboBox->sizePolicy().hasHeightForWidth());
         comboBox->setSizePolicy(sizePolicy1);
 
@@ -76,7 +76,7 @@ public:
         verticalLayout_2->addItem(horizontalSpacer);
 
         splitter = new QSplitter(DbConnectDialog);
-        splitter->setObjectName(QStringLiteral("splitter"));
+        splitter->setObjectName(QString::fromUtf8("splitter"));
         QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Preferred);
         sizePolicy2.setHorizontalStretch(0);
         sizePolicy2.setVerticalStretch(0);
@@ -84,15 +84,15 @@ public:
         splitter->setSizePolicy(sizePolicy2);
         splitter->setOrientation(Qt::Horizontal);
         label_2 = new QLabel(splitter);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setObjectName(QString::fromUtf8("label_2"));
         splitter->addWidget(label_2);
 
         verticalLayout_2->addWidget(splitter);
 
         verticalLayout = new QVBoxLayout();
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         buttonBox = new QDialogButtonBox(DbConnectDialog);
-        buttonBox->setObjectName(QStringLiteral("buttonBox"));
+        buttonBox->setObjectName(QString::fromUtf8("buttonBox"));
         QSizePolicy sizePolicy3(QSizePolicy::Expanding, QSizePolicy::Fixed);
         sizePolicy3.setHorizontalStretch(0);
         sizePolicy3.setVerticalStretch(0);

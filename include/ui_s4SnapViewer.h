@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 's4SnapViewer.ui'
 **
-** Created by: Qt User Interface Compiler version 5.11.1
+** Created by: Qt User Interface Compiler version 5.12.9
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -42,41 +42,41 @@ public:
     void setupUi(QMainWindow *s4SnapViewer)
     {
         if (s4SnapViewer->objectName().isEmpty())
-            s4SnapViewer->setObjectName(QStringLiteral("s4SnapViewer"));
+            s4SnapViewer->setObjectName(QString::fromUtf8("s4SnapViewer"));
         s4SnapViewer->resize(800, 604);
         s4SnapViewer->setMinimumSize(QSize(0, 604));
         s4SnapViewer->setBaseSize(QSize(0, 20));
         actionExit = new QAction(s4SnapViewer);
-        actionExit->setObjectName(QStringLiteral("actionExit"));
+        actionExit->setObjectName(QString::fromUtf8("actionExit"));
         actionNextSnap = new QAction(s4SnapViewer);
-        actionNextSnap->setObjectName(QStringLiteral("actionNextSnap"));
+        actionNextSnap->setObjectName(QString::fromUtf8("actionNextSnap"));
         action_mode_L2Live = new QAction(s4SnapViewer);
-        action_mode_L2Live->setObjectName(QStringLiteral("action_mode_L2Live"));
+        action_mode_L2Live->setObjectName(QString::fromUtf8("action_mode_L2Live"));
         action_mode_tdxDB = new QAction(s4SnapViewer);
-        action_mode_tdxDB->setObjectName(QStringLiteral("action_mode_tdxDB"));
+        action_mode_tdxDB->setObjectName(QString::fromUtf8("action_mode_tdxDB"));
         actionOpen = new QAction(s4SnapViewer);
-        actionOpen->setObjectName(QStringLiteral("actionOpen"));
+        actionOpen->setObjectName(QString::fromUtf8("actionOpen"));
         actionClose = new QAction(s4SnapViewer);
-        actionClose->setObjectName(QStringLiteral("actionClose"));
+        actionClose->setObjectName(QString::fromUtf8("actionClose"));
         centralwidget = new QWidget(s4SnapViewer);
-        centralwidget->setObjectName(QStringLiteral("centralwidget"));
+        centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         verticalLayout_2 = new QVBoxLayout(centralwidget);
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
         s4SnapViewer->setCentralWidget(centralwidget);
         menubar = new QMenuBar(s4SnapViewer);
-        menubar->setObjectName(QStringLiteral("menubar"));
+        menubar->setObjectName(QString::fromUtf8("menubar"));
         menubar->setGeometry(QRect(0, 0, 800, 23));
         menuFile = new QMenu(menubar);
-        menuFile->setObjectName(QStringLiteral("menuFile"));
+        menuFile->setObjectName(QString::fromUtf8("menuFile"));
         menuMode_2 = new QMenu(menuFile);
-        menuMode_2->setObjectName(QStringLiteral("menuMode_2"));
+        menuMode_2->setObjectName(QString::fromUtf8("menuMode_2"));
         menuExport = new QMenu(menubar);
-        menuExport->setObjectName(QStringLiteral("menuExport"));
+        menuExport->setObjectName(QString::fromUtf8("menuExport"));
         menuExport_2 = new QMenu(menuExport);
-        menuExport_2->setObjectName(QStringLiteral("menuExport_2"));
+        menuExport_2->setObjectName(QString::fromUtf8("menuExport_2"));
         s4SnapViewer->setMenuBar(menubar);
         statusbar = new QStatusBar(s4SnapViewer);
-        statusbar->setObjectName(QStringLiteral("statusbar"));
+        statusbar->setObjectName(QString::fromUtf8("statusbar"));
         s4SnapViewer->setStatusBar(statusbar);
 
         menubar->addAction(menuFile->menuAction());

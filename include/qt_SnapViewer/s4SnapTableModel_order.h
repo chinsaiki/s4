@@ -76,7 +76,7 @@ namespace S4
             switch (index.column()) {
             case 0: return QVariant::fromValue(order.OrderNo);
             case 1: return order.Price;
-            case 2: return order.OrderQty;
+	    case 2: return QVariant::fromValue(order.OrderQty);
             case 3: return order.Side;
             case 4: return order.OrdType;
             case 5: return QVariant::fromValue(order.OrderTime);

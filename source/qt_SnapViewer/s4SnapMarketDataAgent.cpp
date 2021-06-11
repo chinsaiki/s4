@@ -39,8 +39,10 @@ void s4SnapMarketDataAgent::run()
             switch (pL2Data->pQdata->info.type)
             {
             case L2DataType::STATS_DATA:
-                L2Stats_t stats = *(L2Stats_t*)pL2Data->pQdata->pBuffer;
-                emit signal_L2Stats(stats);
+		{
+                    L2Stats_t stats = *(L2Stats_t*)pL2Data->pQdata->pBuffer;
+                    emit signal_L2Stats(stats);
+		}
                 break;
             case L2DataType::MARKET_DATA:
                 emit signal_L2Data(pL2Data);

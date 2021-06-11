@@ -21,9 +21,9 @@
 **
 ****************************************************************************/
 
-#include "qt_test\calculator.h"
-#include "qt_test\subclass.h"
-#include "qt_test\editscriptdialog.h"
+#include "qt_test/calculator.h"
+#include "qt_test/subclass.h"
+#include "qt_test/editscriptdialog.h"
 
 Calculator::Calculator(QWidget *parent) : QWidget(parent)
 {
