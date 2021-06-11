@@ -10,6 +10,7 @@
 #include <QDebug>
 #include <QMouseEvent>
 #include <QTableView>
+#include <QLabel>
 
 
 namespace S4{
@@ -56,6 +57,9 @@ private:
     
     //
     QTableView* _exec_tv;
+
+    QLabel* _order_cnt;
+    QLabel* _exec_cnt;
 
 private:
 

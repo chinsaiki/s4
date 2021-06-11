@@ -7,6 +7,8 @@
 #include <QGridLayout>
 #include <QHeaderView>
 #include <QSplitter>
+#include <QLineEdit>
+#include <QLabel>
 
 namespace S4{
 namespace QT{
@@ -75,6 +77,14 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
 	_order_tv->setMaximumWidth(750);
     connect(this, &snapInstrument_tableMarket::signal_L2Data_order, orders, &snapTableModel_order::refreshL2);
 
+    QLabel* orderLabel = new QLabel(QStringLiteral("逐笔订单："), this);
+    _order_cnt = new QLabel(this);
+    _order_cnt->setMaximumHeight(26);
+	QSplitter* splitterOrderSt = new QSplitter(this);
+    splitterOrderSt->addWidget(orderLabel);
+    splitterOrderSt->addWidget(_order_cnt);
+	splitterOrderSt->setSizes({ 50, 100 });
+
 	_exec_tv = new QTableView(this);
 	_exec_tv->setItemDelegate(delegate);
 	snapTableModel_exec* execs = new snapTableModel_exec(_exec_tv);
@@ -87,15 +97,27 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
 	_exec_tv->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);	//限制选择
 	_exec_tv->setMaximumWidth(750);
 	connect(this, &snapInstrument_tableMarket::signal_L2Data_exec, execs, &snapTableModel_exec::refreshL2);
+    QLabel* execLabel = new QLabel(QStringLiteral("逐笔成交："), this);
+    _exec_cnt = new QLabel(this);
+    _exec_cnt->setMaximumHeight(26);
+	QSplitter* splitterExecSt = new QSplitter(this);
+    splitterExecSt->addWidget(execLabel);
+    splitterExecSt->addWidget(_exec_cnt);
+	splitterExecSt->setSizes({ 50, 100 });
 
 	//整体布局
 	QSplitter* splitter = new QSplitter(this);	//横排
 	splitter->addWidget(_level_tv);
 	splitter->addWidget(_info_tv);
+
 	QSplitter* splitterV = new QSplitter(Qt::Orientation::Vertical, this);	//竖排
+	splitterV->addWidget(splitterOrderSt);
 	splitterV->addWidget(_order_tv);
+	splitterV->addWidget(splitterExecSt);
 	splitterV->addWidget(_exec_tv);
-	splitterV->setSizes({ 150, 150 });
+	splitterV->setSizes({ 26, 150, 26, 150 });
+
+
 	splitter->addWidget(splitterV);
     splitter->setSizes({50, 50, 150});
 
