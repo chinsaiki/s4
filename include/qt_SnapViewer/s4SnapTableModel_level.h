@@ -203,6 +203,8 @@ namespace S4
                 return QStringLiteral("八");
             case 9:
                 return QStringLiteral("九");
+            case 10:
+                return QStringLiteral("十");
             default:
                 return {};
             };
