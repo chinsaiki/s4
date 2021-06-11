@@ -160,6 +160,18 @@ bool chk_stk_date_legal(time_date_t date)
 }
 
 
+std::string ms_to_str(uint64_t ms)
+{
+	time_t utc = ms / 1000;
+	int _ms = (int)(ms % 1000);
+	utc += 3600 *8;
+	char s[64];
+	struct tm ltm = *gmtime(&utc);  //fix asia:shanghai inside
+	strftime(s, 64, "%H_%M_%S", &ltm);
+	sprintf(s + strlen(s), "'%d", _ms);
+	return std::move(s);
+
+}
 
 
 

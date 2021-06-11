@@ -88,14 +88,14 @@ class simpleQ_mpmc_ar_t:
     public simpleQ_t<std::shared_ptr<queParticle_ar_t<extInfoT>>>,
     public std::enable_shared_from_this<simpleQ_mpmc_ar_t<extInfoT>>
 {
-public:
+protected:
 	typedef std::shared_ptr<queParticle_t<extInfoT>> queParticle_ptr_t;
 
     typedef moodycamel::BlockingConcurrentQueue<queParticle_ptr_t> queue_t;
 	typedef std::shared_ptr<queue_t> queue_ptr_t;
 
 public:
-typedef std::shared_ptr<queParticle_ar_t<extInfoT>> queParticle_arPtr_t;
+    typedef std::shared_ptr<queParticle_ar_t<extInfoT>> queParticle_arPtr_t;
 public:
 	simpleQ_mpmc_ar_t(unsigned int init_depth, size_t page_size, bool all_memalign):
     	_page_size(page_size),

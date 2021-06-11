@@ -110,7 +110,7 @@ namespace S4
                 if (key == dataType_t::High) data.push_back(iPrice_to_fPrice(snap.high));
                 if (key == dataType_t::Low) data.push_back(iPrice_to_fPrice(snap.low));
                 if (key == dataType_t::TotalVolume) data.push_back(snap.vol);
-                if (key == dataType_t::TotalAmount) data.push_back(QString::number((snap.amount)/_KW) + " 千万");
+                if (key == dataType_t::TotalAmount) data.push_back(QString::number((snap.amount)/_KW) + QStringLiteral(" 千万"));
                 if (key == dataType_t::CurrentVolume) data.push_back(snap.cur_vol);
                 if (key == dataType_t::SellVolume) data.push_back(snap.s_vol);
                 if (key == dataType_t::BuyVolume) data.push_back(snap.b_vol);
@@ -139,7 +139,7 @@ namespace S4
                     if (key == dataType_t::High) data.push_back(L2_iPrice_snap_to_fPrice(pSnap->HighPx));
                     if (key == dataType_t::Low) data.push_back(L2_iPrice_snap_to_fPrice(pSnap->LowPx));
                     if (key == dataType_t::TotalVolume) data.push_back(QVariant::fromValue(pSnap->TotalVolumeTrade/L2_Qty_precision));
-                    if (key == dataType_t::TotalAmount) data.push_back(QString::number((pSnap->TotalValueTrade/L2_Amt_precision)/_KW) + " 千万");
+                    if (key == dataType_t::TotalAmount) data.push_back(QString::number((pSnap->TotalValueTrade/L2_Amt_precision)/_KW) + QStringLiteral(" 千万"));
                     if (key == dataType_t::CurrentVolume) data.push_back(pSnap->NumTrades);
                     if (key == dataType_t::SellVolume) data.push_back(QVariant::fromValue(pSnap->AskWeightSize/L2_Qty_precision));
                     if (key == dataType_t::BuyVolume) data.push_back(QVariant::fromValue(pSnap->BidWeightSize/L2_Qty_precision));

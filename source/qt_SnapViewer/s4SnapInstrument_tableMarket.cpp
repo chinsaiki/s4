@@ -78,12 +78,13 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
     connect(this, &snapInstrument_tableMarket::signal_L2Data_order, orders, &snapTableModel_order::refreshL2);
 
     QLabel* orderLabel = new QLabel(QStringLiteral("逐笔订单："), this);
-    _order_cnt = new QLabel(this);
-    _order_cnt->setMaximumHeight(26);
+    _order_info = new QLabel(this);
+    _order_info->setMaximumHeight(26);
 	QSplitter* splitterOrderSt = new QSplitter(this);
     splitterOrderSt->addWidget(orderLabel);
-    splitterOrderSt->addWidget(_order_cnt);
+    splitterOrderSt->addWidget(_order_info);
 	splitterOrderSt->setSizes({ 50, 100 });
+    _order_cnt = 0;
 
 	_exec_tv = new QTableView(this);
 	_exec_tv->setItemDelegate(delegate);
@@ -98,12 +99,13 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
 	_exec_tv->setMaximumWidth(750);
 	connect(this, &snapInstrument_tableMarket::signal_L2Data_exec, execs, &snapTableModel_exec::refreshL2);
     QLabel* execLabel = new QLabel(QStringLiteral("逐笔成交："), this);
-    _exec_cnt = new QLabel(this);
-    _exec_cnt->setMaximumHeight(26);
+    _exec_info = new QLabel(this);
+    _exec_info->setMaximumHeight(26);
 	QSplitter* splitterExecSt = new QSplitter(this);
     splitterExecSt->addWidget(execLabel);
-    splitterExecSt->addWidget(_exec_cnt);
+    splitterExecSt->addWidget(_exec_info);
 	splitterExecSt->setSizes({ 50, 100 });
+    _exec_cnt = 0;
 
 	//整体布局
 	QSplitter* splitter = new QSplitter(this);	//横排
@@ -148,10 +150,14 @@ void snapInstrument_tableMarket::onL2Data_index_snap(const sharedCharArray_ptr& 
 }
 void snapInstrument_tableMarket::onL2Data_order(const sharedCharArray_ptr& s)
 {
+    _order_cnt++;
+    _order_info->setText(QStringLiteral("接收数量：") + QString::number(_order_cnt));
 	emit signal_L2Data_order(s);
 }
 void snapInstrument_tableMarket::onL2Data_exec(const sharedCharArray_ptr& s)
 {
+    _exec_cnt++;
+    _exec_info->setText(QStringLiteral("接收数量：") + QString::number(_exec_cnt));
 	emit signal_L2Data_exec(s);
 }
 

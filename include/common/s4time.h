@@ -36,7 +36,7 @@ time_utcSec_t tm_to_utc(const struct tm *ltm, int utcdiff=0);
 bool chk_stk_date_legal(time_date_t date);
 
 /**** 精度m秒 ***/
-
+std::string ms_to_str(uint64_t ms);
 
 
 /**** 精度n秒 ***/

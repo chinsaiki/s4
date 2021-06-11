@@ -23,10 +23,11 @@
 
 using namespace std;
 
-Q_DECLARE_METATYPE(S4::NW::L2Stats_t)
 Q_DECLARE_METATYPE(std::string)
 
 namespace S4 {
+Q_DECLARE_METATYPE(NW::L2Stats_t)
+
 namespace QT {
 
 //CREATE_LOCAL_LOGGER("qt_SnapViewer")

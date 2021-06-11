@@ -23,11 +23,11 @@
 
 #include "qt_common/dynamicQObject_mt.h"
 
-Q_DECLARE_METATYPE(S4::sharedCharArray_ptr)
 
 
 namespace S4{
 
+Q_DECLARE_METATYPE(sharedCharArray_ptr)
 
 bool DynamicQObject_mt::connectDynamicSignal(const char *signal, QObject *obj, const char *slot)
 {

@@ -10,10 +10,10 @@ snapInstrument_table::snapInstrument_table(int snapLeves_nb, QWidget *parent):
     setMouseTracking(true);
 
     _market = new snapInstrument_tableMarket(snapLeves_nb, this);
-    _basic = new snapInstrument_tableBasic(this);
+    // _basic = new snapInstrument_tableBasic(this);
 
 	addTab(_market, QStringLiteral("L2行情数据"));
-	addTab(_basic, QStringLiteral("基本面"));
+	// addTab(_basic, QStringLiteral("基本面"));
 	setCurrentIndex(0);
 
 	connect(this, &snapInstrument_table::signal_L2Data_instrument_snap, (snapInstrument_tableMarket*)_market, &snapInstrument_tableMarket::onL2Data_instrument_snap);

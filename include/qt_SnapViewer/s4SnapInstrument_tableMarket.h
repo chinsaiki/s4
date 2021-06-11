@@ -58,10 +58,13 @@ private:
     //
     QTableView* _exec_tv;
 
-    QLabel* _order_cnt;
-    QLabel* _exec_cnt;
+    QLabel* _order_info;
+    QLabel* _exec_info;
 
 private:
+
+    long long _order_cnt;
+    long long _exec_cnt;
 
 };
 
