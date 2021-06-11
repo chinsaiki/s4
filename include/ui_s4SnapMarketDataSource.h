@@ -58,10 +58,10 @@ public:
     void retranslateUi(QWidget *snapMarketDataSource)
     {
         snapMarketDataSource->setWindowTitle(QApplication::translate("snapMarketDataSource", "snapMarketDataSource", nullptr));
-        StartButton->setText(QApplication::translate("snapMarketDataSource", "Start", nullptr));
-        AddButton->setText(QApplication::translate("snapMarketDataSource", "Add", nullptr));
-        ImportButton->setText(QApplication::translate("snapMarketDataSource", "Import", nullptr));
-        ExportButton->setText(QApplication::translate("snapMarketDataSource", "Export", nullptr));
+        StartButton->setText(QApplication::translate("snapMarketDataSource", "\345\274\200\345\247\213", nullptr));
+        AddButton->setText(QApplication::translate("snapMarketDataSource", "\345\242\236\345\212\240", nullptr));
+        ImportButton->setText(QApplication::translate("snapMarketDataSource", "\345\257\274\345\205\245", nullptr));
+        ExportButton->setText(QApplication::translate("snapMarketDataSource", "\345\257\274\345\207\272", nullptr));
     } // retranslateUi
 
 };

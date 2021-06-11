@@ -31,29 +31,39 @@ Consumor接口：
 template<class extInfoT>
 class simpleQ_spmc_ar_t: public simpleQ_mpmc_ar_t<extInfoT>
 {
+
+protected:
+    typedef std::shared_ptr<queParticle_t<extInfoT>> queParticle_ptr_t;
+
+    typedef moodycamel::BlockingConcurrentQueue<queParticle_ptr_t> queue_t;
+    typedef std::shared_ptr<queue_t> queue_ptr_t;
+
+public:
+    typedef std::shared_ptr<queParticle_ar_t<extInfoT>> queParticle_arPtr_t;
+
 public:
 	simpleQ_spmc_ar_t(unsigned int init_depth, size_t page_size, bool all_memalign):
     	simpleQ_mpmc_ar_t<extInfoT>(init_depth, page_size, all_memalign)
     {
         //
-        ctok_dataPool = std::make_shared<moodycamel::ConsumerToken>(*_dataPool);    //dataPool : Consumer=1, Producer=n
-        ptok_dataPtoC = std::make_shared<moodycamel::ProducerToken>(*_dataPtoC);    //dataPtoC : Consumer=n, Producer=1
+        ctok_dataPool = std::make_shared<moodycamel::ConsumerToken>(*(this->_dataPool));    //dataPool : Consumer=1, Producer=n
+        ptok_dataPtoC = std::make_shared<moodycamel::ProducerToken>(*(this->_dataPtoC));    //dataPtoC : Consumer=n, Producer=1
     }
 
 	//生产者从数据池中获取数据，阻塞。
 	virtual void P_get(queParticle_arPtr_t& p) override
 	{
 		queParticle_ptr_t pool_data;
-		_dataPool->wait_dequeue(*ctok_dataPool, pool_data);
-        p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC, ptok_dataPtoC);
+		this->_dataPool->wait_dequeue(*ctok_dataPool, pool_data);
+        p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, this->_dataPtoC, ptok_dataPtoC);
     }
 
 	//生产者从数据池中获取数据，阻塞timeout_us时间后，若数据池为空则返回false。
     virtual bool P_get_timeout(queParticle_arPtr_t& p, long long us) override
 	{
 		queParticle_ptr_t pool_data;
-		if (_dataPool->wait_dequeue_timed(*ctok_dataPool, pool_data, us)) {
-            p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC, ptok_dataPtoC);
+		if (this->_dataPool->wait_dequeue_timed(*ctok_dataPool, pool_data, us)) {
+            p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, this->_dataPtoC, ptok_dataPtoC);
 			return true;
 		}
 		p = nullptr;
@@ -64,12 +74,12 @@ public:
 	virtual bool P_get_tryBest(queParticle_arPtr_t& p) override
 	{
         queParticle_ptr_t pool_data;
-        if (_dataPool->try_dequeue(*ctok_dataPool, pool_data)) {
-            p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, _dataPtoC, ptok_dataPtoC);
+        if (this->_dataPool->try_dequeue(*ctok_dataPool, pool_data)) {
+            p = std::make_shared<queParticle_ar_t<extInfoT>>(pool_data, this->_dataPtoC, ptok_dataPtoC);
             return true;
         }
 
-		if (!init_dataPool(64)){
+		if (!this->init_dataPool(64)){
             p = nullptr;
 			return false;
         }
