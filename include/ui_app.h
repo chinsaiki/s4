@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'app.ui'
 **
-** Created by: Qt User Interface Compiler version 5.11.1
+** Created by: Qt User Interface Compiler version 5.12.9
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -40,7 +40,7 @@ public:
     void setupUi(QWidget *Form)
     {
         if (Form->objectName().isEmpty())
-            Form->setObjectName(QStringLiteral("Form"));
+            Form->setObjectName(QString::fromUtf8("Form"));
         Form->resize(462, 299);
         vboxLayout = new QVBoxLayout(Form);
 #ifndef Q_OS_MAC
@@ -49,9 +49,9 @@ public:
 #ifndef Q_OS_MAC
         vboxLayout->setContentsMargins(9, 9, 9, 9);
 #endif
-        vboxLayout->setObjectName(QStringLiteral("vboxLayout"));
+        vboxLayout->setObjectName(QString::fromUtf8("vboxLayout"));
         label_2 = new QLabel(Form);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setObjectName(QString::fromUtf8("label_2"));
         label_2->setTextFormat(Qt::AutoText);
         label_2->setWordWrap(true);
 
@@ -62,9 +62,9 @@ public:
         hboxLayout->setSpacing(6);
 #endif
         hboxLayout->setContentsMargins(0, 0, 0, 0);
-        hboxLayout->setObjectName(QStringLiteral("hboxLayout"));
+        hboxLayout->setObjectName(QString::fromUtf8("hboxLayout"));
         inputA = new QSpinBox(Form);
-        inputA->setObjectName(QStringLiteral("inputA"));
+        inputA->setObjectName(QString::fromUtf8("inputA"));
 
         hboxLayout->addWidget(inputA);
 
@@ -73,24 +73,24 @@ public:
         vboxLayout1->setSpacing(6);
 #endif
         vboxLayout1->setContentsMargins(0, 0, 0, 0);
-        vboxLayout1->setObjectName(QStringLiteral("vboxLayout1"));
+        vboxLayout1->setObjectName(QString::fromUtf8("vboxLayout1"));
         plus = new QPushButton(Form);
-        plus->setObjectName(QStringLiteral("plus"));
+        plus->setObjectName(QString::fromUtf8("plus"));
 
         vboxLayout1->addWidget(plus);
 
         divide = new QPushButton(Form);
-        divide->setObjectName(QStringLiteral("divide"));
+        divide->setObjectName(QString::fromUtf8("divide"));
 
         vboxLayout1->addWidget(divide);
 
         multiply = new QPushButton(Form);
-        multiply->setObjectName(QStringLiteral("multiply"));
+        multiply->setObjectName(QString::fromUtf8("multiply"));
 
         vboxLayout1->addWidget(multiply);
 
         minus = new QPushButton(Form);
-        minus->setObjectName(QStringLiteral("minus"));
+        minus->setObjectName(QString::fromUtf8("minus"));
 
         vboxLayout1->addWidget(minus);
 
@@ -98,17 +98,17 @@ public:
         hboxLayout->addLayout(vboxLayout1);
 
         inputB = new QSpinBox(Form);
-        inputB->setObjectName(QStringLiteral("inputB"));
+        inputB->setObjectName(QString::fromUtf8("inputB"));
 
         hboxLayout->addWidget(inputB);
 
         label = new QLabel(Form);
-        label->setObjectName(QStringLiteral("label"));
+        label->setObjectName(QString::fromUtf8("label"));
 
         hboxLayout->addWidget(label);
 
         result = new QLineEdit(Form);
-        result->setObjectName(QStringLiteral("result"));
+        result->setObjectName(QString::fromUtf8("result"));
         result->setReadOnly(true);
 
         hboxLayout->addWidget(result);

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'sqlviewer.ui'
 **
-** Created by: Qt User Interface Compiler version 5.11.1
+** Created by: Qt User Interface Compiler version 5.12.9
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -47,27 +47,27 @@ public:
     void setupUi(QMainWindow *SqlViewer)
     {
         if (SqlViewer->objectName().isEmpty())
-            SqlViewer->setObjectName(QStringLiteral("SqlViewer"));
+            SqlViewer->setObjectName(QString::fromUtf8("SqlViewer"));
         SqlViewer->resize(809, 604);
         SqlViewer->setMinimumSize(QSize(0, 604));
         SqlViewer->setBaseSize(QSize(0, 20));
         actionOpen = new QAction(SqlViewer);
-        actionOpen->setObjectName(QStringLiteral("actionOpen"));
+        actionOpen->setObjectName(QString::fromUtf8("actionOpen"));
         actionExit = new QAction(SqlViewer);
-        actionExit->setObjectName(QStringLiteral("actionExit"));
+        actionExit->setObjectName(QString::fromUtf8("actionExit"));
         actionDatabase = new QAction(SqlViewer);
-        actionDatabase->setObjectName(QStringLiteral("actionDatabase"));
+        actionDatabase->setObjectName(QString::fromUtf8("actionDatabase"));
         actionCurrent_table_as_CSV = new QAction(SqlViewer);
-        actionCurrent_table_as_CSV->setObjectName(QStringLiteral("actionCurrent_table_as_CSV"));
+        actionCurrent_table_as_CSV->setObjectName(QString::fromUtf8("actionCurrent_table_as_CSV"));
         centralwidget = new QWidget(SqlViewer);
-        centralwidget->setObjectName(QStringLiteral("centralwidget"));
+        centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         verticalLayout_2 = new QVBoxLayout(centralwidget);
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
         splitter_3 = new QSplitter(centralwidget);
-        splitter_3->setObjectName(QStringLiteral("splitter_3"));
+        splitter_3->setObjectName(QString::fromUtf8("splitter_3"));
         splitter_3->setOrientation(Qt::Vertical);
         splitter_2 = new QSplitter(splitter_3);
-        splitter_2->setObjectName(QStringLiteral("splitter_2"));
+        splitter_2->setObjectName(QString::fromUtf8("splitter_2"));
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -76,7 +76,7 @@ public:
         splitter_2->setLayoutDirection(Qt::LeftToRight);
         splitter_2->setOrientation(Qt::Horizontal);
         dbTree = new QTreeView(splitter_2);
-        dbTree->setObjectName(QStringLiteral("dbTree"));
+        dbTree->setObjectName(QString::fromUtf8("dbTree"));
         QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
@@ -88,7 +88,7 @@ public:
         dbTree->setEditTriggers(QAbstractItemView::NoEditTriggers);
         splitter_2->addWidget(dbTree);
         tabWidget = new QTabWidget(splitter_2);
-        tabWidget->setObjectName(QStringLiteral("tabWidget"));
+        tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
         QSizePolicy sizePolicy2(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
         sizePolicy2.setHorizontalStretch(1);
         sizePolicy2.setVerticalStretch(0);
@@ -103,17 +103,17 @@ public:
 
         SqlViewer->setCentralWidget(centralwidget);
         menubar = new QMenuBar(SqlViewer);
-        menubar->setObjectName(QStringLiteral("menubar"));
+        menubar->setObjectName(QString::fromUtf8("menubar"));
         menubar->setGeometry(QRect(0, 0, 809, 23));
         menuFile = new QMenu(menubar);
-        menuFile->setObjectName(QStringLiteral("menuFile"));
+        menuFile->setObjectName(QString::fromUtf8("menuFile"));
         menuExport = new QMenu(menubar);
-        menuExport->setObjectName(QStringLiteral("menuExport"));
+        menuExport->setObjectName(QString::fromUtf8("menuExport"));
         menuExport_2 = new QMenu(menuExport);
-        menuExport_2->setObjectName(QStringLiteral("menuExport_2"));
+        menuExport_2->setObjectName(QString::fromUtf8("menuExport_2"));
         SqlViewer->setMenuBar(menubar);
         statusbar = new QStatusBar(SqlViewer);
-        statusbar->setObjectName(QStringLiteral("statusbar"));
+        statusbar->setObjectName(QString::fromUtf8("statusbar"));
         SqlViewer->setStatusBar(statusbar);
 
         menubar->addAction(menuFile->menuAction());

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 's4console.ui'
 **
-** Created by: Qt User Interface Compiler version 5.11.1
+** Created by: Qt User Interface Compiler version 5.12.9
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -24,10 +24,10 @@ public:
     void setupUi(QDialog *s4console)
     {
         if (s4console->objectName().isEmpty())
-            s4console->setObjectName(QStringLiteral("s4console"));
+            s4console->setObjectName(QString::fromUtf8("s4console"));
         s4console->resize(640, 480);
         verticalLayout = new QVBoxLayout(s4console);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
 
         retranslateUi(s4console);
 

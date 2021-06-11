@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 's4Kviewer.ui'
 **
-** Created by: Qt User Interface Compiler version 5.11.1
+** Created by: Qt User Interface Compiler version 5.12.9
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -35,27 +35,27 @@ public:
     void setupUi(QMainWindow *s4Kviewer)
     {
         if (s4Kviewer->objectName().isEmpty())
-            s4Kviewer->setObjectName(QStringLiteral("s4Kviewer"));
+            s4Kviewer->setObjectName(QString::fromUtf8("s4Kviewer"));
         s4Kviewer->resize(800, 600);
         actionOpen = new QAction(s4Kviewer);
-        actionOpen->setObjectName(QStringLiteral("actionOpen"));
+        actionOpen->setObjectName(QString::fromUtf8("actionOpen"));
         actionExit = new QAction(s4Kviewer);
-        actionExit->setObjectName(QStringLiteral("actionExit"));
+        actionExit->setObjectName(QString::fromUtf8("actionExit"));
         actionCallConsole = new QAction(s4Kviewer);
-        actionCallConsole->setObjectName(QStringLiteral("actionCallConsole"));
+        actionCallConsole->setObjectName(QString::fromUtf8("actionCallConsole"));
         centralwidget = new QWidget(s4Kviewer);
-        centralwidget->setObjectName(QStringLiteral("centralwidget"));
+        centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         s4Kviewer->setCentralWidget(centralwidget);
         menubar = new QMenuBar(s4Kviewer);
-        menubar->setObjectName(QStringLiteral("menubar"));
+        menubar->setObjectName(QString::fromUtf8("menubar"));
         menubar->setGeometry(QRect(0, 0, 800, 23));
         menuFile = new QMenu(menubar);
-        menuFile->setObjectName(QStringLiteral("menuFile"));
+        menuFile->setObjectName(QString::fromUtf8("menuFile"));
         menuconsole = new QMenu(menubar);
-        menuconsole->setObjectName(QStringLiteral("menuconsole"));
+        menuconsole->setObjectName(QString::fromUtf8("menuconsole"));
         s4Kviewer->setMenuBar(menubar);
         statusbar = new QStatusBar(s4Kviewer);
-        statusbar->setObjectName(QStringLiteral("statusbar"));
+        statusbar->setObjectName(QString::fromUtf8("statusbar"));
         s4Kviewer->setStatusBar(statusbar);
 
         menubar->addAction(menuFile->menuAction());
