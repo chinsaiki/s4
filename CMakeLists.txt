@@ -161,28 +161,28 @@ foreach(auto_file ${qt_auto_list})
 endforeach()
 
 
-set(ui_headers_auto "")
-foreach(ui_h ${ui_headers})
-  STRING(REGEX REPLACE ".+/(.+)\\..*" "\\1" ui_name ${ui_h})
-  message(STATUS "ui_h = ${ui_h}")
-  # message(STATUS "ui_name = ${ui_name}")
-  IF(EXISTS "${ui_h}")
-    file(REMOVE "${PROJECT_SOURCE_DIR}/include/${ui_h}")
-    file(COPY "${ui_h}" DESTINATION "${PROJECT_SOURCE_DIR}/include/")
-    # list(APPEND ui_headers_auto "${PROJECT_SOURCE_DIR}/build/S4_autogen/include_Debug/${ui_name}.h")
-  else()
-    message(STATUS "^^^^^^^^^^^^^^^^^^^^^ missing")
-  endif()
-  # add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD        # Adds a post-build event to MyTest
-  #     COMMAND ${CMAKE_COMMAND} -E copy_if_different  # which executes "cmake - E copy_if_different..."
-  #         "${ui_h}"      # <--this is in-file
-  #         "${PROJECT_SOURCE_DIR}/build/S4_autogen/include_Debug/${ui_name}.h")                 # <--this is out-file path
-endforeach()
-message(STATUS "ui_headers_auto = ${ui_headers_auto}")
+# set(ui_headers_auto "")
+# foreach(ui_h ${ui_headers})
+#   STRING(REGEX REPLACE ".+/(.+)\\..*" "\\1" ui_name ${ui_h})
+#   message(STATUS "ui_h = ${ui_h}")
+#   # message(STATUS "ui_name = ${ui_name}")
+#   IF(EXISTS "${ui_h}")
+#     file(REMOVE "${PROJECT_SOURCE_DIR}/include/${ui_h}")
+#     file(COPY "${ui_h}" DESTINATION "${PROJECT_SOURCE_DIR}/include/")
+#     # list(APPEND ui_headers_auto "${PROJECT_SOURCE_DIR}/build/S4_autogen/include_Debug/${ui_name}.h")
+#   else()
+#     message(STATUS "^^^^^^^^^^^^^^^^^^^^^ missing")
+#   endif()
+#   # add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD        # Adds a post-build event to MyTest
+#   #     COMMAND ${CMAKE_COMMAND} -E copy_if_different  # which executes "cmake - E copy_if_different..."
+#   #         "${ui_h}"      # <--this is in-file
+#   #         "${PROJECT_SOURCE_DIR}/build/S4_autogen/include_Debug/${ui_name}.h")                 # <--this is out-file path
+# endforeach()
+# message(STATUS "ui_headers_auto = ${ui_headers_auto}")
 
 
 add_library(${PROJECT_NAME} STATIC  ${LIB_HEADER_FILES} ${LIB_INLINE_FILES} ${LIB_SOURCE_FILES} ${UI_FILES})
-target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include;")
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include;${CMAKE_CURRENT_BINARY_DIR};")
 
 
 ## collect GLOBAL_INCLUDE_LIST
@@ -289,12 +289,18 @@ if(NOT AI_basic_MODULE)
   foreach(APP_SOURCE_FILE ${APP_SOURCE_FILES})
     string(REGEX REPLACE "(.*)\\.cpp" "\\1" APP_NAME ${APP_SOURCE_FILE})
     set(APP_TARGET "${PROJECT_NAME}-${APP_NAME}")
+
     set_source_files_properties(application/${APP_SOURCE_FILE} PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS}")
     add_executable(${APP_TARGET} ${APP_HEADER_FILES} ${APP_INLINE_FILES} application/${APP_SOURCE_FILE})
     target_link_libraries(${APP_TARGET} ${LINKLIBS})
     set_target_properties(${APP_TARGET} PROPERTIES FOLDER application)
-    list(APPEND INSTALL_TARGETS ${APP_TARGET})
-    list(APPEND INSTALL_TARGETS_PDB ${APP_TARGET})
+
+    if (${APP_NAME} MATCHES "^test")
+      message(STATUS "No deploy:${APP_NAME}")
+    else()
+      list(APPEND INSTALL_TARGETS ${APP_TARGET})
+      list(APPEND INSTALL_TARGETS_PDB ${APP_TARGET})
+    endif()
 
     ## QT public
     if(${APP_NAME} MATCHES "^qt")
