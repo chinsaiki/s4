@@ -91,7 +91,7 @@ namespace S4
             return typeString(_title[section]);
         }
         
-        void refreshL2(const sharedCharArray_ptr& l2data){
+        void refreshL2(const S4::sharedCharArray_ptr& l2data){
             size_t sbe_size = l2data->size();
             if (sbe_size < sizeof(SBE_SSH_header_t)){
                 return;

@@ -27,13 +27,13 @@
 
 namespace S4{
 
-Q_DECLARE_METATYPE(sharedCharArray_ptr)
+Q_DECLARE_METATYPE(S4::sharedCharArray_ptr)
 
 bool DynamicQObject_mt::connectDynamicSignal(const char *signal, QObject *obj, const char *slot)
 {
     QString _signal(signal);
     QString _slot(slot);
-    if (!_signal.endsWith("(sharedCharArray_ptr)"))
+    if (!_signal.endsWith("(S4::sharedCharArray_ptr)"))
         return false;
 
     QByteArray theSignal = QMetaObject::normalizedSignature(signal);
@@ -50,7 +50,7 @@ bool DynamicQObject_mt::connectDynamicSignal(const char *signal, QObject *obj, c
         signalId = signalIndices.size();
         signalIndices[theSignal] = signalId;
         recverIndices[theSignal] = obj;
-        _slot.remove("(sharedCharArray_ptr)");
+        _slot.remove("(S4::sharedCharArray_ptr)");
         slotIndices[theSignal] = _slot;
         return true;
     }
@@ -62,7 +62,7 @@ bool DynamicQObject_mt::connectDynamicSignal(const char *signal, QObject *obj, c
 
 bool DynamicQObject_mt::emitDynamicSignal(const char *signal, sharedCharArray_ptr _t1)
 {
-	qRegisterMetaType<sharedCharArray_ptr>();
+	qRegisterMetaType<S4::sharedCharArray_ptr>();
 
     QByteArray theSignal = QMetaObject::normalizedSignature(signal);
     int signalId = signalIndices.value(theSignal, -1);
@@ -71,7 +71,7 @@ bool DynamicQObject_mt::emitDynamicSignal(const char *signal, sharedCharArray_pt
                       recverIndices.value(theSignal),
                       slotIndices.value(theSignal).toStdString().data(),
                       Qt::QueuedConnection,
-                      Q_ARG(sharedCharArray_ptr, _t1)
+                      Q_ARG(S4::sharedCharArray_ptr, _t1)
           );
     } else {
         return false;

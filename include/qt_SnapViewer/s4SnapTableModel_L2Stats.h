@@ -101,7 +101,7 @@ namespace S4
 
         }
     public slots:
-        void refresh(const struct NW::L2Stats_t &stats)
+        void refresh(const struct S4::NW::L2Stats_t &stats)
         {
             std::vector<QVariant> data;
             for (auto& key : _row_names){

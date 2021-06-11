@@ -88,7 +88,7 @@ struct SBE_SSH_ord_t
     int64_t         OrderQty;
     int8_t          Side;       //'B', 'S'
     int8_t          OrdType;    //'A', 'D'
-    uint32_t        OrderTime;
+    uint32_t        OrderTime;  //委托时间（百分之一秒）14302506 表示 14:30:25.06
     uint8_t         Resv[2];
 }PACKED;
 

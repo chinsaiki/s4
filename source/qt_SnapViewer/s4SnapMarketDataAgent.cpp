@@ -64,25 +64,25 @@ void s4SnapMarketDataAgent::run()
                     {
                     case __MsgType_SSZ_INDEX_SNAP__:
                         // emit signal_L2Data_index_snap(s);
-                        signalName = "signal_L2Data_index_snap" + securityID + "(sharedCharArray_ptr)";
+                        signalName = "signal_L2Data_index_snap" + securityID + "(S4::sharedCharArray_ptr)";
                         if (emitDynamicSignal(signalName.data(), s)) {
                         }
                         break;
                     case __MsgType_SSZ_INSTRUMENT_SNAP__:
                         // emit signal_L2Data_instrument_snap(s);
-						signalName = "signal_L2Data_instrument_snap" + securityID + "(sharedCharArray_ptr)";
+						signalName = "signal_L2Data_instrument_snap" + securityID + "(S4::sharedCharArray_ptr)";
                         if (emitDynamicSignal(signalName.data(), s)) {
 						}
                         break;
                     case __MsgType_SSZ_EXECUTION__:
                         // emit signal_L2Data_exec(s);
-                        signalName = "signal_L2Data_exec" + securityID + "(sharedCharArray_ptr)";
+                        signalName = "signal_L2Data_exec" + securityID + "(S4::sharedCharArray_ptr)";
                         if (emitDynamicSignal(signalName.data(), s)) {
                         }
                         break;
                     case __MsgType_SSZ_ORDER__:
                         // emit signal_L2Data_order(s);
-                        signalName = "signal_L2Data_order" + securityID + "(sharedCharArray_ptr)";
+                        signalName = "signal_L2Data_order" + securityID + "(S4::sharedCharArray_ptr)";
                         if (emitDynamicSignal(signalName.data(), s)) {
                         }
                         break;

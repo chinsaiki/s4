@@ -27,19 +27,19 @@ void snapInstrument_table::addSnaps(const std::vector<tdx_snap_t>& vSnap)
     ((snapInstrument_tableMarket*)_market)->addSnaps(vSnap);
 }
 
-void snapInstrument_table::onL2Data_instrument_snap(const sharedCharArray_ptr& s)
+void snapInstrument_table::onL2Data_instrument_snap(const S4::sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_instrument_snap(s);
 }
-void snapInstrument_table::onL2Data_index_snap(const sharedCharArray_ptr& s)
+void snapInstrument_table::onL2Data_index_snap(const S4::sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_index_snap(s);
 }
-void snapInstrument_table::onL2Data_order(const sharedCharArray_ptr& s)
+void snapInstrument_table::onL2Data_order(const S4::sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_order(s);
 }
-void snapInstrument_table::onL2Data_exec(const sharedCharArray_ptr& s)
+void snapInstrument_table::onL2Data_exec(const S4::sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_exec(s);
 }

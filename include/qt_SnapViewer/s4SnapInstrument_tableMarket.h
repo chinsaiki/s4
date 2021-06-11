@@ -35,15 +35,15 @@ public slots:
     // void addExecs(const std::vector<ssz_sbe_exec_t>&);
     
 public slots:
-	void onL2Data_instrument_snap(const sharedCharArray_ptr&);
-	void onL2Data_index_snap(const sharedCharArray_ptr&);
-	void onL2Data_order(const sharedCharArray_ptr&);
-	void onL2Data_exec(const sharedCharArray_ptr&);
+	void onL2Data_instrument_snap(const S4::sharedCharArray_ptr&);
+	void onL2Data_index_snap(const S4::sharedCharArray_ptr&);
+	void onL2Data_order(const S4::sharedCharArray_ptr&);
+	void onL2Data_exec(const S4::sharedCharArray_ptr&);
 signals:
-	void signal_L2Data_instrument_snap(const sharedCharArray_ptr&);
-	void signal_L2Data_index_snap(const sharedCharArray_ptr&);
-	void signal_L2Data_order(const sharedCharArray_ptr&);
-	void signal_L2Data_exec(const sharedCharArray_ptr&);
+	void signal_L2Data_instrument_snap(const S4::sharedCharArray_ptr&);
+	void signal_L2Data_index_snap(const S4::sharedCharArray_ptr&);
+	void signal_L2Data_order(const S4::sharedCharArray_ptr&);
+	void signal_L2Data_exec(const S4::sharedCharArray_ptr&);
     
 private:
     // 

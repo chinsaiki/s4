@@ -24,10 +24,9 @@
 using namespace std;
 
 Q_DECLARE_METATYPE(std::string)
+Q_DECLARE_METATYPE(S4::NW::L2Stats_t)
 
 namespace S4 {
-Q_DECLARE_METATYPE(NW::L2Stats_t)
-
 namespace QT {
 
 //CREATE_LOCAL_LOGGER("qt_SnapViewer")
@@ -153,7 +152,7 @@ void s4SnapViewerWidgetL2Live::startMDAgent()
 	}
 	_snapMarketDataLive = new s4SnapMarketDataAgent(_pL2DataQ, _pL2CmdQ);
 
-	qRegisterMetaType<struct NW::L2Stats_t>();
+	qRegisterMetaType<struct S4::NW::L2Stats_t>();
 	connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Stats, _stats_model, &snapTableModel_L2Stats::refresh);
 	_snapMarketDataLive->start();
 }
@@ -211,10 +210,10 @@ void s4SnapViewerWidgetL2Live::openInstrumentTab(const QString& code)
 			std::string signalName("signal_");
 			signalName += ss_name;
 			signalName += code.toStdString();
-			signalName += "(sharedCharArray_ptr)";
+			signalName += "(S4::sharedCharArray_ptr)";
 			std::string slotName("on");
 			slotName += ss_name;
-			slotName += "(sharedCharArray_ptr)";
+			slotName += "(S4::sharedCharArray_ptr)";
 			if (!_snapMarketDataLive->connectDynamicSignal(signalName.data(), pInstrument, slotName.c_str())) {
 				qDebug() << "connectDynamicSignal fail!";
 			}

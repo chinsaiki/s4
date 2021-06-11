@@ -31,12 +31,12 @@ public slots:
     virtual void delLive(mktCodeI_t);
 
 signals:
-	void signal_L2Stats(const struct NW::L2Stats_t&);
+	void signal_L2Stats(const struct S4::NW::L2Stats_t&);
 	void signal_L2Data(const NW::L2Data_arPtr_t&);
-	void signal_L2Data_instrument_snap(const sharedCharArray_ptr&);
-	void signal_L2Data_index_snap(const sharedCharArray_ptr&);
-	void signal_L2Data_order(const sharedCharArray_ptr&);
-	void signal_L2Data_exec(const sharedCharArray_ptr&);
+	void signal_L2Data_instrument_snap(const S4::sharedCharArray_ptr&);
+	void signal_L2Data_index_snap(const S4::sharedCharArray_ptr&);
+	void signal_L2Data_order(const S4::sharedCharArray_ptr&);
+	void signal_L2Data_exec(const S4::sharedCharArray_ptr&);
 
 protected:
     volatile bool m_stop;

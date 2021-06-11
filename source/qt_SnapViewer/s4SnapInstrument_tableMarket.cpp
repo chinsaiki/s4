@@ -140,21 +140,21 @@ void snapInstrument_tableMarket::addSnaps(const std::vector<tdx_snap_t>& vSnap)
     ((snapTableModel_snapInfo*)infos)->refresh(vSnap.back());
 }
 
-void snapInstrument_tableMarket::onL2Data_instrument_snap(const sharedCharArray_ptr& s)
+void snapInstrument_tableMarket::onL2Data_instrument_snap(const S4::sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_instrument_snap(s);
 }
-void snapInstrument_tableMarket::onL2Data_index_snap(const sharedCharArray_ptr& s)
+void snapInstrument_tableMarket::onL2Data_index_snap(const S4::sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_index_snap(s);
 }
-void snapInstrument_tableMarket::onL2Data_order(const sharedCharArray_ptr& s)
+void snapInstrument_tableMarket::onL2Data_order(const S4::sharedCharArray_ptr& s)
 {
     _order_cnt++;
     _order_info->setText(QStringLiteral("接收数量：") + QString::number(_order_cnt));
 	emit signal_L2Data_order(s);
 }
-void snapInstrument_tableMarket::onL2Data_exec(const sharedCharArray_ptr& s)
+void snapInstrument_tableMarket::onL2Data_exec(const S4::sharedCharArray_ptr& s)
 {
     _exec_cnt++;
     _exec_info->setText(QStringLiteral("接收数量：") + QString::number(_exec_cnt));
