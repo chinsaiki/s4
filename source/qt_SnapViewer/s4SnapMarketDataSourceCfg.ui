@@ -18,20 +18,20 @@
     <rect>
      <x>10</x>
      <y>40</y>
-     <width>31</width>
+     <width>51</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>IP:</string>
+    <string>监听IP</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_ip0">
    <property name="geometry">
     <rect>
-     <x>50</x>
+     <x>60</x>
      <y>40</y>
-     <width>41</width>
+     <width>31</width>
      <height>20</height>
     </rect>
    </property>
@@ -46,13 +46,13 @@
     </rect>
    </property>
    <property name="text">
-    <string>Port</string>
+    <string>监听端口</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_port">
    <property name="geometry">
     <rect>
-     <x>50</x>
+     <x>60</x>
      <y>70</y>
      <width>91</width>
      <height>20</height>
@@ -69,15 +69,15 @@
     </rect>
    </property>
    <property name="text">
-    <string>Type</string>
+    <string>类型</string>
    </property>
   </widget>
   <widget class="QComboBox" name="comboBox_type">
    <property name="geometry">
     <rect>
-     <x>50</x>
+     <x>60</x>
      <y>100</y>
-     <width>191</width>
+     <width>181</width>
      <height>22</height>
     </rect>
    </property>
@@ -87,20 +87,20 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>54</width>
+     <width>71</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>Name</string>
+    <string>源名称</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_name">
    <property name="geometry">
     <rect>
-     <x>50</x>
+     <x>60</x>
      <y>10</y>
-     <width>191</width>
+     <width>181</width>
      <height>20</height>
     </rect>
    </property>
@@ -108,9 +108,9 @@
   <widget class="QLineEdit" name="lineEdit_ip1">
    <property name="geometry">
     <rect>
-     <x>100</x>
+     <x>110</x>
      <y>40</y>
-     <width>41</width>
+     <width>31</width>
      <height>20</height>
     </rect>
    </property>
@@ -118,9 +118,9 @@
   <widget class="QLineEdit" name="lineEdit_ip2">
    <property name="geometry">
     <rect>
-     <x>150</x>
+     <x>160</x>
      <y>40</y>
-     <width>41</width>
+     <width>31</width>
      <height>20</height>
     </rect>
    </property>
@@ -128,9 +128,9 @@
   <widget class="QLineEdit" name="lineEdit_ip3">
    <property name="geometry">
     <rect>
-     <x>200</x>
+     <x>210</x>
      <y>40</y>
-     <width>41</width>
+     <width>31</width>
      <height>20</height>
     </rect>
    </property>
@@ -138,7 +138,7 @@
   <widget class="QLabel" name="label_ip0">
    <property name="geometry">
     <rect>
-     <x>93</x>
+     <x>100</x>
      <y>40</y>
      <width>16</width>
      <height>20</height>
@@ -151,7 +151,7 @@
   <widget class="QLabel" name="label_ip1">
    <property name="geometry">
     <rect>
-     <x>143</x>
+     <x>150</x>
      <y>40</y>
      <width>16</width>
      <height>20</height>
@@ -164,7 +164,7 @@
   <widget class="QLabel" name="label_ip2">
    <property name="geometry">
     <rect>
-     <x>193</x>
+     <x>200</x>
      <y>40</y>
      <width>16</width>
      <height>20</height>
@@ -188,6 +188,16 @@
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>lineEdit_name</tabstop>
+  <tabstop>lineEdit_ip0</tabstop>
+  <tabstop>lineEdit_ip1</tabstop>
+  <tabstop>lineEdit_ip2</tabstop>
+  <tabstop>lineEdit_ip3</tabstop>
+  <tabstop>lineEdit_port</tabstop>
+  <tabstop>comboBox_type</tabstop>
+  <tabstop>pushButton_edit</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

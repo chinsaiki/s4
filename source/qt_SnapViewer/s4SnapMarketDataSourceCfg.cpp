@@ -17,6 +17,7 @@
 #include <QStyleFactory>
 #include <QSortFilterProxyModel>
 #include <QTableWidget>
+#include <QIntValidator>
 
 using namespace std;
 
@@ -40,13 +41,13 @@ snapMarketDataSourceCfg::snapMarketDataSourceCfg(const QString& Name, QWidget *p
     ui->lineEdit_ip3->setText("0");
     ui->lineEdit_port->setText("8888");
     
-    QIntValidator *validator_ip = new QIntValidator(0, 255, this);
+    QIntValidator *validator_ip = new numberValidator(0, 255, this);
     ui->lineEdit_ip0->setValidator(validator_ip);
     ui->lineEdit_ip1->setValidator(validator_ip);
     ui->lineEdit_ip2->setValidator(validator_ip);
     ui->lineEdit_ip3->setValidator(validator_ip);
 
-    QIntValidator *validator_port = new QIntValidator(1, 65535, this);
+    QIntValidator *validator_port = new numberValidator(1, 65535, this);
     ui->lineEdit_port->setValidator(validator_port);
 
     connect(ui->pushButton_edit, &QPushButton::clicked, this, &snapMarketDataSourceCfg::slot_onButtom);

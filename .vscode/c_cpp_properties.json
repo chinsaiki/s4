@@ -5,6 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "D:\\Qt\\5.11.2\\msvc2017_64\\include\\**",
+                "C:\\Qt\\Qt5.12.9\\5.12.9\\msvc2017_64\\include\\**",
                 "E:\\Qt\\5.11.1\\msvc2017_64\\include\\",
                 "E:\\Qt\\5.11.1\\msvc2017_64\\include\\QtCore",
                 "E:\\Qt\\5.11.1\\msvc2017_64\\include\\QtQml",

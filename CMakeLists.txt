@@ -252,11 +252,12 @@ endif()
 #           "${PROJECT_SOURCE_DIR}/build/S4_autogen/include_Debug/${ui_name}.h")                 # <--this is out-file path
 # endforeach()
 
-add_custom_command(TARGET ${PROJECT_NAME}
-  PRE_BUILD
-  COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_CURRENT_BINARY_DIR}/windeployqt"
-)
-
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+  add_custom_command(TARGET ${PROJECT_NAME}
+    PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_CURRENT_BINARY_DIR}/windeployqt"
+  )
+endif()
 ## Additional module components: benchmarks, examples, plugins, tests, tools and install
 if(NOT AI_basic_MODULE)
 
@@ -303,15 +304,17 @@ if(NOT AI_basic_MODULE)
     endif()
 
     ## QT public
-    if(${APP_NAME} MATCHES "^qt")
-      message(STATUS "QT deploy:${APP_NAME}")
-      if(TARGET Qt5::windeployqt)
-        # execute windeployqt in a tmp directory after build
-        add_custom_command(TARGET ${APP_TARGET}
-            POST_BUILD
-            COMMAND set PATH=%PATH%$<SEMICOLON>${qt5_install_prefix}/bin
-            COMMAND Qt5::windeployqt --dir "${CMAKE_CURRENT_BINARY_DIR}/windeployqt" "$<TARGET_FILE_DIR:${APP_TARGET}>/$<TARGET_FILE_NAME:${APP_TARGET}>"
-        )
+    if (CMAKE_BUILD_TYPE STREQUAL "Release")
+      if(${APP_NAME} MATCHES "^qt")
+        message(STATUS "QT deploy:${APP_NAME}")
+        if(TARGET Qt5::windeployqt)
+          # execute windeployqt in a tmp directory after build
+          add_custom_command(TARGET ${APP_TARGET}
+              POST_BUILD
+              COMMAND set PATH=%PATH%$<SEMICOLON>${qt5_install_prefix}/bin
+              COMMAND Qt5::windeployqt --dir "${CMAKE_CURRENT_BINARY_DIR}/windeployqt" "$<TARGET_FILE_DIR:${APP_TARGET}>/$<TARGET_FILE_NAME:${APP_TARGET}>"
+          )
+        endif()
       endif()
     endif()
 
@@ -323,13 +326,15 @@ if(NOT AI_basic_MODULE)
     LIBRARY DESTINATION "${PROJECT_SOURCE_DIR}/bin"
     ARCHIVE DESTINATION "${PROJECT_SOURCE_DIR}/bin")
 
-  if(TARGET Qt5::windeployqt)
-    # copy deployment directory during installation
-    install(
-        DIRECTORY
-        "${CMAKE_CURRENT_BINARY_DIR}/windeployqt/"
-        DESTINATION "${PROJECT_SOURCE_DIR}/bin/"
-    )
+  if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    if(TARGET Qt5::windeployqt)
+      # copy deployment directory during installation
+      install(
+          DIRECTORY
+          "${CMAKE_CURRENT_BINARY_DIR}/windeployqt/"
+          DESTINATION "${PROJECT_SOURCE_DIR}/bin/"
+      )
+    endif()
   endif()
 
   set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP TRUE)
