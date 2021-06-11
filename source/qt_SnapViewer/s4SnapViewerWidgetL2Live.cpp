@@ -165,7 +165,12 @@ void s4SnapViewerWidgetL2Live::slot_startMDSource()
 	if (!_udp_recver_th) {
 		_udp_recver_th = std::make_shared<NW::L2_udp_recver_th_native>(_pL2DataQ, _pL2CmdQ);
 	}
-	_udp_recver_th->start(sourceCfgs[0].IP.c_str(), sourceCfgs[0].Port);
+#ifdef WIN32
+	bool UDPlite = false;
+#else
+	bool UDPlite = sourceCfgs[0].SourceType == "UDP-lite";
+#endif
+	_udp_recver_th->start(sourceCfgs[0].IP.c_str(), sourceCfgs[0].Port, UDPlite);
 	for (int i = 0; i < _tabWidget->count(); ++i) {
 		_snapMarketDataLive->addLive(mktCodeStr_to_mktCodeInt(_tabWidget->tabText(i).toStdString()));
 	}

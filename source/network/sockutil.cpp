@@ -894,5 +894,14 @@ void SockUtil::makeAddr(struct sockaddr *out, const char *ip, uint16_t port) {
 	bzero(&(servaddr.sin_zero), sizeof servaddr.sin_zero);
 }
 
+bool SockUtil::isMulticastAddress(const char *ip) {
+  // Note: We return False for addresses in the range 224.0.0.0
+  // through 224.0.0.255, because these are non-routable
+  // Note: IPv4-specific #####
+  uint32_t addressInNetworkOrder = htonl(inet_addr(ip));
+//   uint32_t addressInNetworkOrder = htonl(address);
+  return addressInNetworkOrder >  0xE00000FF &&
+         addressInNetworkOrder <= 0xEFFFFFFF;
+}
 
 }  // namespace S4

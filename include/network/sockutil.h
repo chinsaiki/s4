@@ -325,6 +325,8 @@ public:
 	 * @param port
 	 */
 	static void makeAddr(struct sockaddr *out, const char *ip, uint16_t port);
+
+    static bool isMulticastAddress(const char *ip);
 };
 
 }  // namespace S4

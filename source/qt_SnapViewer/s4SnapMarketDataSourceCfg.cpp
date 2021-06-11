@@ -50,6 +50,10 @@ snapMarketDataSourceCfg::snapMarketDataSourceCfg(const QString& Name, QWidget *p
     QIntValidator *validator_port = new numberValidator(1, 65535, this);
     ui->lineEdit_port->setValidator(validator_port);
 
+    QStringList strList;
+    strList<<"UDP"<<"UDP-lite";
+    ui->comboBox_type->addItems(strList);
+
     connect(ui->pushButton_edit, &QPushButton::clicked, this, &snapMarketDataSourceCfg::slot_onButtom);
 
     _editable = true;
