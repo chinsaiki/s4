@@ -14,7 +14,7 @@
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-class snapMarketDataSourceCfg;
+class marketDataSourceCfg;
 }
 QT_END_NAMESPACE
 
@@ -23,12 +23,12 @@ namespace S4{
 namespace QT{
     
 
-class snapMarketDataSourceCfg: public QWidget
+class marketDataSourceCfg: public QWidget
 {
     Q_OBJECT
 public:
-    snapMarketDataSourceCfg(const QString& Label, QWidget *parent = nullptr);
-    virtual ~snapMarketDataSourceCfg();
+    marketDataSourceCfg(const QString& Label, QWidget *parent = nullptr);
+    virtual ~marketDataSourceCfg();
 
     struct cfg_t{
         std::string Name;
@@ -47,7 +47,7 @@ public slots:
 signals:
     void signal_fixed(QWidget* );
 private:
-    Ui::snapMarketDataSourceCfg *ui;
+    Ui::marketDataSourceCfg *ui;
 
     bool _editable = true;
     

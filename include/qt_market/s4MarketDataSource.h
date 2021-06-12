@@ -1,7 +1,7 @@
 #pragma once
 
 #include "types/s4type.h"
-#include "qt_SnapViewer/s4SnapMarketDataSourceCfg.h"
+#include "qt_market/s4MarketDataSourceCfg.h"
 
 #include <QWidget>
 #include <QKeyEvent>
@@ -16,7 +16,7 @@
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-class snapMarketDataSource;
+class marketDataSource;
 }
 QT_END_NAMESPACE
 
@@ -26,14 +26,14 @@ namespace QT{
     
 //tabs, = [market]+[basic]
 
-class snapMarketDataSource: public QWidget
+class marketDataSource: public QWidget
 {
     Q_OBJECT
 public:
-    snapMarketDataSource(QWidget *parent = nullptr);
-    virtual ~snapMarketDataSource();
+    marketDataSource(QWidget *parent = nullptr);
+    virtual ~marketDataSource();
 
-    QList<snapMarketDataSourceCfg::cfg_t> getCfgs(void);
+    QList<marketDataSourceCfg::cfg_t> getCfgs(void);
 
     
 public slots:
@@ -46,7 +46,7 @@ signals:
     void signal_add();
 
 private:
-    Ui::snapMarketDataSource *ui;
+    Ui::marketDataSource *ui;
 	bool _started;
 };
 

@@ -10,6 +10,7 @@
 #include <QTableWidget>
 #include <QStyleFactory>
 #include <QGridLayout>
+#include <QDebug>
 //
 //#ifdef max
 //#undef max
@@ -96,7 +97,7 @@ void s4SnapViewerWidget::removeTreeItems(const QString& root_name, const std::ve
 		}
 	}
 }
-void s4SnapViewerWidget::openSnapTab(const QString& snap_tab_name, snapInstrument* pInstrument)
+void s4SnapViewerWidget::openSnapTab(const QString& snap_tab_name, QWidget* pInstrument)
 {
 
 	try {
@@ -146,6 +147,42 @@ bool s4SnapViewerWidget::tabAlreadyExists(const QString& tabName) const
 
 s4SnapViewerWidget::~s4SnapViewerWidget()
 {
+}
+
+
+bool transCode(const QString& raw_code, QString& mktCode)
+{
+    QString code = raw_code.toLower();
+    if (code.size() < 8){
+        if (code.left(2) == "sz"){
+            code.insert(2, QString(8-code.size(), '0'));
+        }else if(code.left(2) == "sh"){
+            code.insert(2, '6');
+            if (code.size() < 8){
+                code.insert(3, QString(8-code.size(), '0'));
+            }
+        }
+    }
+    std::string mktCodeStr;
+    // mktCodeI_t mktCodeI;
+    try{
+        // mktCodeI = 
+        mktCodeStr_to_mktCodeInt(code.toStdString());
+        mktCode = code;
+        return true;
+    }catch(Exception& e){
+        qDebug() << e.what();
+    }
+    try{
+        mktCodeStr = pureCodeStr_to_mktCodeStr(code.toStdString());
+        mktCode = QString::fromStdString(mktCodeStr);
+        // mktCodeI = 
+        mktCodeStr_to_mktCodeInt(mktCodeStr);
+        return true;
+    }catch(Exception& e){
+		qDebug() << e.what();
+	}
+    return false;
 }
 
 }

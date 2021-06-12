@@ -8,11 +8,11 @@
 namespace S4{
 namespace QT{
 
-class s4SnapMarketDataAgent : public QThread
+class marketDataAgent : public QThread
 {
     Q_OBJECT
 public:
-    s4SnapMarketDataAgent(std::shared_ptr<NW::L2DataQ_t>& pL2DataQ, std::shared_ptr<NW::L2CmdQ_t>& pCmdQ, QObject *parent = 0);
+    marketDataAgent(std::shared_ptr<NW::L2DataQ_t>& pL2DataQ, std::shared_ptr<NW::L2CmdQ_t>& pCmdQ, QObject *parent = 0);
 
     void stop()
     {

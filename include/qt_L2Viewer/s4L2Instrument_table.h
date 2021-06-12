@@ -16,25 +16,22 @@ namespace QT{
     
 //tabs, = [market]+[basic]
 
-class snapInstrument_table: public QTabWidget
+class L2Instrument_table: public QTabWidget
 {
     Q_OBJECT
 public:
-    snapInstrument_table(int snapLeves_nb, QWidget *parent = nullptr);
+    L2Instrument_table(int snapLeves_nb, QWidget *parent = nullptr);
 
     void mouseMoveEvent(QMouseEvent* )
     {
-        //qDebug() << "snapInstrument_table " << hasMouseTracking() << " " << event->pos().x() << ", " << event->pos().y();
+        //qDebug() << "L2Instrument_table " << hasMouseTracking() << " " << event->pos().x() << ", " << event->pos().y();
     }
     
 public slots:
 
-    void addSnaps(const std::vector<tdx_snap_t>&);
     // void addOrders(const std::vector<ssz_sbe_order_t>&);
     // void addExecs(const std::vector<ssz_sbe_exec_t>&);
 
-    //TODO
-    void addBasic(){}
     
 public slots:
 	void onL2Data_instrument_snap(const S4::sharedCharArray_ptr&);

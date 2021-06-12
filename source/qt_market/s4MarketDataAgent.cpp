@@ -1,4 +1,4 @@
-#include "qt_SnapViewer/s4SnapMarketDataAgent.h"
+#include "qt_market/s4MarketDataAgent.h"
 #include "qt_common/sharedCharArray_ptr.h"
 
 #include "sbe_ssz.h"
@@ -12,7 +12,7 @@ using namespace S4::NW;
 namespace S4{
 namespace QT{
 
-s4SnapMarketDataAgent::s4SnapMarketDataAgent(std::shared_ptr<NW::L2DataQ_t>& pL2DataQ, std::shared_ptr<NW::L2CmdQ_t>& pCmdQ, QObject *parent):
+marketDataAgent::marketDataAgent(std::shared_ptr<NW::L2DataQ_t>& pL2DataQ, std::shared_ptr<NW::L2CmdQ_t>& pCmdQ, QObject *parent):
     QThread(parent),
     _DynamicQObject(this),
     _pL2DataQ(pL2DataQ),
@@ -24,7 +24,7 @@ s4SnapMarketDataAgent::s4SnapMarketDataAgent(std::shared_ptr<NW::L2DataQ_t>& pL2
     }
 }
 
-void s4SnapMarketDataAgent::run()
+void marketDataAgent::run()
 {
     m_stop = false;
     std::vector<L2Data_arPtr_t> pv;
@@ -99,7 +99,7 @@ void s4SnapMarketDataAgent::run()
 }
 
     //增加/删除关注代码
-void s4SnapMarketDataAgent::addLive(mktCodeI_t code)
+void marketDataAgent::addLive(mktCodeI_t code)
 {
     if (!_pPtok_cmdQ) return;
     std::shared_ptr<live_cmd_t> pData(new live_cmd_t);
@@ -108,7 +108,7 @@ void s4SnapMarketDataAgent::addLive(mktCodeI_t code)
     _pCmdQ->enqueue(*_pPtok_cmdQ, std::move(pData));
 }
 
-void s4SnapMarketDataAgent::delLive(mktCodeI_t code)
+void marketDataAgent::delLive(mktCodeI_t code)
 {
     if (!_pPtok_cmdQ) return;
     std::shared_ptr<live_cmd_t> pData(new live_cmd_t);
@@ -118,17 +118,17 @@ void s4SnapMarketDataAgent::delLive(mktCodeI_t code)
 }
 
 
-// bool s4SnapMarketDataAgent::connectDynamicSlot(QObject *obj, char *signal, char *slot)
+// bool marketDataAgent::connectDynamicSlot(QObject *obj, char *signal, char *slot)
 // {
 // }
 
-bool s4SnapMarketDataAgent::connectDynamicSignal(const char *signal, QObject *obj, const char *slot)
+bool marketDataAgent::connectDynamicSignal(const char *signal, QObject *obj, const char *slot)
 {
     return _DynamicQObject.connectDynamicSignal(signal, obj, slot);
 }
 
 
-bool s4SnapMarketDataAgent::emitDynamicSignal(const char *signal, sharedCharArray_ptr _t1)
+bool marketDataAgent::emitDynamicSignal(const char *signal, sharedCharArray_ptr _t1)
 {
     return _DynamicQObject.emitDynamicSignal(signal, _t1);
 }

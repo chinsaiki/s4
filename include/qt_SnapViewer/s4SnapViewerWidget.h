@@ -5,10 +5,10 @@
 #include <QStandardItemModel>
 
 #include "types/s4type.h"
-#include "qt_SnapViewer/s4SnapInstrument.h"
+
 
 #include "network/L2_udp_recver_th.h"
-#include "s4SnapMarketDataAgent.h"
+#include "qt_market/s4MarketDataAgent.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -32,7 +32,7 @@ public:
 
 public slots:
 
-	virtual void openSnapTab(const QString& tab_name, snapInstrument* pInstrument);
+	virtual void openSnapTab(const QString& tab_name, QWidget* pInstrument);
 	virtual void closeSnapTab(int index);
 
 	void newTree(const QString& root_name, const std::vector<QString>& leaf_names);
@@ -50,7 +50,7 @@ protected:
     Ui::s4SnapViewerWidget *ui;
 	QStandardItemModel* _tree_model = nullptr;
 
-	std::map<QString, snapInstrument*> _instrument_view_cargo;
+	std::map<QString, QWidget*> _instrument_view_cargo;
 
 protected:
 	void mouseMoveEvent(QMouseEvent* )
@@ -62,6 +62,9 @@ protected:
 	bool tabAlreadyExists(const QString& tabName) const;
 
 };
+
+bool transCode(const QString& raw_code, QString& mktCode);
+
 
 }
 }

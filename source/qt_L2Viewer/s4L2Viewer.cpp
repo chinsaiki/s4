@@ -3,9 +3,8 @@
 #  pragma warning(disable: 4189) 
 #endif
 
-#include "qt_SnapViewer/s4L2Viewer.h"
-#include "qt_SnapViewer/s4SnapViewerWidgetTdxDB.h"
-#include "qt_SnapViewer/s4SnapViewerWidgetL2Live.h"
+#include "qt_L2Viewer/s4L2Viewer.h"
+#include "qt_L2Viewer/s4L2ViewerWidgetL2Live.h"
 
 #include "ui_s4L2Viewer.h"
 #include "common/s4logger.h"
@@ -64,9 +63,9 @@ void L2Viewer::action_mode_L2Live()
 	if (this->windowTitle()==TITLE_L2_LIVE){
 		return;
 	}
-	s4SnapViewerWidgetL2Live* pWidget = new s4SnapViewerWidgetL2Live(this);
-	//connect(ui->actionOpen, &QAction::triggered, pWidget, &s4SnapViewerWidgetL2Live::onStartL2LiveReceiver);
-	//connect(ui->actionClose, &QAction::triggered, pWidget, &s4SnapViewerWidgetL2Live::onStopL2LiveReceiver);
+	snapViewerWidgetL2Live* pWidget = new snapViewerWidgetL2Live(this);
+	//connect(ui->actionOpen, &QAction::triggered, pWidget, &snapViewerWidgetL2Live::onStartL2LiveReceiver);
+	//connect(ui->actionClose, &QAction::triggered, pWidget, &snapViewerWidgetL2Live::onStopL2LiveReceiver);
 
 	this->setCentralWidget(pWidget);
 	this->setWindowTitle(TITLE_L2_LIVE);

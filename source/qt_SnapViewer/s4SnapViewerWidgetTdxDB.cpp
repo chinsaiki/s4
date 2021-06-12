@@ -4,6 +4,7 @@
 #endif
 
 #include "qt_SnapViewer/s4SnapViewerWidgetTdxDB.h"
+#include "qt_SnapViewer/s4SnapInstrument.h"
 
 #include "common/s4logger.h"
 #include "qt_common/Utils.h"
@@ -186,7 +187,7 @@ void s4SnapViewerWidgetTdxDB::nextTdxSnap()
 
 	if (_instrument_info_cargo.count(snap_tab_name)) {
 		if (_instrument_info_cargo[snap_tab_name].curse < (int)_instrument_info_cargo[snap_tab_name].snaps.size()) {
-			_instrument_view_cargo[snap_tab_name]->addSnaps({ _instrument_info_cargo[snap_tab_name].snaps[_instrument_info_cargo[snap_tab_name].curse++] });
+			((snapInstrument*)_instrument_view_cargo[snap_tab_name])->addSnaps({ _instrument_info_cargo[snap_tab_name].snaps[_instrument_info_cargo[snap_tab_name].curse++] });
 		}
 	}
 }

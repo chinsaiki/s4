@@ -64,6 +64,7 @@ namespace S4
 				beginResetModel();
 				endResetModel();
 			});
+
 		}
 
         int rowCount(const QModelIndex &) const override { return (int)_row_names.size(); }

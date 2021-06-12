@@ -3,11 +3,12 @@
 
 #include "types/s4type.h"
 #include "qt_SnapViewer/s4SnapViewerWidget.h"
+#include "qt_L2Viewer/s4L2TableModel_L2Stats.h"
 #include "network/L2_udp_recver_th.h"
-#include "qt_SnapViewer/s4SnapMarketDataAgent.h"
-#include "qt_SnapViewer/s4SnapTableModel_L2Stats.h"
 #include "qt_common/s4qt_unicTreeView.h"
-#include "qt_SnapViewer/s4SnapMarketDataSource.h"
+
+#include "qt_market/s4MarketDataAgent.h"
+#include "qt_market/s4MarketDataSource.h"
 
 #include <QTableView>
 #include <QStandardItem>
@@ -19,13 +20,13 @@ namespace QT{
 //    void updateTableList();
 
 
-class s4SnapViewerWidgetL2Live : public s4SnapViewerWidget
+class snapViewerWidgetL2Live : public s4SnapViewerWidget
 {
     Q_OBJECT
 
 public:
-    explicit s4SnapViewerWidgetL2Live(QWidget *parent = nullptr);
-    virtual ~s4SnapViewerWidgetL2Live();
+    explicit snapViewerWidgetL2Live(QWidget *parent = nullptr);
+    virtual ~snapViewerWidgetL2Live();
 
 public slots:
 	void slot_startMDSource();
@@ -67,9 +68,9 @@ protected:
 	std::shared_ptr<NW::L2CmdQ_t> _pL2CmdQ;
 
 	std::shared_ptr<NW::L2_udp_recver_th> _udp_recver_th;
-	s4SnapMarketDataAgent* _snapMarketDataLive;
+	marketDataAgent* _snapMarketDataLive;
 
-	snapMarketDataSource* _marketDataSource;
+	marketDataSource* _marketDataSource;
 
 	void startMDAgent();
 };

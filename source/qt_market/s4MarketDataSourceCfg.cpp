@@ -3,11 +3,11 @@
 #  pragma warning(disable: 4189) 
 #endif
 
-#include "qt_SnapViewer/s4SnapMarketDataSource.h"
-#include "qt_SnapViewer/s4SnapMarketDataSourceCfg.h"
+#include "qt_market/s4MarketDataSource.h"
+#include "qt_market/s4MarketDataSourceCfg.h"
 #include "qt_common/s4qt_itemDelegateNumberOnly.h"
 
-#include "ui_s4SnapMarketDataSourceCfg.h"
+#include "ui_s4MarketDataSourceCfg.h"
 
 #include <QSplitter>
 #include <QScrollArea>
@@ -27,9 +27,9 @@ namespace QT {
 
 #define BOTTUM_TEXT_EDIT QStringLiteral("修改")
 #define BOTTUM_TEXT_OK QStringLiteral("确定")
-snapMarketDataSourceCfg::snapMarketDataSourceCfg(const QString& Name, QWidget *parent) :
+marketDataSourceCfg::marketDataSourceCfg(const QString& Name, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::snapMarketDataSourceCfg)
+    ui(new Ui::marketDataSourceCfg)
 {   
 	ui->setupUi(this);
 
@@ -54,13 +54,13 @@ snapMarketDataSourceCfg::snapMarketDataSourceCfg(const QString& Name, QWidget *p
     strList<<"UDP"<<"UDP-lite";
     ui->comboBox_type->addItems(strList);
 
-    connect(ui->pushButton_edit, &QPushButton::clicked, this, &snapMarketDataSourceCfg::slot_onButtom);
+    connect(ui->pushButton_edit, &QPushButton::clicked, this, &marketDataSourceCfg::slot_onButtom);
 
     _editable = true;
     ui->pushButton_edit->setText(BOTTUM_TEXT_OK);
 }
 
-void snapMarketDataSourceCfg::slot_disableEdit()
+void marketDataSourceCfg::slot_disableEdit()
 {
 
 	if (_editable) {
@@ -69,11 +69,11 @@ void snapMarketDataSourceCfg::slot_disableEdit()
 	ui->pushButton_edit->setDisabled(true);
 }
 
-void snapMarketDataSourceCfg::slot_enableEdit() {
+void marketDataSourceCfg::slot_enableEdit() {
 	ui->pushButton_edit->setEnabled(true);
 }
 
-void snapMarketDataSourceCfg::slot_onButtom()
+void marketDataSourceCfg::slot_onButtom()
 {
     if (_editable){
         _editable = false;
@@ -105,7 +105,7 @@ void snapMarketDataSourceCfg::slot_onButtom()
 }
 
 
-struct snapMarketDataSourceCfg::cfg_t snapMarketDataSourceCfg::getCfg() const
+struct marketDataSourceCfg::cfg_t marketDataSourceCfg::getCfg() const
 {
     cfg_t ret;
 
@@ -120,13 +120,13 @@ struct snapMarketDataSourceCfg::cfg_t snapMarketDataSourceCfg::getCfg() const
     return ret;
 }
 
-QString snapMarketDataSourceCfg::label() const 
+QString marketDataSourceCfg::label() const 
 {
 	return ui->lineEdit_name->text(); 
 }
 
 
-snapMarketDataSourceCfg::~snapMarketDataSourceCfg()
+marketDataSourceCfg::~marketDataSourceCfg()
 {
 }
 

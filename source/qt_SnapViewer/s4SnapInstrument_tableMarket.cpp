@@ -1,8 +1,6 @@
 ﻿#include "qt_SnapViewer/s4SnapInstrument_tableMarket.h"
 #include "qt_SnapViewer/s4SnapTableModel_snapInfo.h"
 #include "qt_SnapViewer/s4SnapTableModel_level.h"
-#include "qt_SnapViewer/s4SnapTableModel_order.h"
-#include "qt_SnapViewer/s4SnapTableModel_exec.h"
 
 #include <QGridLayout>
 #include <QHeaderView>
@@ -47,6 +45,7 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
     snapTableModel_snapInfo* infos = new snapTableModel_snapInfo(_info_tv);
     _info_tv->setModel(infos);
     _info_tv->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    _info_tv->horizontalHeader()->setVisible(false);
     _info_tv->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     // _info_tv->verticalHeader()->setMaximumHeight(24);
     // _info_tv->verticalHeader()->setMinimumHeight(5);
@@ -64,64 +63,13 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
         _info_tv->setMaximumHeight(nTableHeight);
     }
     
-    _order_tv = new QTableView(this);
-    _order_tv->setItemDelegate(delegate);
-    snapTableModel_order* orders = new snapTableModel_order(_order_tv);
-    _order_tv->setModel(orders);
-    _order_tv->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    _order_tv->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    // _order_tv->verticalHeader()->setMaximumHeight(24);
-    // _order_tv->verticalHeader()->setMinimumHeight(5);
-    _order_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
-	_order_tv->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);	//限制选择
-	_order_tv->setMaximumWidth(750);
-    connect(this, &snapInstrument_tableMarket::signal_L2Data_order, orders, &snapTableModel_order::refreshL2);
-
-    QLabel* orderLabel = new QLabel(QStringLiteral("逐笔订单："), this);
-    _order_info = new QLabel(this);
-    _order_info->setMaximumHeight(26);
-	QSplitter* splitterOrderSt = new QSplitter(this);
-    splitterOrderSt->addWidget(orderLabel);
-    splitterOrderSt->addWidget(_order_info);
-	splitterOrderSt->setSizes({ 50, 100 });
-    _order_cnt = 0;
-
-	_exec_tv = new QTableView(this);
-	_exec_tv->setItemDelegate(delegate);
-	snapTableModel_exec* execs = new snapTableModel_exec(_exec_tv);
-	_exec_tv->setModel(execs);
-	_exec_tv->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	_exec_tv->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	// _exec_tv->verticalHeader()->setMaximumHeight(24);
-	// _exec_tv->verticalHeader()->setMinimumHeight(5);
-	_exec_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
-	_exec_tv->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);	//限制选择
-	_exec_tv->setMaximumWidth(750);
-	connect(this, &snapInstrument_tableMarket::signal_L2Data_exec, execs, &snapTableModel_exec::refreshL2);
-    QLabel* execLabel = new QLabel(QStringLiteral("逐笔成交："), this);
-    _exec_info = new QLabel(this);
-    _exec_info->setMaximumHeight(26);
-	QSplitter* splitterExecSt = new QSplitter(this);
-    splitterExecSt->addWidget(execLabel);
-    splitterExecSt->addWidget(_exec_info);
-	splitterExecSt->setSizes({ 50, 100 });
-    _exec_cnt = 0;
 
 	//整体布局
-	QSplitter* splitter = new QSplitter(this);	//横排
+	QSplitter* splitter = new QSplitter(Qt::Orientation::Vertical, this);
 	splitter->addWidget(_level_tv);
 	splitter->addWidget(_info_tv);
 
-	QSplitter* splitterV = new QSplitter(Qt::Orientation::Vertical, this);	//竖排
-	splitterV->addWidget(splitterOrderSt);
-	splitterV->addWidget(_order_tv);
-	splitterV->addWidget(splitterExecSt);
-	splitterV->addWidget(_exec_tv);
-	splitterV->setSizes({ 26, 150, 26, 150 });
-
-
-	splitter->addWidget(splitterV);
-    splitter->setSizes({50, 50, 150});
+    splitter->setSizes({80, 50});
 
     //布局放进网格，使填充满
 	QGridLayout *pLayout = new QGridLayout(this);
@@ -148,6 +96,7 @@ void snapInstrument_tableMarket::onL2Data_index_snap(const S4::sharedCharArray_p
 {
 	emit signal_L2Data_index_snap(s);
 }
+
 void snapInstrument_tableMarket::onL2Data_order(const S4::sharedCharArray_ptr& s)
 {
     _order_cnt++;

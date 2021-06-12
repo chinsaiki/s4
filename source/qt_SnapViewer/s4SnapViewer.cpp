@@ -5,7 +5,6 @@
 
 #include "qt_SnapViewer/s4SnapViewer.h"
 #include "qt_SnapViewer/s4SnapViewerWidgetTdxDB.h"
-#include "qt_SnapViewer/s4SnapViewerWidgetL2Live.h"
 
 #include "ui_s4SnapViewer.h"
 #include "common/s4logger.h"

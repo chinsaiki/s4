@@ -1,8 +1,8 @@
-﻿#include "qt_SnapViewer/s4SnapInstrument_tableMarket.h"
-#include "qt_SnapViewer/s4SnapTableModel_snapInfo.h"
-#include "qt_SnapViewer/s4SnapTableModel_level.h"
-#include "qt_SnapViewer/s4SnapTableModel_order.h"
-#include "qt_SnapViewer/s4SnapTableModel_exec.h"
+﻿#include "qt_L2Viewer/s4L2Instrument_tableMarket.h"
+#include "qt_L2Viewer/s4L2TableModel_order.h"
+#include "qt_L2Viewer/s4L2TableModel_exec.h"
+#include "qt_SnapViewer/s4snapTableModel_snapInfo.h"
+#include "qt_SnapViewer/s4snapTableModel_level.h"
 
 #include <QGridLayout>
 #include <QHeaderView>
@@ -13,7 +13,7 @@
 namespace S4{
 namespace QT{
     
-snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget *parent):
+L2Instrument_tableMarket::L2Instrument_tableMarket(int snapLeves_nb, QWidget *parent):
     QWidget(parent)
 {
     setMouseTracking(true);
@@ -30,7 +30,7 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
     _level_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
 	_level_tv->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);	//限制选择
 	_level_tv->setMaximumWidth(250);
-    connect(this, &snapInstrument_tableMarket::signal_L2Data_instrument_snap, levels, &snapTableModel_level::refreshL2);
+    connect(this, &L2Instrument_tableMarket::signal_L2Data_instrument_snap, levels, &snapTableModel_level::refreshL2);
     {
         const int nNumRows = levels->rowCount(QModelIndex());
         _level_tv->resizeRowsToContents();
@@ -47,13 +47,14 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
     snapTableModel_snapInfo* infos = new snapTableModel_snapInfo(_info_tv);
     _info_tv->setModel(infos);
     _info_tv->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    _info_tv->horizontalHeader()->setVisible(false);
     _info_tv->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     // _info_tv->verticalHeader()->setMaximumHeight(24);
     // _info_tv->verticalHeader()->setMinimumHeight(5);
     _info_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
 	_info_tv->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);	//限制选择
 	_info_tv->setMaximumWidth(250);
-    connect(this, &snapInstrument_tableMarket::signal_L2Data_instrument_snap, infos, &snapTableModel_snapInfo::refreshL2);
+    connect(this, &L2Instrument_tableMarket::signal_L2Data_instrument_snap, infos, &snapTableModel_snapInfo::refreshL2);
     {
         const int nNumRows = infos->rowCount(QModelIndex());
         _info_tv->resizeRowsToContents();
@@ -75,7 +76,7 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
     _order_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
 	_order_tv->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);	//限制选择
 	_order_tv->setMaximumWidth(750);
-    connect(this, &snapInstrument_tableMarket::signal_L2Data_order, orders, &snapTableModel_order::refreshL2);
+    connect(this, &L2Instrument_tableMarket::signal_L2Data_order, orders, &snapTableModel_order::refreshL2);
 
     QLabel* orderLabel = new QLabel(QStringLiteral("逐笔订单："), this);
     _order_info = new QLabel(this);
@@ -97,7 +98,7 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
 	_exec_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
 	_exec_tv->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);	//限制选择
 	_exec_tv->setMaximumWidth(750);
-	connect(this, &snapInstrument_tableMarket::signal_L2Data_exec, execs, &snapTableModel_exec::refreshL2);
+	connect(this, &L2Instrument_tableMarket::signal_L2Data_exec, execs, &snapTableModel_exec::refreshL2);
     QLabel* execLabel = new QLabel(QStringLiteral("逐笔成交："), this);
     _exec_info = new QLabel(this);
     _exec_info->setMaximumHeight(26);
@@ -131,30 +132,22 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
 }
 
 
-void snapInstrument_tableMarket::addSnaps(const std::vector<tdx_snap_t>& vSnap)
-{
-	QAbstractItemModel* levels = _level_tv->model();
-    ((snapTableModel_level*)levels)->refresh(vSnap.back());
-    
-	QAbstractItemModel* infos = _info_tv->model();
-    ((snapTableModel_snapInfo*)infos)->refresh(vSnap.back());
-}
 
-void snapInstrument_tableMarket::onL2Data_instrument_snap(const S4::sharedCharArray_ptr& s)
+void L2Instrument_tableMarket::onL2Data_instrument_snap(const S4::sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_instrument_snap(s);
 }
-void snapInstrument_tableMarket::onL2Data_index_snap(const S4::sharedCharArray_ptr& s)
+void L2Instrument_tableMarket::onL2Data_index_snap(const S4::sharedCharArray_ptr& s)
 {
 	emit signal_L2Data_index_snap(s);
 }
-void snapInstrument_tableMarket::onL2Data_order(const S4::sharedCharArray_ptr& s)
+void L2Instrument_tableMarket::onL2Data_order(const S4::sharedCharArray_ptr& s)
 {
     _order_cnt++;
     _order_info->setText(QStringLiteral("接收数量：") + QString::number(_order_cnt));
 	emit signal_L2Data_order(s);
 }
-void snapInstrument_tableMarket::onL2Data_exec(const S4::sharedCharArray_ptr& s)
+void L2Instrument_tableMarket::onL2Data_exec(const S4::sharedCharArray_ptr& s)
 {
     _exec_cnt++;
     _exec_info->setText(QStringLiteral("接收数量：") + QString::number(_exec_cnt));

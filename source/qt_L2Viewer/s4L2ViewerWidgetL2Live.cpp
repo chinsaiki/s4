@@ -3,7 +3,8 @@
 #  pragma warning(disable: 4189) 
 #endif
 
-#include "qt_SnapViewer/s4SnapViewerWidgetL2Live.h"
+#include "qt_L2Viewer/s4L2ViewerWidgetL2Live.h"
+#include "qt_L2Viewer/s4L2Instrument.h"
 #include "qt_common/s4qt_itemDelegateNumberOnly.h"
 #include "network/L2_udp_recver_th_native.h"
 
@@ -32,42 +33,8 @@ namespace QT {
 //CREATE_LOCAL_LOGGER("qt_SnapViewer")
 #define AIM_SECURITY_TREE_NAME QStringLiteral("双击添加代码")
 
-bool transCode(const QString& raw_code, QString& mktCode)
-{
-    QString code = raw_code.toLower();
-    if (code.size() < 8){
-        if (code.left(2) == "sz"){
-            code.insert(2, QString(8-code.size(), '0'));
-        }else if(code.left(2) == "sh"){
-            code.insert(2, '6');
-            if (code.size() < 8){
-                code.insert(3, QString(8-code.size(), '0'));
-            }
-        }
-    }
-    std::string mktCodeStr;
-    // mktCodeI_t mktCodeI;
-    try{
-        // mktCodeI = 
-        mktCodeStr_to_mktCodeInt(code.toStdString());
-        mktCode = code;
-        return true;
-    }catch(Exception& e){
-        qDebug() << e.what();
-    }
-    try{
-        mktCodeStr = pureCodeStr_to_mktCodeStr(code.toStdString());
-        mktCode = QString::fromStdString(mktCodeStr);
-        // mktCodeI = 
-        mktCodeStr_to_mktCodeInt(mktCodeStr);
-        return true;
-    }catch(Exception& e){
-		qDebug() << e.what();
-	}
-    return false;
-}
 
-s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
+snapViewerWidgetL2Live::snapViewerWidgetL2Live(QWidget *parent) :
     s4SnapViewerWidget(parent)
 {
 	//树表用于注册所关注的代码
@@ -84,7 +51,7 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
     _tabWidget->setTabsClosable(true);
 
 	//市场数据源 配置面板
-	_marketDataSource = new snapMarketDataSource(this);
+	_marketDataSource = new marketDataSource(this);
 	_marketDataSource->setMaximumWidth(260);
 	_marketDataSource->setMaximumHeight(220);
 	_marketDataSource->onAdd();	//新增一个配置
@@ -95,6 +62,7 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
     _stats_model = new snapTableModel_L2Stats(this);
     _stats_tv->setModel(_stats_model);
     _stats_tv->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    _stats_tv->horizontalHeader()->setVisible(false);
     _stats_tv->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     // _stats_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
 	_stats_tv->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);	//限制选择
@@ -127,22 +95,23 @@ s4SnapViewerWidgetL2Live::s4SnapViewerWidgetL2Live(QWidget *parent) :
 	((unicTreeView*)_treeView)->onSetTextFormater(&transCode);
 
 	//代码行情tab关闭后，触发清理
-	connect(_tabWidget, &QTabWidget::tabCloseRequested, this, &s4SnapViewerWidgetL2Live::closeSnapTab);
-	connect(this, &s4SnapViewerWidgetL2Live::signal_closeSnapTab, (unicTreeView*)_treeView, &unicTreeView::onDelItem);	//传递tab的名称，即代码
+	connect(_tabWidget, &QTabWidget::tabCloseRequested, this, &snapViewerWidgetL2Live::closeSnapTab);
+	connect(this, &snapViewerWidgetL2Live::signal_closeSnapTab, (unicTreeView*)_treeView, &unicTreeView::onDelItem);	//传递tab的名称，即代码
 
 	//关注的代码，新增、删除、选中时，触发tab动作
-	connect((unicTreeView*)_treeView, &unicTreeView::signal_newItem, this, &s4SnapViewerWidgetL2Live::openInstrumentTab);
-	connect((unicTreeView*)_treeView, &unicTreeView::signal_delItem, this, &s4SnapViewerWidgetL2Live::closeInstrumentTab);
-	connect((unicTreeView*)_treeView, &unicTreeView::signal_selectItem, this, &s4SnapViewerWidgetL2Live::setCurrentInstrument);
+	connect((unicTreeView*)_treeView, &unicTreeView::signal_newItem, this, &snapViewerWidgetL2Live::openInstrumentTab);
+	connect((unicTreeView*)_treeView, &unicTreeView::signal_delItem, this, &snapViewerWidgetL2Live::closeInstrumentTab);
+	connect((unicTreeView*)_treeView, &unicTreeView::signal_selectItem, this, &snapViewerWidgetL2Live::setCurrentInstrument);
 
 	//市场数据源按下启动/停止时，触发建立/断开网络连接
-	connect(_marketDataSource, &snapMarketDataSource::signal_start, this, &s4SnapViewerWidgetL2Live::slot_startMDSource);
-	connect(_marketDataSource, &snapMarketDataSource::signal_stop, this, &s4SnapViewerWidgetL2Live::slot_stopMDSource);
+	connect(_marketDataSource, &marketDataSource::signal_start, this, &snapViewerWidgetL2Live::slot_startMDSource);
+	connect(_marketDataSource, &marketDataSource::signal_stop, this, &snapViewerWidgetL2Live::slot_stopMDSource);
 
 	//开启市场数据代理线程
     startMDAgent();
 }
-void s4SnapViewerWidgetL2Live::startMDAgent()
+
+void snapViewerWidgetL2Live::startMDAgent()
 {
 	if (!_pL2DataQ) {
 		_pL2DataQ = std::make_shared<NW::L2DataQ_t>(1024, 2048, true);
@@ -150,17 +119,17 @@ void s4SnapViewerWidgetL2Live::startMDAgent()
 	if (!_pL2CmdQ) {
 		_pL2CmdQ = std::make_shared<NW::L2CmdQ_t>(64);
 	}
-	_snapMarketDataLive = new s4SnapMarketDataAgent(_pL2DataQ, _pL2CmdQ);
+	_snapMarketDataLive = new marketDataAgent(_pL2DataQ, _pL2CmdQ);
 
 	qRegisterMetaType<struct S4::NW::L2Stats_t>();
-	connect(_snapMarketDataLive, &s4SnapMarketDataAgent::signal_L2Stats, _stats_model, &snapTableModel_L2Stats::refresh);
+	connect(_snapMarketDataLive, &marketDataAgent::signal_L2Stats, _stats_model, &snapTableModel_L2Stats::refresh);
 	_snapMarketDataLive->start();
 }
 
 
-void s4SnapViewerWidgetL2Live::slot_startMDSource()
+void snapViewerWidgetL2Live::slot_startMDSource()
 {
-	QList<snapMarketDataSourceCfg::cfg_t> sourceCfgs = _marketDataSource->getCfgs();
+	QList<marketDataSourceCfg::cfg_t> sourceCfgs = _marketDataSource->getCfgs();
 
 	if (!_udp_recver_th) {
 		_udp_recver_th = std::make_shared<NW::L2_udp_recver_th_native>(_pL2DataQ, _pL2CmdQ);
@@ -176,14 +145,14 @@ void s4SnapViewerWidgetL2Live::slot_startMDSource()
 	}
 }
 
-void s4SnapViewerWidgetL2Live::slot_stopMDSource()
+void snapViewerWidgetL2Live::slot_stopMDSource()
 {
 	if (_udp_recver_th) {
 		_udp_recver_th->stop();
 	}
 }
 
-// void s4SnapViewerWidgetL2Live::dbTree_doubleClicked(const QModelIndex& index={}) {
+// void snapViewerWidgetL2Live::dbTree_doubleClicked(const QModelIndex& index={}) {
 // 	//if (!index.parent().isValid())
 // 	//	return;
 // 	//if (!index.parent().parent().isValid()) return;
@@ -205,10 +174,10 @@ std::vector<std::string> dynamic_ss =
 };
 
 
-void s4SnapViewerWidgetL2Live::openInstrumentTab(const QString& code)
+void snapViewerWidgetL2Live::openInstrumentTab(const QString& code)
 {
     if (_instrument_info_cargo.count(code) == 0){
-        snapInstrument* pInstrument = new snapInstrument(10, this);
+        L2Instrument* pInstrument = new L2Instrument(10, this);
 	    qRegisterMetaType<std::string>();
 
 		for (auto& ss_name : dynamic_ss){
@@ -234,7 +203,7 @@ void s4SnapViewerWidgetL2Live::openInstrumentTab(const QString& code)
 	}
 }
 
-void s4SnapViewerWidgetL2Live::setCurrentInstrument(const QString& code)
+void snapViewerWidgetL2Live::setCurrentInstrument(const QString& code)
 {
 	for (int i = 0; i < _tabWidget->count(); ++i) {
 		if (_tabWidget->tabText(i) == code) {
@@ -243,7 +212,7 @@ void s4SnapViewerWidgetL2Live::setCurrentInstrument(const QString& code)
 	}
 }
 
-void s4SnapViewerWidgetL2Live::closeInstrumentTab(const QString& code)
+void snapViewerWidgetL2Live::closeInstrumentTab(const QString& code)
 {
     for (int i = 0; i < _tabWidget->count(); ++i) {
 		if (_tabWidget->tabText(i) == code) {
@@ -258,7 +227,7 @@ void s4SnapViewerWidgetL2Live::closeInstrumentTab(const QString& code)
 	}
 }
 
-void s4SnapViewerWidgetL2Live::closeSnapTab(int index)
+void snapViewerWidgetL2Live::closeSnapTab(int index)
 {
 	const QString code = _tabWidget->tabText(index);
 	auto it = _instrument_info_cargo.find(code);
@@ -272,7 +241,7 @@ void s4SnapViewerWidgetL2Live::closeSnapTab(int index)
 }
 
 
-s4SnapViewerWidgetL2Live::~s4SnapViewerWidgetL2Live()
+snapViewerWidgetL2Live::~snapViewerWidgetL2Live()
 {
 	slot_stopMDSource();
 	_snapMarketDataLive->stop();
