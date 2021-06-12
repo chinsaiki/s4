@@ -62,7 +62,7 @@ namespace S4
 				return {}; // && role != Qt::EditRole
             int side_index = index.row() < _side_levels_nb ? _side_levels_nb - index.row() - 1 : index.row() - _side_levels_nb;
             const auto &levle = index.row() < _side_levels_nb ? _ask[side_index] : _bid[side_index];
-            const QString side = index.row() < _side_levels_nb ? QStringLiteral("买"):QStringLiteral("卖");
+            const QString side = index.row() < _side_levels_nb ? QStringLiteral("卖"):QStringLiteral("买");
             switch (index.column())
             {
             case 0:
@@ -136,19 +136,27 @@ namespace S4
     private:
         QVariant itemFadeColor(const QModelIndex& index) const
         {
-            QMap<int, QVariant>::const_iterator it = mapTimeout.find(index.row() * 100 + index.column());
-            if (it == mapTimeout.end()) return QVariant();
-            float nTimePassed = it.value().toDateTime().msecsTo(QDateTime::currentDateTime());
-            if (nTimePassed < itemFormatDelegate::update_scope) {
-                float idx = nTimePassed / itemFormatDelegate::update_scope;
-                QColor bg = Qt::cyan;
-                uint8_t r = (255 - bg.red()) * (idx)+bg.red();
-                uint8_t g = (255 - bg.green()) * (idx)+bg.green();
-                uint8_t b = (255 - bg.blue()) * (idx)+bg.blue();
-                //bg.setAlpha(0.2);
-                return QColor(r, g, b);
+            if (index.column() == 0){
+                if (index.row() < _side_levels_nb){
+                    return QColor(255, 128, 128);
+                }else{
+                    return QColor(128, 255, 128);
+                }
+            }else{
+                QMap<int, QVariant>::const_iterator it = mapTimeout.find(index.row() * 100 + index.column());
+                if (it == mapTimeout.end()) return QVariant();
+                float nTimePassed = it.value().toDateTime().msecsTo(QDateTime::currentDateTime());
+                if (nTimePassed < itemFormatDelegate::update_scope) {
+                    float idx = nTimePassed / itemFormatDelegate::update_scope;
+                    QColor bg = Qt::cyan;
+                    uint8_t r = (255 - bg.red()) * (idx)+bg.red();
+                    uint8_t g = (255 - bg.green()) * (idx)+bg.green();
+                    uint8_t b = (255 - bg.blue()) * (idx)+bg.blue();
+                    //bg.setAlpha(0.2);
+                    return QColor(r, g, b);
+                }
+                return  QColor(255, 255, 255);
             }
-            return  QColor(255, 255, 255);
         }
 
         void refresh(std::vector<Level_t>& ask, std::vector<Level_t>& bid)

@@ -19,10 +19,6 @@
 #include <QSortFilterProxyModel>
 #include <QTableWidget>
 
-#ifdef max
-#undef max
-#endif
-
 using namespace std;
 
 namespace S4 {
@@ -30,11 +26,9 @@ namespace QT {
 
 //CREATE_LOCAL_LOGGER("qt_SnapViewer")
 
-#define TITLE_TDX_DB QStringLiteral("TDX-DB")
-#define TITLE_TDX_LIVE QStringLiteral("TDX-LIVE")
+#define TITLE_SNAP_DB QStringLiteral("SNAP-DB")
+#define TITLE_SNAP_LIVE QStringLiteral("SNAP-LIVE")
 
-#define TITLE_L2_DB QStringLiteral("L2-DB")
-#define TITLE_L2_LIVE QStringLiteral("L2-LIVE")
 
 s4SnapViewer::s4SnapViewer(QWidget *parent) :
     QMainWindow(parent),
@@ -45,14 +39,15 @@ s4SnapViewer::s4SnapViewer(QWidget *parent) :
 
 	ui->centralwidget->setMouseTracking(true);
 
-	connect(ui->action_mode_tdxDB, &QAction::triggered, this, &s4SnapViewer::action_mode_tdxDB);
-	connect(ui->action_mode_L2Live, &QAction::triggered, this, &s4SnapViewer::action_mode_L2Live);
+	connect(ui->action_mode_tdxDB, &QAction::triggered, this, &s4SnapViewer::action_mode_snapDB);
+	connect(ui->action_mode_L2Live, &QAction::triggered, this, &s4SnapViewer::action_mode_snapLive);
 
+	action_mode_snapDB();
 }
 
-void s4SnapViewer::action_mode_tdxDB()
+void s4SnapViewer::action_mode_snapDB()
 {
-	if (this->windowTitle()==TITLE_TDX_DB){
+	if (this->windowTitle()==TITLE_SNAP_DB){
 		((s4SnapViewerWidgetTdxDB*)(this->centralWidget()))->onOpenTdxDB();
 		return;
 	}
@@ -61,20 +56,20 @@ void s4SnapViewer::action_mode_tdxDB()
 	connect(ui->actionNextSnap, &QAction::triggered, pWidget, &s4SnapViewerWidgetTdxDB::nextTdxSnap);
 
 	this->setCentralWidget(pWidget);
-	this->setWindowTitle(TITLE_TDX_DB);
+	this->setWindowTitle(TITLE_SNAP_DB);
 }
 
-void s4SnapViewer::action_mode_L2Live()
+void s4SnapViewer::action_mode_snapLive()
 {
-	if (this->windowTitle()==TITLE_L2_LIVE){
+	if (this->windowTitle()==TITLE_SNAP_LIVE){
 		return;
 	}
-	s4SnapViewerWidgetL2Live* pWidget = new s4SnapViewerWidgetL2Live(this);
-	//connect(ui->actionOpen, &QAction::triggered, pWidget, &s4SnapViewerWidgetL2Live::onStartL2LiveReceiver);
-	//connect(ui->actionClose, &QAction::triggered, pWidget, &s4SnapViewerWidgetL2Live::onStopL2LiveReceiver);
+	// s4SnapViewerWidgetL2Live* pWidget = new s4SnapViewerWidgetL2Live(this);
+	// //connect(ui->actionOpen, &QAction::triggered, pWidget, &s4SnapViewerWidgetL2Live::onStartL2LiveReceiver);
+	// //connect(ui->actionClose, &QAction::triggered, pWidget, &s4SnapViewerWidgetL2Live::onStopL2LiveReceiver);
 
-	this->setCentralWidget(pWidget);
-	this->setWindowTitle(TITLE_L2_LIVE);
+	// this->setCentralWidget(pWidget);
+	this->setWindowTitle(TITLE_SNAP_LIVE);
 }
 
 s4SnapViewer::~s4SnapViewer()

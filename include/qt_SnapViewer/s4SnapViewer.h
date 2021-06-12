@@ -29,8 +29,8 @@ public:
     ~s4SnapViewer();
 
 public slots:
-	void action_mode_tdxDB();
-	void action_mode_L2Live();
+	void action_mode_snapDB();
+	void action_mode_snapLive();
 
 signals:
 
