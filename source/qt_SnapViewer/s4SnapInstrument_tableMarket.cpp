@@ -2,6 +2,8 @@
 #include "qt_SnapViewer/s4SnapTableModel_snapInfo.h"
 #include "qt_SnapViewer/s4SnapTableModel_level.h"
 
+#include "qt_SnapViewer/s4SnapInstrument_Kline_view.h"
+
 #include <QGridLayout>
 #include <QHeaderView>
 #include <QSplitter>
@@ -62,14 +64,23 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
         _info_tv->setMinimumHeight(nTableHeight);
         _info_tv->setMaximumHeight(nTableHeight);
     }
+
+    //K线
+    snapInstrument_Kline_scene* scene = new snapInstrument_Kline_scene(this);
+    snapInstrument_Kline_view* Kview = new snapInstrument_Kline_view(scene, this);
     
 
 	//整体布局
-	QSplitter* splitter = new QSplitter(Qt::Orientation::Vertical, this);
-	splitter->addWidget(_level_tv);
-	splitter->addWidget(_info_tv);
+	QSplitter* splitter_table = new QSplitter(Qt::Orientation::Vertical, this);
+	splitter_table->addWidget(_level_tv);
+	splitter_table->addWidget(_info_tv);
 
-    splitter->setSizes({80, 50});
+    splitter_table->setSizes({80, 50});
+
+	QSplitter* splitter = new QSplitter(Qt::Orientation::Horizontal, this);
+    splitter->addWidget(Kview);
+    splitter->addWidget(splitter_table);
+    splitter->setSizes({200, 50});
 
     //布局放进网格，使填充满
 	QGridLayout *pLayout = new QGridLayout(this);

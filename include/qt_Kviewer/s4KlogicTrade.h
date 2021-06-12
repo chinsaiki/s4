@@ -10,7 +10,7 @@ namespace QT{
 class KlogicTrade_t : public KlogicItemGroup_t
 {
 public:
-    explicit KlogicTrade_t(Kinstrument_Kline_scene* scene):
+    explicit KlogicTrade_t(Kinstrument_scene* scene):
         KlogicItemGroup_t(scene)
     {
     }

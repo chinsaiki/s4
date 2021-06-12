@@ -140,8 +140,8 @@ protected:
 
     void rebuildGroup(QGraphicsItemGroup*& pGroup) {
         if (pGroup) {
-            _scene->removeItem(pGroup);				//从scene删掉元素（以及group），但没有释放内存
-            delete pGroup;							//好像解决了内存泄露
+            _scene->removeItem(pGroup);				//从scene删掉元素（以及group），但没有释放内存，TODO：在组件构造时以_scene为parent？
+            //delete pGroup;							//好像解决了内存泄露
         }
         pGroup = _scene->createItemGroup(QList<QGraphicsItem*>{});
     }
