@@ -12,7 +12,7 @@ snapInstrument_table::snapInstrument_table(int snapLeves_nb, QWidget *parent):
     _market = new snapInstrument_tableMarket(snapLeves_nb, this);
     // _basic = new snapInstrument_tableBasic(this);
 
-	addTab(_market, QStringLiteral("L2行情数据"));
+	addTab(_market, QStringLiteral("行情数据"));
 	// addTab(_basic, QStringLiteral("基本面"));
 	setCurrentIndex(0);
 

@@ -1,4 +1,4 @@
-#include "qt_SnapViewer/s4L2Viewer.h"
+#include "qt_L2Viewer/s4L2Viewer.h"
 
 #include <QApplication>
 #include <QTextCodec>

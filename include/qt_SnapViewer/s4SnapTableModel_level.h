@@ -138,9 +138,9 @@ namespace S4
         {
             if (index.column() == 0){
                 if (index.row() < _side_levels_nb){
-                    return QColor(255, 128, 128);
-                }else{
                     return QColor(128, 255, 128);
+                }else{
+                    return QColor(255, 128, 128);
                 }
             }else{
                 QMap<int, QVariant>::const_iterator it = mapTimeout.find(index.row() * 100 + index.column());
