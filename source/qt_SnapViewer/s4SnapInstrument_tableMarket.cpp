@@ -97,9 +97,13 @@ void snapInstrument_tableMarket::addSnaps(const infSnapQ_ptr& pSnapQ)
 	QAbstractItemModel* infos = _info_tv->model();
     ((snapTableModel_snapInfo*)infos)->refresh((*pSnapQ)[0]);
 
-    _snap_Kview->setCtx(pSnapQ);
-    _snap_Kview->paint();
-    ((snapInstrument_Kline_scene*)(_snap_Kview->scene()))->paint(pSnapQ);
+	((snapInstrument_Kline_scene*)(_snap_Kview->scene()))->setLogCoor(false);
+	((snapInstrument_Kline_scene*)(_snap_Kview->scene()))->paint(pSnapQ);
+
+    _snap_Kview->setLogCoor(false);
+	_snap_Kview->setCtx(pSnapQ);
+	_snap_Kview->paint();
+
 }
 
 void snapInstrument_tableMarket::onL2Data_instrument_snap(const S4::sharedCharArray_ptr& s)

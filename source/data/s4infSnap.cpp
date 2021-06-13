@@ -208,7 +208,7 @@ void infSnapQ_t::fromDB(int lmt_Qsize) {
 	if (!_fromDB) return;
 	string condition(" WHERE minuSec >= 91400 and minuSec <= 150100");
 	_read_order_asc = true;
-	if (lmt_Qsize != 0) {
+	if (lmt_Qsize != 0) {	//限制数目时，同时排序，事后就不用调转了
 		condition = " order by time desc limit " + to_string(lmt_Qsize);
 		_read_order_asc = false;
 	}

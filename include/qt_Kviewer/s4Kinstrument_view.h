@@ -26,7 +26,7 @@ public:
 //signals:
 //    void cursorPosition(QPointF);
 
-    inline void setLogCoor(bool log)
+    inline void setLogCoor(bool log)    //scene需要同步坐标类型
     {
         _isLogCoor = log;
     }
@@ -90,6 +90,9 @@ public slots:
 
 	virtual void slotViewEvent(std::shared_ptr<view_event>);
 
+
+	bool isPaint() const { return _isPaint; }
+	void setIsPaint(bool v) { _isPaint = v; }
 protected:
     virtual void mousePressEvent(QMouseEvent* event) override;
     virtual void mouseReleaseEvent(QMouseEvent* event) override;
@@ -168,6 +171,8 @@ protected:
     void paintLabel(QList<QGraphicsItem*>& pGroup, const QPointF& view_pos, const QString& txt, const color_pair_t& color_pair, int zV,
         bool onLeft = true, int shift = 20, bool auto_fit = true);
 
+private:
+    bool _isPaint = false;
 };
 
 }

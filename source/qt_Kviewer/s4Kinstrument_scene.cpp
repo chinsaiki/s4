@@ -30,7 +30,7 @@ void Kinstrument_scene::initSceneCanvas()
 	_ctx.set_val_w_min(_ctx.val_w_min() - _ctx.val_w_min_margin());
 
 	qreal height;
-	if (_isLogCoor) {
+	if (_isLogCoor) {	
 		height = _ctx.val_h_10percent_pxl() * qLn(_ctx.val_h_max() / _ctx.val_h_min()) / qLn(1.0 + _grid_h_gap);
 	}
 	else {

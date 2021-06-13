@@ -24,6 +24,10 @@ class snapInstrument_tableMarket: public QWidget
 public:
     snapInstrument_tableMarket(int snapLeves_nb,QWidget *parent = nullptr);
 
+	virtual ~snapInstrument_tableMarket() {
+        _snap_Kview->setIsPaint(false);
+	}
+
     void mouseMoveEvent(QMouseEvent* )
     {
         //qDebug() << "snapInstrument_tableMarket " << hasMouseTracking() << " " << event->pos().x() << ", " << event->pos().y();

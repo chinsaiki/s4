@@ -33,6 +33,7 @@ void Kinstrument_indicator_view::paint(void){
 	T.scale(x_scale, y_scale);
 	Kinstrument_view::setTransform(T, false);
 	//qDebug() << this->transform();
+    setIsPaint(true);
 }
 
 void Kinstrument_indicator_view::slotSetTransform(const QTransform& Ti, bool combine)

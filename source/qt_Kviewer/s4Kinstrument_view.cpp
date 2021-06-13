@@ -95,6 +95,7 @@ void Kinstrument_view::dragMoveEvent(QDragMoveEvent* event)
 
 void Kinstrument_view::mousePressEvent(QMouseEvent* event)
 {
+	if (!isPaint()) return;
 	if (event->button() == Qt::LeftButton) {
 		//_mouse_item = _scene->itemAt(_scene_mouse, transform());
 		//if (_mouse_item && !_mouse_item->isSelected()) {
@@ -120,6 +121,7 @@ void Kinstrument_view::mousePressEvent(QMouseEvent* event)
 
 void Kinstrument_view::mouseReleaseEvent(QMouseEvent* event)
 {
+	if (!isPaint()) return;
 	if (event->button() == Qt::LeftButton) {
 		//if (_mouse_item) {
 		//	_mouse_item->setSelected(false);
@@ -134,6 +136,7 @@ void Kinstrument_view::mouseReleaseEvent(QMouseEvent* event)
 
 void Kinstrument_view::mouseMoveEvent(QMouseEvent* event)
 {
+	if (!isPaint()) return;
 	onMouseChange(event->pos());
 	std::shared_ptr<view_event_scene_mouse_change> e_mouse = std::make_shared<view_event_scene_mouse_change>(_scene_mouse.x(), _scene_mouse.y());
 	emit signalViewEvent(e_mouse);
@@ -164,6 +167,7 @@ void Kinstrument_view::mouseMoveEvent(QMouseEvent* event)
 //resize, scrollBar slid
 void Kinstrument_view::onViewChange(void)
 {
+	if (!isPaint()) return;
 	qreal w = width();
 	qreal h = height();
 	qreal vbw = verticalScrollBar()->isVisible() ? verticalScrollBar()->width() : 0;
@@ -177,17 +181,20 @@ void Kinstrument_view::onViewChange(void)
 
 void Kinstrument_view::onMouseChange(qreal view_mouse_x, qreal view_mouse_y)
 {
+	if (!isPaint()) return;
 	_view_mouse_pos.setX(view_mouse_x);
 	_view_mouse_pos.setY(view_mouse_y);
 	_scene_mouse = QGraphicsView::mapToScene(view_mouse_x, view_mouse_y);
 }
 void Kinstrument_view::onMouseChange(const QPointF& view_mouse)
 {
+	if (!isPaint()) return;
 	onMouseChange(view_mouse.x(), view_mouse.y());
 }
 
 void Kinstrument_view::resizeEvent(QResizeEvent* event)
 {
+	if (!isPaint()) return;
 	onViewChange();
 	std::shared_ptr<view_event_scene_center_change> e_center = std::make_shared<view_event_scene_center_change>((_scene_lu + _scene_rd) / 2);
 	emit signalViewEvent(e_center);
@@ -195,6 +202,7 @@ void Kinstrument_view::resizeEvent(QResizeEvent* event)
 
 void Kinstrument_view::wheelEvent(QWheelEvent* event)
 {
+	if (!isPaint()) return;
 	//qDebug() << "Delta: " << event->angleDelta();
 	onMouseChange(event->pos());
 	std::shared_ptr<view_event_scene_mouse_change> e_mouse = std::make_shared<view_event_scene_mouse_change>(_scene_mouse.x(), _scene_mouse.y());
@@ -230,6 +238,7 @@ void Kinstrument_view::wheelEvent(QWheelEvent* event)
 
 void Kinstrument_view::verticalScrollvalueChanged(int)
 {
+	if (!isPaint()) return;
 	//int value = this->verticalScrollBar()->value();
 	//qDebug() <<"verticalScrollvalueChanged"<< value;
 	onViewChange();
@@ -238,6 +247,7 @@ void Kinstrument_view::verticalScrollvalueChanged(int)
 }
 void Kinstrument_view::horizontalScrollvalueChanged(int)
 {
+	if (!isPaint()) return;
 	//int value = this->horizontalScrollBar()->value();
 	//qDebug() << "horizontalScrollvalueChanged" << value;
 	onViewChange();

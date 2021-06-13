@@ -38,11 +38,15 @@ void snapInstrument_Kline_view::setCtx(const std::shared_ptr<infSnapQ_t>& pInfSn
     //     }
     //     n++;
     // }
-    if (pInfSnapQ->front()->_MinmuSec >= 150000){
-        ctx.set_val_w_max(pInfSnapQ->size());
-    }else{
-        ctx.set_val_w_max(STK_SNAP_NUM_MAX);
-    }
+    //if (pInfSnapQ->front()->_MinmuSec >= 150000){
+    //    ctx.set_val_w_max(pInfSnapQ->size());
+    //}else{
+    //    ctx.set_val_w_max(STK_SNAP_NUM_MAX);
+    //}
+    time_t dlt = pInfSnapQ->back()->_time - pInfSnapQ->front()->_time;
+    if (pInfSnapQ->back()->_MinmuSec > 130000 && pInfSnapQ->front()->_MinmuSec < 113000)
+        dlt -= 3600 + 1800;
+    ctx.set_val_w_max(dlt);
 
     Kinstrument_view::setCtx(ctx);
 }
@@ -72,6 +76,7 @@ void snapInstrument_Kline_view::paint(void){
     //paintGridLabels();
     //onViewChange();
     //paintCrosshair();
+    setIsPaint(true);
 }
 
 void snapInstrument_Kline_view::slot_next_trade(int next)

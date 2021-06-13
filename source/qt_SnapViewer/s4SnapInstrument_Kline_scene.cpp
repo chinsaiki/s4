@@ -328,7 +328,6 @@ bool snapInstrument_Kline_scene::get_valPos(int w_seq, QPointF& val) const
 void snapInstrument_Kline_scene::paint(const infSnapQ_ptr& pSnaps)
 {
     _KCtx.timeMode = timeMode_t::tSnap;
-
     calcCtx(pSnaps);
     initSceneCanvas();
 }
@@ -346,11 +345,11 @@ void snapInstrument_Kline_scene::calcCtx(const infSnapQ_ptr& pSnaps)
     ctx.set_val_w_max(0);
 	ctx.set_val_w_min(0);
 
-    //time_t bgn_time = pSnaps->back()->_time;
+    time_t bgn_time = pSnaps->front()->_time;
 
-    int n = 0;
     _label_map_w.clear();
     _w_map_label.clear();
+    time_t dlt_time = 0;
     for(const auto& d : *pSnaps)
     {
         // if (d->high > ctx.val_h_max()){
@@ -359,16 +358,24 @@ void snapInstrument_Kline_scene::calcCtx(const infSnapQ_ptr& pSnaps)
         // if (d->low < ctx.val_h_min()){
         //     ctx.set_val_h_min(d->low);
         // }
-        _label_map_w[d->_time] = n; //TODO
-        _w_map_label[n] = d->_time;
-        n++;
+        dlt_time = d->_time - bgn_time;
+        if (d->_MinmuSec < 130000 || pSnaps->back()->_MinmuSec>=113000){
+        }else{
+            dlt_time -= 3600+1800;
+        }
+        _label_map_w[d->_time] = dlt_time;
+        _w_map_label[dlt_time] = d->_time;
     }
 
-    if (pSnaps->front()->_MinmuSec >= 150000){
-        ctx.set_val_w_max(n);
-    }else{
-        ctx.set_val_w_max(STK_SNAP_NUM_MAX);
-    }
+    // if (pSnaps->front()->_MinmuSec >= 150000){
+    //     ctx.set_val_w_max(pSnaps->size());
+    // }else{
+    //     ctx.set_val_w_max(STK_SNAP_NUM_MAX);
+    // }
+    ctx.set_val_w_max(dlt_time);
+
+    ctx.set_val_h_10percent_pxl(2048);
+    ctx.set_val_w_pxl(4);
 
     setCtx(ctx);
 }

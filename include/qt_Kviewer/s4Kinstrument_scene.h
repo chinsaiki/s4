@@ -68,6 +68,9 @@ public:
 
         qreal val_h_10percent_pxl() const { return _val_h_10percent_pxl; }    //
         qreal val_w_pxl() const { return _val_w_pxl; }
+
+		void set_val_h_10percent_pxl(qreal v) { _val_h_10percent_pxl = v; }
+		void set_val_w_pxl(qreal v) { _val_w_pxl = v; }
         
     private:
         qreal _val_h_min = -1;    // h_min is at bottom, but y=0 is at top
@@ -163,7 +166,7 @@ protected:
 protected:
     QPointF _pos;
     ctx_t _ctx;
-    bool _isLogCoor = true;
+    bool _isLogCoor = true; //TODO: percentCoor
     qreal _h_val_pxl = 1;
     qreal _h_val_pxl_base = 1;
     qreal _h_log_pxl = 1;

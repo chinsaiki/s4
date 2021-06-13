@@ -64,6 +64,7 @@ void Kinstrument_Kline_view::paint(void){
     //paintGridLabels();
     //onViewChange();
     //paintCrosshair();
+    setIsPaint(true);
 }
 
 void Kinstrument_Kline_view::slot_next_trade(int next)
