@@ -43,6 +43,7 @@ public:
     };
 public:
     Kinstrument_indicator_scene(QWidget* parent = 0);
+    virtual ~Kinstrument_indicator_scene(){}
 
     //datetime_t or time_t -> date_seq
     virtual qreal label_w_to_val_w(uint64_t l) const override;

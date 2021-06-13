@@ -13,6 +13,7 @@ class snapInstrument_Kline_view : public Kinstrument_view
     Q_OBJECT
 public:
     snapInstrument_Kline_view(snapInstrument_Kline_scene* scene, QWidget *parent = 0);
+    virtual ~snapInstrument_Kline_view(){}
 
     void setCtx(const std::shared_ptr<infKQ_t>& pInfoKQ);
 

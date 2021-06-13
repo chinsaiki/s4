@@ -16,6 +16,7 @@ class Kinstrument_indicator_tab: public QTabWidget
     Q_OBJECT
 public:
     explicit Kinstrument_indicator_tab(QWidget *parent = nullptr);
+    virtual ~Kinstrument_indicator_tab(){}
 
     void setInstrument(std::shared_ptr<data_panel_t> data_panel);
 

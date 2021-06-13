@@ -39,10 +39,10 @@ typedef double fprice_t;
 #define DN_20p(x) ((price_t)((x)*0.8+0.5))
 
 //涨幅 %
-#define CALC_R_PERCENT(x,y) ((x) * 100.0 / (y) - 100.0)
+#define CALC_R_PERCENT(x,y) ((x) * 100.0f / (y) - 100.0f)
 
 //涨幅 千分比
-#define CALC_R_PERMILL(x,y) ((x) * 1000.0 / (y) - 1000.0)
+#define CALC_R_PERMILL(x,y) ((x) * 1000.0f / (y) - 1000.0f)
 
 //涨幅 % 整数计算
 #define CALC_R_PERCENT_INT(x,y) ((x) * 100 / (y) - 100)

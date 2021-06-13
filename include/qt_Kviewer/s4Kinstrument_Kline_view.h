@@ -13,6 +13,7 @@ class Kinstrument_Kline_view : public Kinstrument_view
     Q_OBJECT
 public:
     Kinstrument_Kline_view(Kinstrument_Kline_scene* scene, QWidget *parent = 0);
+    virtual ~Kinstrument_Kline_view(){}
 
     void setCtx(const std::shared_ptr<infKQ_t>& pInfoKQ);
 

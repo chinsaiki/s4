@@ -12,6 +12,7 @@ class Kinstrument_indicator_view : public Kinstrument_view
 {
 public:
     Kinstrument_indicator_view(Kinstrument_indicator_scene *scene, QWidget *parent = 0);
+    virtual ~Kinstrument_indicator_view(){}
 
 
     void paint(void);

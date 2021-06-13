@@ -18,6 +18,7 @@ class Kinstrument_scene : public QGraphicsScene
 public:
     Kinstrument_scene(QWidget* parent = 0);
 
+    virtual ~Kinstrument_scene(){}
     class ctx_t {
     public:
         ctx_t(){}

@@ -16,6 +16,7 @@ class Kinstrument_Kline_tab: public QTabWidget
     Q_OBJECT
 public:
     explicit Kinstrument_Kline_tab(QWidget *parent = nullptr);
+    virtual ~Kinstrument_Kline_tab(){}
 
     void setInstrument(std::shared_ptr<data_panel_t> data_panel);
 

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "qt_common/s4view_event.h"
 #include "qt_common/s4qt_colorpalette.h"
@@ -15,13 +15,14 @@
 namespace S4 {
 namespace QT {
 
-//Ö¸±êºÍKÏßÊÓÍ¼µÄ»ùÀà
+//æŒ‡æ ‡å’ŒKçº¿è§†å›¾çš„åŸºç±»
 class Kinstrument_view : public QGraphicsView
 {
     Q_OBJECT
 public:
     Kinstrument_view(Kinstrument_scene*scene, QWidget *parent = 0);
 
+    virtual ~Kinstrument_view(){}
 //signals:
 //    void cursorPosition(QPointF);
 
@@ -140,8 +141,8 @@ protected:
 
     void rebuildGroup(QGraphicsItemGroup*& pGroup) {
         if (pGroup) {
-            _scene->removeItem(pGroup);				//´ÓsceneÉ¾µôÔªËØ£¨ÒÔ¼°group£©£¬µ«Ã»ÓÐÊÍ·ÅÄÚ´æ£¬TODO£ºÔÚ×é¼þ¹¹ÔìÊ±ÒÔ_sceneÎªparent£¿
-            //delete pGroup;							//ºÃÏñ½â¾öÁËÄÚ´æÐ¹Â¶
+            _scene->removeItem(pGroup);				//ä»Žsceneåˆ æŽ‰å…ƒç´ ï¼ˆä»¥åŠgroupï¼‰ï¼Œä½†æ²¡æœ‰é‡Šæ”¾å†…å­˜ï¼ŒTODOï¼šåœ¨ç»„ä»¶æž„é€ æ—¶ä»¥_sceneä¸ºparentï¼Ÿ
+            //delete pGroup;							//å¥½åƒè§£å†³äº†å†…å­˜æ³„éœ²
         }
         pGroup = _scene->createItemGroup(QList<QGraphicsItem*>{});
     }
@@ -156,15 +157,15 @@ protected:
     void grabTransInfo();
     QPointF getXYscale();
 
-    QGraphicsItemGroup* _crossLine = nullptr;
+    QList<QGraphicsItem*> _crossLine;
     void paintCrosshair();
-    QGraphicsItemGroup* _gridLines = nullptr;
+    QList<QGraphicsItem*> _gridLines;
 
-    QGraphicsItemGroup* _gridLabels = nullptr;
+    QList<QGraphicsItem*> _gridLabels;
     void paintGridLabels();
 
     //paint map from view-position to scen-position
-    void paintLabel(QGraphicsItemGroup*& pGroup, const QPointF& view_pos, const QString& txt, const color_pair_t& color_pair, int zV,
+    void paintLabel(QList<QGraphicsItem*>& pGroup, const QPointF& view_pos, const QString& txt, const color_pair_t& color_pair, int zV,
         bool onLeft = true, int shift = 20, bool auto_fit = true);
 
 };

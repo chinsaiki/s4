@@ -15,6 +15,7 @@ public:
 	};
 public:
     Kinstrument_Kline_scene(QWidget* parent = 0);
+    virtual ~Kinstrument_Kline_scene(){}
 
     //void setInfoKQ(const std::shared_ptr<infKQ_t>& pInfoKQ);
 

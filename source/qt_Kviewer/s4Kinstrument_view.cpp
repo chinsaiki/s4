@@ -453,12 +453,9 @@ QPointF Kinstrument_view::getXYscale()
 	return std::move(QPointF(xscale, yscale));
 }
 
-void Kinstrument_view::paintLabel(QGraphicsItemGroup*& pGroup, const QPointF& view_pos, const QString& txt, const color_pair_t& color_pair, int zV,
+void Kinstrument_view::paintLabel(QList<QGraphicsItem*>& pGroup, const QPointF& view_pos, const QString& txt, const color_pair_t& color_pair, int zV,
 	bool onLeft, int shift, bool auto_fit)
 {
-	if ( !pGroup)
-		pGroup = _scene->createItemGroup(QList<QGraphicsItem*>{});
-
 	QPointF scene_pos = mapToScene(view_pos.x(), view_pos.y());
 	//if (scene_pos.y() < 0)
 	//	scene_pos.setY(0);
@@ -498,13 +495,16 @@ void Kinstrument_view::paintLabel(QGraphicsItemGroup*& pGroup, const QPointF& vi
 	label_x->setColor(color_pair);
 	label_x->setPos(x, y);
 	label_x->setZValue(zV);
-	pGroup->addToGroup(label_x);
+	pGroup.append(label_x);
 
 }
 
 void Kinstrument_view::paintCrosshair()
 {
-	rebuildGroup(_crossLine);
+	for (auto& i : _crossLine){
+		_scene->removeItem(i);
+	}
+	_crossLine.clear();
 
 	QPen xPen = QPen(_colorpalette->crosshair, 1/*width*/, Qt::DashLine);
 	QPen yPen = QPen(_colorpalette->crosshair, 1/*width*/, Qt::DashLine);
@@ -515,14 +515,14 @@ void Kinstrument_view::paintCrosshair()
 		QGraphicsLineItem* hline = new QGraphicsLineItem;
 		hline->setLine(_scene_lu.x(), _scene_mouse.y(), _scene_rd.x(), _scene_mouse.y());
 		hline->setPen(xPen);
-		_crossLine->addToGroup(hline);
+		_crossLine.append(hline);
 	}
 
 	if (_scene_mouse.x() >= _scene->sceneRect().x() && _scene_mouse.x() < _scene->sceneRect().x()+_scene->width()) {
 		QGraphicsLineItem* vline = new QGraphicsLineItem;
 		vline->setLine(_scene_mouse.x(), _scene_lu.y(), _scene_mouse.x(), _scene_rd.y());
 		vline->setPen(yPen);
-		_crossLine->addToGroup(vline);
+		_crossLine.append(vline);
 	}
 
 	{
@@ -534,13 +534,19 @@ void Kinstrument_view::paintCrosshair()
 		QString txt_x = _scene->x_to_label_w(_scene_mouse.x());
 		paintLabel(_crossLine, {_view_mouse_pos.x(), double(height()-40)}, txt_x, _colorpalette->labels[0], 100, false, 0);
 	}
-	_crossLine->setZValue(VIEW_Z + 1);
+	for (auto& i : _crossLine){
+		i->setZValue(VIEW_Z + 1);
+		_scene->addItem(i);
+	}
 
 }
 
 void Kinstrument_view::paintGridLines()
 {
-	rebuildGroup(_gridLines);
+	for (auto& i : _gridLines){
+		_scene->removeItem(i);
+	}
+	_gridLines.clear();
 
 	QPen xPen = QPen(_colorpalette->grid.front, 1/*width*/, Qt::DashLine);
 	QPen yPen = QPen(_colorpalette->grid.front, 1/*width*/, Qt::DashLine);
@@ -552,7 +558,7 @@ void Kinstrument_view::paintGridLines()
 		qreal y = _scene->val_h_to_y(i);
 		QGraphicsLineItem* line = new QGraphicsLineItem(_scene->sceneRect().x(), y, _scene->sceneRect().x() + _scene->sceneRect().width(), y);
 		line->setPen(xPen);
-		_gridLines->addToGroup(line);
+		_gridLines.append(line);
 
 		//QString txt = _scene->y_to_val_label(y);
 		//paintLabel(_gridLines, mapFromScene(_scene_lu.x(), y), txt, _colorpalette->labels[1], 99, false, 0);
@@ -562,17 +568,23 @@ void Kinstrument_view::paintGridLines()
 		qreal x = _scene->val_w_to_x(w);
 		QGraphicsLineItem* line = new QGraphicsLineItem(x, _scene->sceneRect().y(), x, _scene->sceneRect().y() + _scene->sceneRect().height());
 		line->setPen(yPen);
-		_gridLines->addToGroup(line);
+		_gridLines.append(line);
 
 		//QString txt = _scene->x_to_val_label(i);
 		//paintLabel(_gridLines, mapFromScene(x, _scene_lu.y()), txt, _colorpalette->labels[1], 99, false, 0);
 	}
-	_gridLines->setZValue(VIEW_Z);
+	for (auto& i : _gridLines){
+		i->setZValue(VIEW_Z);
+		_scene->addItem(i);
+	}
 }
 
 void Kinstrument_view::paintGridLabels()
 {
-	rebuildGroup(_gridLabels);
+	for (auto& i : _gridLabels){
+		_scene->removeItem(i);
+	}
+	_gridLabels.clear();
 
 	for (qreal i = _ctx.sc_val_h_min; i < _ctx.sc_val_h_max * (1.01 + _grid_h_gap); i = _isLogCoor ? i * (1.0 + _grid_h_gap) : i + _ctx.sc_val_h_max * _grid_h_gap) {
 		qreal y = _scene->val_h_to_y(i);
@@ -589,7 +601,10 @@ void Kinstrument_view::paintGridLabels()
 		QString txt = _scene->x_to_label_w(x);
 		paintLabel(_gridLabels, mapFromScene(x, _scene_lu.y()), txt, _colorpalette->labels[2], 99, false, 0, false);
 	}
-	_gridLabels->setZValue(VIEW_Z);
+	for (auto& i : _gridLabels){
+		i->setZValue(VIEW_Z);
+		_scene->addItem(i);
+	}
 }
 
 
