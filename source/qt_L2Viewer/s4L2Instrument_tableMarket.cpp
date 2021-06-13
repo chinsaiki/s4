@@ -1,8 +1,8 @@
 ﻿#include "qt_L2Viewer/s4L2Instrument_tableMarket.h"
 #include "qt_L2Viewer/s4L2TableModel_order.h"
 #include "qt_L2Viewer/s4L2TableModel_exec.h"
-#include "qt_SnapViewer/s4snapTableModel_snapInfo.h"
-#include "qt_SnapViewer/s4snapTableModel_level.h"
+#include "qt_SnapViewer/s4SnapTableModel_snapInfo.h"
+#include "qt_SnapViewer/s4SnapTableModel_level.h"
 
 #include <QGridLayout>
 #include <QHeaderView>

@@ -23,6 +23,11 @@
 #if defined (__APPLE__)
 #include <ifaddrs.h>
 #endif
+
+#if defined __linux__
+#  include <netinet/if_ether.h>
+#endif
+
 using namespace std;
 
 #ifndef bzero
@@ -1020,8 +1025,8 @@ void SockUtil::listNIC(std::vector<SockUtil::nic_description_t>& NICs)
             if (pCurrAddresses->PhysicalAddressLength != 0)
             {
                 // CString mac;//其实 MAC 地址的长度存在 PhysicalAddressLength 中，最好用它来确定格式化的长度
-                // mac.Format(_T("%02X%02X%02X%02X%02X%02X"), pCurrAddresses->PhysicalAddress[0], pCurrAddresses->PhysicalAddress[1], \
-                //     pCurrAddresses->PhysicalAddress[2], pCurrAddresses->PhysicalAddress[3], pCurrAddresses->PhysicalAddress[4], \
+                // mac.Format(_T("%02X%02X%02X%02X%02X%02X"), pCurrAddresses->PhysicalAddress[0], pCurrAddresses->PhysicalAddress[1], 
+                //     pCurrAddresses->PhysicalAddress[2], pCurrAddresses->PhysicalAddress[3], pCurrAddresses->PhysicalAddress[4], 
                 //     pCurrAddresses->PhysicalAddress[5]);
                 // std::cout << "Adapter Mac:")) + mac << std::endl;//MAC地址
                 char macStr[18] = {0};//12+5+1
@@ -1165,7 +1170,7 @@ void SockUtil::listNIC(std::vector<SockUtil::nic_description_t>& NICs)
     {
         interfaceNum = ifc.ifc_len / sizeof(struct ifreq);
         // slog("interface num = %d\n", interfaceNum);
-        while (interfaceNum-- > 0 && nic_nb < nic_size)
+        while (interfaceNum-- > 0)
         {
             nic_description_t currentNic;
             if (strlen(buf[interfaceNum].ifr_name)>2 && 
@@ -1191,7 +1196,7 @@ void SockUtil::listNIC(std::vector<SockUtil::nic_description_t>& NICs)
                 close(fd);
                 return;
             }
-            currentNic.isUp = ifrcopy->ifr_flags & IFF_UP;
+            currentNic.isUp = ifrcopy.ifr_flags & IFF_UP;
 
             //get the mac of this interface
             if (!ioctl(fd, SIOCGIFHWADDR, (char *)(&buf[interfaceNum])))
@@ -1225,10 +1230,10 @@ void SockUtil::listNIC(std::vector<SockUtil::nic_description_t>& NICs)
                 // pNics[nic_nb].ip_addr_host = ntohl(((struct sockaddr_in *)&(buf[interfaceNum].ifr_addr))->sin_addr.s_addr);
                 // slog("    ip: %s, host = %u\n", pNics[nic_nb].ip, pNics[nic_nb].ip_addr_host);
 
-                char ip[32];
-                snprintf(ip, sizeof(ip), "%s",
-                         (char *)inet_ntoa(((struct sockaddr_in *)&(buf[interfaceNum].ifr_addr))->sin_addr));
-                currentNic.local_ip = ip;
+//                char ip[32];
+//                snprintf(ip, sizeof(ip), "%s",
+//                         (char *)inet_ntoa(((struct sockaddr_in *)&(buf[interfaceNum].ifr_addr))->sin_addr));
+                currentNic.local_ip = inet_ntoa(((struct sockaddr_in *)&(buf[interfaceNum].ifr_addr))->sin_addr);
             }
             else
             {

@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 
 	L2_udp_recver_th_native L2recver(pL2DataQ, pL2CmdQ);
 
-	L2recver.start("0.0.0.0", 8888);
+	L2recver.start("", "0.0.0.0", 8888);
 
 	auto proc = [&]() {
 		L2Data_arPtr_t p;
