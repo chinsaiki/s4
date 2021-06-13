@@ -157,11 +157,11 @@ protected:
     void grabTransInfo();
     QPointF getXYscale();
 
-    QList<QGraphicsItem*> _crossLine;
+    QGraphicsItemGroup* _crossLine = nullptr;
     void paintCrosshair();
-    QList<QGraphicsItem*> _gridLines;
+    QGraphicsItemGroup* _gridLines = nullptr;
 
-    QList<QGraphicsItem*> _gridLabels;
+    QGraphicsItemGroup* _gridLabels = nullptr;
     void paintGridLabels();
 
     //paint map from view-position to scen-position
