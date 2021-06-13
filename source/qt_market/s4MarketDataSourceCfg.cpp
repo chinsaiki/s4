@@ -65,7 +65,7 @@ marketDataSourceCfg::marketDataSourceCfg(const QString& Name, QWidget *parent) :
 #ifdef WIN32
             show_nic += QString::fromStdWString(NIC.nic_name) + "(";
 #else
-            show_nic += QString::fromStdString(NIC.nic_name);
+            show_nic += QString::fromStdString(NIC.nic_name) + "(";
 #endif
             show_nic += NIC.local_ip.c_str();
             show_nic += ")";

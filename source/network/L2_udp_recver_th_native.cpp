@@ -21,12 +21,13 @@ bool L2_udp_recver_th_native::start(const char* pMultiCastIp, const char* pLocal
     memset(&_stats, 0, sizeof(_stats));
 
     _fd = SockUtil::bindUdpSock(port, pLocalIp, UDPlite);
+    LCL_INFO("created fd={} at {}:{}  udp-list={}", _fd, pLocalIp, port, UDPlite);
     if (SockUtil::isMulticastAddress(pMultiCastIp)){
-		_fd = SockUtil::bindUdpSock(port, pLocalIp, UDPlite);
         if (SockUtil::joinMultiAddr(_fd, pMultiCastIp) != 0) {
             LCL_ERR("joinMulticast {} fail!", pMultiCastIp);
             return false;
         }
+	LCL_INFO("joined Multicast {}.", pMultiCastIp);
     }
 	if (_fd < 0)
 		return false;

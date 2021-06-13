@@ -1158,10 +1158,12 @@ void SockUtil::listNIC(std::vector<SockUtil::nic_description_t>& NICs)
 
     if ((fd = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL|ETH_P_8021Q))) < 0)
     {
-        perror("socket");
-        ERR("listNIC socket error={}", strerror(errno));
-        close(fd);
-        return;
+	if ((fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP)) < 0){
+            perror("socket");
+            ERR("listNIC socket error={}", strerror(errno));
+            close(fd);
+            return;
+	}
     }
 
     ifc.ifc_len = sizeof(buf);
