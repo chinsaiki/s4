@@ -100,7 +100,9 @@ void snapInstrument_tableMarket::addSnaps(const infSnapQ_ptr& pSnapQ)
 	((snapInstrument_Kline_scene*)(_snap_Kview->scene()))->setLogCoor(false);
 	((snapInstrument_Kline_scene*)(_snap_Kview->scene()))->paint(pSnapQ);
 
-    _snap_Kview->setLogCoor(false);
+	_snap_Kview->setLogCoor(false);
+	_snap_Kview->setGridGap_w(60);
+	_snap_Kview->setGridGap_h(0.02);
 	_snap_Kview->setCtx(pSnapQ);
 	_snap_Kview->paint();
 

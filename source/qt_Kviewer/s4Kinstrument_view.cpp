@@ -571,7 +571,7 @@ void Kinstrument_view::paintGridLines()
 		//paintLabel(_gridLines, mapFromScene(_scene_lu.x(), y), txt, _colorpalette->labels[1], 99, false, 0);
 	}
 
-	for (int w = _ctx.sc_val_w_min; w <= _ctx.sc_val_w_max; w += 20) {
+	for (int w = _ctx.sc_val_w_min; w <= _ctx.sc_val_w_max; w += _grid_w_gap) {
 		qreal x = _scene->val_w_to_x(w);
 		QGraphicsLineItem* line = new QGraphicsLineItem(x, _scene->sceneRect().y(), x, _scene->sceneRect().y() + _scene->sceneRect().height());
 		line->setPen(yPen);
@@ -598,7 +598,7 @@ void Kinstrument_view::paintGridLabels()
 		paintLabel(gridLabels, mapFromScene(_scene_lu.x(), y), txt, _colorpalette->labels[2], 99, false, 0, false);
 	}
 
-	for (int w = _ctx.sc_val_w_min; w <= _ctx.sc_val_w_max; w += 20) {
+	for (int w = _ctx.sc_val_w_min; w <= _ctx.sc_val_w_max; w += _grid_w_gap) {
 		qreal x = _scene->val_w_to_x(w);
 		if (x < _scene_lu.x() || x > _scene_rd.x())
 			continue;
