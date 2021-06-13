@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>251</width>
-    <height>158</height>
+    <height>200</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -178,13 +178,36 @@
    <property name="geometry">
     <rect>
      <x>170</x>
-     <y>130</y>
+     <y>170</y>
      <width>75</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
     <string>完成</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>130</y>
+     <width>54</width>
+     <height>12</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>绑定网卡</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_nic">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>130</y>
+     <width>181</width>
+     <height>22</height>
+    </rect>
    </property>
   </widget>
  </widget>
@@ -196,6 +219,7 @@
   <tabstop>lineEdit_ip3</tabstop>
   <tabstop>lineEdit_port</tabstop>
   <tabstop>comboBox_type</tabstop>
+  <tabstop>comboBox_nic</tabstop>
   <tabstop>pushButton_edit</tabstop>
  </tabstops>
  <resources/>

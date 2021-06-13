@@ -54,6 +54,27 @@ marketDataSourceCfg::marketDataSourceCfg(const QString& Name, QWidget *parent) :
     strList<<"UDP"<<"UDP-lite";
     ui->comboBox_type->addItems(strList);
 
+    std::vector<SockUtil::nic_description_t> NICs;
+    SockUtil::listNIC(NICs);
+    QStringList NICs_str;
+    NICs_str << QStringLiteral("自动");
+    _NICs_info.clear();
+    for (auto& NIC : NICs){
+        if (NIC.isEth && NIC.isUp){
+            QString show_nic;
+#ifdef WIN32
+            show_nic += QString::fromStdWString(NIC.nic_name) + "(";
+#else
+            show_nic += QString::fromStdString(NIC.nic_name);
+#endif
+            show_nic += NIC.local_ip.c_str();
+            show_nic += ")";
+            NICs_str << show_nic;
+            _NICs_info << NIC;
+        }
+    }
+    ui->comboBox_nic->addItems(NICs_str);
+
     connect(ui->pushButton_edit, &QPushButton::clicked, this, &marketDataSourceCfg::slot_onButtom);
 
     _editable = true;
@@ -85,6 +106,7 @@ void marketDataSourceCfg::slot_onButtom()
         ui->lineEdit_ip3->setEnabled(false);
         ui->lineEdit_port->setEnabled(false);
         ui->comboBox_type->setEnabled(false);
+        ui->comboBox_nic->setEnabled(false);
 
         ui->pushButton_edit->setText(BOTTUM_TEXT_EDIT);
 
@@ -99,6 +121,7 @@ void marketDataSourceCfg::slot_onButtom()
         ui->lineEdit_ip3->setEnabled(true);
         ui->lineEdit_port->setEnabled(true);
         ui->comboBox_type->setEnabled(true);
+        ui->comboBox_nic->setEnabled(true);
 
         ui->pushButton_edit->setText(BOTTUM_TEXT_OK);
     }
@@ -110,12 +133,18 @@ struct marketDataSourceCfg::cfg_t marketDataSourceCfg::getCfg() const
     cfg_t ret;
 
     ret.Name = ui->lineEdit_name->text().toStdString();
-    ret.IP = ui->lineEdit_ip0->text().toStdString() + 
+    ret.listen_IP = ui->lineEdit_ip0->text().toStdString() + 
         "." +ui->lineEdit_ip1->text().toStdString() + 
         "." +ui->lineEdit_ip2->text().toStdString() + 
         "." +ui->lineEdit_ip3->text().toStdString();
     ret.Port = ui->lineEdit_port->text().toUInt();
     ret.SourceType = ui->comboBox_type->currentText().toStdString();
+    int i = ui->comboBox_nic->currentIndex() - 1;
+    if (i < 0){
+        ret.local_IP = "0.0.0.0";
+    }else{
+        ret.local_IP = _NICs_info[i].local_ip;
+    }
 
     return ret;
 }

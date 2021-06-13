@@ -904,4 +904,385 @@ bool SockUtil::isMulticastAddress(const char *ip) {
          addressInNetworkOrder <= 0xEFFFFFFF;
 }
 
+#ifdef WIN32
+// static const  int ADAPTERNUM  = 32; 
+void SockUtil::listNIC(std::vector<SockUtil::nic_description_t>& NICs)
+{
+	// NICs.clear();
+	// PIP_ADAPTER_INFO pIpAdapterInfo = new IP_ADAPTER_INFO[ADAPTERNUM];//
+	// unsigned long stSize = sizeof(IP_ADAPTER_INFO) * ADAPTERNUM;
+	// // 获取所有网卡信息，参数二为输入输出参数 
+	// int nRel = GetAdaptersInfo(pIpAdapterInfo,&stSize);
+	// // 空间不足
+	// if (ERROR_BUFFER_OVERFLOW == nRel) {
+	// 	// 释放空间
+	// 	if(pIpAdapterInfo!=NULL)
+	// 		delete[] pIpAdapterInfo;
+	// 	return; 
+	// }
+	
+	// PIP_ADAPTER_INFO cur =   pIpAdapterInfo;
+	// // 多个网卡 通过链表形式链接起来的 
+	// while(cur){
+    //     nic_description_t currentNIC;
+	// 	// cout<<"网卡名称："<<cur->AdapterName<<endl;
+	// 	// cout<<"网卡描述："<<cur->Description<<endl;
+    //     currentNIC.nic_name = cur->Description;
+	// 	switch (cur->Type) {
+	// 		case MIB_IF_TYPE_OTHER:
+	// 			break;
+	// 		case MIB_IF_TYPE_ETHERNET:
+	// 			{
+	// 				IP_ADDR_STRING *pIpAddrString =&(cur->IpAddressList);
+	// 				// cout << "IP:" << pIpAddrString->IpAddress.String << endl;
+	// 				// cout << "子网掩码:" << 	pIpAddrString->IpMask.String <<endl;
+    //                 currentNIC.local_ip = pIpAddrString->IpAddress.String;
+    //                 currentNIC.ip_mask = pIpAddrString->IpMask.String;
+	// 			}
+	// 			break;
+	// 		case MIB_IF_TYPE_TOKENRING:
+	// 			break;
+	// 		case MIB_IF_TYPE_FDDI:
+	// 			break;
+	// 		case MIB_IF_TYPE_PPP:
+	// 			break;
+	// 		case MIB_IF_TYPE_LOOPBACK:
+	// 			break;
+	// 		case MIB_IF_TYPE_SLIP:
+	// 			break;
+	// 		default://无线网卡,Unknown type
+	// 			{
+	// 				IP_ADDR_STRING *pIpAddrString =&(cur->IpAddressList);
+	// 				// cout << "IP:" << pIpAddrString->IpAddress.String << endl;
+	// 				// cout << "子网掩码:" << 	pIpAddrString->IpMask.String <<endl;
+    //                 currentNIC.local_ip = pIpAddrString->IpAddress.String;
+    //                 currentNIC.ip_mask = pIpAddrString->IpMask.String;
+	// 			}
+	// 			break;
+	// 	}
+	//     char hex[16] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'} ;
+		
+	// 	// mac 地址一般6个字节 
+	// 	// mac 二进制转16进制字符串
+	// 	char macStr[18] = {0};//12+5+1
+	// 	int k = 0;
+	// 	for(unsigned int j = 0; j < cur->AddressLength; j++){
+	// 		macStr[k++] = hex[(cur->Address[j] & 0xf0) >> 4];
+	// 		macStr[k++] = hex[cur->Address[j] & 0x0f];
+	// 		macStr[k++] = ':'; 
+	// 	} 
+	// 	macStr[k-1] = 0;
+		
+	// 	// cout<<"MAC:" << macStr << endl; // mac地址 16进制字符串表示 
+    //     currentNIC.nic_mac = macStr;
+	// 	cur = cur->Next;
+	// 	// cout << "--------------------------------------------------" << endl;
+    //     NICs.emplace_back(std::move(currentNIC));
+	// }
+	
+	// // 释放空间
+	// if(pIpAdapterInfo!=NULL)
+	// 	delete[] pIpAdapterInfo;
+
+
+    //关于这个标志，查 MSDN 吧
+    ULONG flags = GAA_FLAG_INCLUDE_PREFIX | GAA_FLAG_INCLUDE_GATEWAYS;//包括 IPV4 ，IPV6 网关
+    ULONG family = AF_INET;                     //AF_UNSPEC:返回包括 IPV4 和 IPV6 地址
+    IP_ADAPTER_ADDRESSES pAddresses[32];
+    ULONG outBufLen = sizeof(pAddresses);
+    DWORD dwRetVal = 0;
+    PIP_ADAPTER_ADDRESSES pCurrAddresses = NULL;
+    PIP_ADAPTER_UNICAST_ADDRESS pUnicast = NULL;
+    //PIP_ADAPTER_ANYCAST_ADDRESS pAnycast = NULL;
+    //PIP_ADAPTER_MULTICAST_ADDRESS pMulticast = NULL;
+    //IP_ADAPTER_DNS_SERVER_ADDRESS *pDnServer = NULL;
+    //IP_ADAPTER_PREFIX *pPrefix = NULL;
+    do
+    {
+        dwRetVal = GetAdaptersAddresses(family, flags, NULL, pAddresses, &outBufLen);
+        if (dwRetVal == ERROR_BUFFER_OVERFLOW)
+        {
+        }
+        else
+            break;
+    } while (dwRetVal == ERROR_BUFFER_OVERFLOW);
+    char hex[16] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'} ;
+    if (dwRetVal == NO_ERROR)
+    {
+        pCurrAddresses = pAddresses;
+        while (pCurrAddresses)
+        {
+            nic_description_t currentNIC;
+            // std::cout << "Adapter name:" << pCurrAddresses->AdapterName << std::endl;
+            // std::wcout << "Description:" << std::wstring(pCurrAddresses->Description) << std::endl;
+            // std::wcout << "Friendly name:" << std::wstring(pCurrAddresses->FriendlyName) << std::endl;
+            currentNIC.nic_name = std::wstring(pCurrAddresses->Description);
+            if (pCurrAddresses->PhysicalAddressLength != 0)
+            {
+                // CString mac;//其实 MAC 地址的长度存在 PhysicalAddressLength 中，最好用它来确定格式化的长度
+                // mac.Format(_T("%02X%02X%02X%02X%02X%02X"), pCurrAddresses->PhysicalAddress[0], pCurrAddresses->PhysicalAddress[1], \
+                //     pCurrAddresses->PhysicalAddress[2], pCurrAddresses->PhysicalAddress[3], pCurrAddresses->PhysicalAddress[4], \
+                //     pCurrAddresses->PhysicalAddress[5]);
+                // std::cout << "Adapter Mac:")) + mac << std::endl;//MAC地址
+                char macStr[18] = {0};//12+5+1
+                int k = 0;
+                for(unsigned int j = 0; j < pCurrAddresses->PhysicalAddressLength; j++){
+                    macStr[k++] = hex[(pCurrAddresses->PhysicalAddress[j] & 0xf0) >> 4];
+                    macStr[k++] = hex[pCurrAddresses->PhysicalAddress[j] & 0x0f];
+                    macStr[k++] = ':'; 
+                }
+                macStr[k - 1] = 0;
+				// std::cout << "MAC:" << macStr << std::endl;
+                currentNIC.nic_mac = macStr;
+			}
+            switch (pCurrAddresses->IfType) //类型，列举了几种
+            {
+            case MIB_IF_TYPE_ETHERNET:
+                // std::cout <<"网卡类型：以太网接口" << std::endl;
+                currentNIC.isEth = true;
+                break;
+            // case MIB_IF_TYPE_PPP:
+            //     std::cout <<"网卡类型：PPP接口" << std::endl;
+            //     break;
+            // case MIB_IF_TYPE_LOOPBACK:
+            //     std::cout <<"网卡类型：软件回路接口" << std::endl;
+            //     break;
+            // case MIB_IF_TYPE_SLIP:
+            //     std::cout <<"网卡类型：ATM网络接口" << std::endl;
+            //     break;
+            // case IF_TYPE_IEEE80211:
+            //     std::cout <<"网卡类型：无线网络接口" << std::endl;
+            //     break;
+            default:
+                currentNIC.isEth = false;
+                break;
+            }
+
+            //单播IP
+            pUnicast = pCurrAddresses->FirstUnicastAddress;
+            while (pUnicast)
+            {
+                CHAR IP[130] = { 0 };
+                if (AF_INET == pUnicast->Address.lpSockaddr->sa_family)// IPV4 地址，使用 IPV4 转换
+                    inet_ntop(PF_INET, &((sockaddr_in*)pUnicast->Address.lpSockaddr)->sin_addr, IP, sizeof(IP));
+                else if (AF_INET6 == pUnicast->Address.lpSockaddr->sa_family)// IPV6 地址，使用 IPV6 转换
+                    inet_ntop(PF_INET6, &((sockaddr_in6*)pUnicast->Address.lpSockaddr)->sin6_addr, IP, sizeof(IP));
+                // std::cout << "单播IP：" << IP << std::endl;
+                currentNIC.local_ip = IP;
+                break;  //TODO:用多个IP？
+                //pUnicast = pUnicast->Next;
+            }
+
+            // //DHCP服务器地址
+            // if (pCurrAddresses->Dhcpv4Server.lpSockaddr)
+            // {
+            //     CHAR dhcp[130] = { 0 };
+            //     if (AF_INET == pCurrAddresses->Dhcpv4Server.lpSockaddr->sa_family)
+            //         inet_ntop(PF_INET, &((sockaddr_in*)pCurrAddresses->Dhcpv4Server.lpSockaddr)->sin_addr, dhcp, sizeof(dhcp));
+            //     else if (AF_INET6 == pCurrAddresses->Dhcpv4Server.lpSockaddr->sa_family)
+            //         inet_ntop(PF_INET6, &((sockaddr_in6*)pCurrAddresses->Dhcpv4Server.lpSockaddr)->sin6_addr, dhcp, sizeof(dhcp));
+            //     std::cout << "DHCP地址：" << dhcp << std::endl;
+            // }
+
+            // //DNS
+            // IP_ADAPTER_DNS_SERVER_ADDRESS *pDnServer = pCurrAddresses->FirstDnsServerAddress;
+            // while (pDnServer)
+            // {
+            //     CHAR DNS[130] = { 0 };
+            //     if (AF_INET == pDnServer->Address.lpSockaddr->sa_family)
+            //         inet_ntop(PF_INET, &((sockaddr_in*)pDnServer->Address.lpSockaddr)->sin_addr, DNS, sizeof(DNS));
+            //     else if (AF_INET6 == pDnServer->Address.lpSockaddr->sa_family)
+            //         inet_ntop(PF_INET6, &((sockaddr_in6*)pDnServer->Address.lpSockaddr)->sin6_addr, DNS, sizeof(DNS));
+            //     std::cout << "DNS：" << DNS << std::endl;
+            //     pDnServer = pDnServer->Next;
+            // }
+            // std::cout << "MTU：" << pCurrAddresses->Mtu << std::endl;
+            // std::cout << "send speed:%d\r\n" << pCurrAddresses->TransmitLinkSpeed << std::endl;
+            // std::cout << "recv speed:%d\r\n" << pCurrAddresses->ReceiveLinkSpeed << std::endl;
+
+            // //网关
+            // auto pGetway = pCurrAddresses->FirstGatewayAddress;
+            // while (pGetway)
+            // {
+            //     CHAR getway[130] = { 0 };
+            //     if (AF_INET == pGetway->Address.lpSockaddr->sa_family)
+            //         inet_ntop(PF_INET, &((sockaddr_in*)pGetway->Address.lpSockaddr)->sin_addr, getway, sizeof(getway));
+            //     else if (AF_INET6 == pGetway->Address.lpSockaddr->sa_family)
+            //         inet_ntop(PF_INET6, &((sockaddr_in6*)pGetway->Address.lpSockaddr)->sin6_addr, getway, sizeof(getway));
+            //     std::cout << "Getway：" << getway << std::endl;
+            //     pGetway = pGetway->Next;
+            // }
+
+            // //IPV6DHCP
+            // if (pCurrAddresses->Dhcpv6Server.lpSockaddr)
+            // {
+            //     CHAR dhcpv6[130] = { 0 };
+            //     if (AF_INET6 == pCurrAddresses->Dhcpv6Server.lpSockaddr->sa_family)
+            //     {
+            //         inet_ntop(PF_INET6, &((sockaddr_in6*)pCurrAddresses->Dhcpv6Server.lpSockaddr)->sin6_addr, dhcpv6, sizeof(dhcpv6));
+            //         std::cout << "DHCPV6：" << dhcpv6 << std::endl;
+            //     }
+            // }
+
+            // std::cout << "在线：" << pCurrAddresses->OperStatus << std::endl;
+            currentNIC.isUp = pCurrAddresses->OperStatus == IfOperStatusUp;
+            // cout << "--------------------------------------------------" << endl;
+            pCurrAddresses = pCurrAddresses->Next;
+            NICs.emplace_back(std::move(currentNIC));
+        }
+    }
+    else
+    {
+        ERR("GetAdaptersAddresses failed,error code:{}", GetLastError());
+    }
+} 
+
+#else
+
+void SockUtil::listNIC(std::vector<SockUtil::nic_description_t>& NICs)
+{
+    int fd;
+    // int nic_nb = 0;
+    int interfaceNum = 0;
+    struct ifreq buf[32];
+    struct ifconf ifc;
+    struct ifreq ifrcopy;
+    char mac[32] = {0};
+    // char broadAddr[32] = {0};
+    // char subnetMask[32] = {0};
+
+    if ((fd = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL|ETH_P_8021Q))) < 0)
+    {
+        perror("socket");
+        ERR("listNIC socket error={}", strerror(errno));
+        close(fd);
+        return;
+    }
+
+    ifc.ifc_len = sizeof(buf);
+    ifc.ifc_buf = (caddr_t)buf;
+    if (!ioctl(fd, SIOCGIFCONF, (char *)&ifc))
+    {
+        interfaceNum = ifc.ifc_len / sizeof(struct ifreq);
+        // slog("interface num = %d\n", interfaceNum);
+        while (interfaceNum-- > 0 && nic_nb < nic_size)
+        {
+            nic_description_t currentNic;
+            if (strlen(buf[interfaceNum].ifr_name)>2 && 
+                buf[interfaceNum].ifr_name[0]=='e' && 
+                (buf[interfaceNum].ifr_name[1]=='n' || buf[interfaceNum].ifr_name[1]=='t')){
+                //eth
+                currentNic.isEth = true;
+            }else{
+                currentNic.isEth = false;
+            }
+
+            // strncpy(pNics[nic_nb].Name, buf[interfaceNum].ifr_name, IFNAMSIZ-1);
+            // pNics[nic_nb].Name[IFNAMSIZ-1] = '\0';
+            // slog("NIC name: %s\n", pNics[nic_nb].Name);
+            currentNic.nic_name = buf[interfaceNum].ifr_name;
+
+            //ignore the interface that not up or not runing
+            ifrcopy = buf[interfaceNum];
+            if (ioctl(fd, SIOCGIFFLAGS, &ifrcopy))
+            {
+                perror("ioctl(SIOCGIFFLAGS)");
+                ERR("listNIC ioctl(SIOCGIFFLAGS) error={}", strerror(errno));
+                close(fd);
+                return;
+            }
+            currentNic.isUp = ifrcopy->ifr_flags & IFF_UP;
+
+            //get the mac of this interface
+            if (!ioctl(fd, SIOCGIFHWADDR, (char *)(&buf[interfaceNum])))
+            {
+                memset(mac, 0, sizeof(mac));
+                snprintf(mac, sizeof(mac), "%02X:%02X:%02X:%02X:%02X:%02X",
+                         (unsigned char)buf[interfaceNum].ifr_hwaddr.sa_data[0],
+                         (unsigned char)buf[interfaceNum].ifr_hwaddr.sa_data[1],
+                         (unsigned char)buf[interfaceNum].ifr_hwaddr.sa_data[2],
+
+                         (unsigned char)buf[interfaceNum].ifr_hwaddr.sa_data[3],
+                         (unsigned char)buf[interfaceNum].ifr_hwaddr.sa_data[4],
+                         (unsigned char)buf[interfaceNum].ifr_hwaddr.sa_data[5]);
+                // slog("    mac: %s\n", mac);
+                // memcpy(pNics[nic_nb].mac, buf[interfaceNum].ifr_hwaddr.sa_data, 6);
+                currentNic.nic_mac = mac;
+            }
+            else
+            {
+                perror("ioctl(SIOCGIFHWADDR)");
+                ERR("listNIC ioctl(SIOCGIFHWADDR) error={}", strerror(errno));
+                close(fd);
+                return;
+            }
+
+            //get the IP of this interface
+            if (!ioctl(fd, SIOCGIFADDR, (char *)&buf[interfaceNum]))
+            {
+                // snprintf(pNics[nic_nb].ip, sizeof(pNics[nic_nb].ip), "%s",
+                //          (char *)inet_ntoa(((struct sockaddr_in *)&(buf[interfaceNum].ifr_addr))->sin_addr));
+                // pNics[nic_nb].ip_addr_host = ntohl(((struct sockaddr_in *)&(buf[interfaceNum].ifr_addr))->sin_addr.s_addr);
+                // slog("    ip: %s, host = %u\n", pNics[nic_nb].ip, pNics[nic_nb].ip_addr_host);
+
+                char ip[32];
+                snprintf(ip, sizeof(ip), "%s",
+                         (char *)inet_ntoa(((struct sockaddr_in *)&(buf[interfaceNum].ifr_addr))->sin_addr));
+                currentNic.local_ip = ip;
+            }
+            else
+            {
+                perror("ioctl(SIOCGIFADDR)");
+                ERR("listNIC ioctl(SIOCGIFADDR) error={}", strerror(errno));
+                close(fd);
+                return;
+            }
+
+            // //get the broad address of this interface
+            // if (!ioctl(fd, SIOCGIFBRDADDR, &buf[interfaceNum]))
+            // {
+            //     snprintf(broadAddr, sizeof(broadAddr), "%s",
+            //              (char *)inet_ntoa(((struct sockaddr_in *)&(buf[interfaceNum].ifr_broadaddr))->sin_addr));
+            //     slog("device broadAddr: %s\n", broadAddr);
+            // }
+            // else
+            // {
+            //     perror("ioctl(SIOCGIFBRDADDR)");
+            //     close(fd);
+            //     return -1;
+            // }
+
+            // //get the subnet mask of this interface
+            // if (!ioctl(fd, SIOCGIFNETMASK, &buf[interfaceNum]))
+            // {
+            //     snprintf(subnetMask, sizeof(subnetMask), "%s",
+            //              (char *)inet_ntoa(((struct sockaddr_in *)&(buf[interfaceNum].ifr_netmask))->sin_addr));
+            //     slog("device subnetMask: %s\n", subnetMask);
+            // }
+            // else
+            // {
+            //     perror("ioctl(SIOCGIFNETMASK)");
+            //     close(fd);
+            //     return -1;
+            // }
+
+            NICs.emplace_back(currentNic);
+            // nic_nb++;
+        }
+    }
+    else
+    {
+        perror("ioctl(SIOCGIFCONF)");
+        ERR("listNIC ioctl(SIOCGIFCONF) error={}", strerror(errno));
+        close(fd);
+        return;
+    }
+
+    close(fd);
+
+    return;
+}
+
+#endif
+
 }  // namespace S4

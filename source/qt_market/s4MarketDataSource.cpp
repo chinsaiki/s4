@@ -35,6 +35,9 @@ marketDataSource::marketDataSource(QWidget *parent) :
     ui->ImportButton->setDisabled(true);
     ui->ExportButton->setDisabled(true);
 
+	setMaximumWidth(260);
+	setMaximumHeight(260);
+
 	_started = false;
 }
 

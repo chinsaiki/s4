@@ -20,7 +20,7 @@ public:
     }
 
     //创建socket，并启动监听线程
-    virtual bool start(const char* pLocalIp, const uint16_t port, bool UDPlite = false) override;
+    virtual bool start(const char* pMultiCastIp, const char* pLocalIp, const uint16_t port, bool UDPlite = false) override;
     //终止监听线程，并关掉socket
     virtual bool stop() override;
 protected:

@@ -45,6 +45,7 @@ namespace S4
             QString         Side;       //'B', 'S'
             QString         OrdType;    //'A', 'D'
             uint64_t        OrderTime;
+            bool            isBid;
         };
 
         QList<unionOrderType_t> _data;
@@ -76,7 +77,7 @@ namespace S4
             switch (index.column()) {
             case 0: return QVariant::fromValue(order.OrderNo);
             case 1: return order.Price;
-	    case 2: return QVariant::fromValue(order.OrderQty);
+	        case 2: return QVariant::fromValue(order.OrderQty);
             case 3: return order.Side;
             case 4: return order.OrdType;
             case 5: return QVariant::fromValue(order.OrderTime);
@@ -108,6 +109,7 @@ namespace S4
                 data.Side = sshSideString(pOrder->Side);
                 data.OrdType = sshOrderTypeString(pOrder->OrdType);
                 data.OrderTime = pOrder->OrderTime;
+                data.isBid = pOrder->Side == 'B';
             }else 
             if (pH->SecurityIDSource == 102 && pH->MsgType == __MsgType_SSZ_ORDER__ && pH->MsgLen == sizeof(SBE_SSZ_ord_t)){
                 const SBE_SSZ_ord_t* pOrder = (SBE_SSZ_ord_t*)l2data->get();
@@ -117,6 +119,7 @@ namespace S4
                 data.Side = sszSideString(pOrder->Side);
                 data.OrdType = sszOrderTypeString(pOrder->OrdType);
                 data.OrderTime = pOrder->TransactTime;
+                data.isBid = (pOrder->Side == '1' || pOrder->Side == 'G');
             }
             
             if (_data.size() < 200){
@@ -161,7 +164,16 @@ namespace S4
                 //bg.setAlpha(0.2);
                 return QColor(r, g, b);
             }
-            return  QColor(255, 255, 255);
+            if (index.column() != 3){   //side以外
+                return  QColor(255, 255, 255);
+            }else{
+                const auto& order = _data[index.row()];
+                if (order.isBid){
+                    return  QColor(255, 128, 128);
+                }else{
+                    return  QColor(128, 255, 128);
+                }
+            }
         }
 
         QString typeString(dataType_t t) const
@@ -185,23 +197,21 @@ namespace S4
                 return QStringLiteral("市价单");
             }else if (OrderType == '2'){
                 return QStringLiteral("限价单");
-            }else if (OrderType == '2'){
+            }else if (OrderType == 'U'){
                 return QStringLiteral("本方最优");
             }else{
-                return QStringLiteral("未知类型") + QString::number(OrderType);
+                return QStringLiteral("未知类型") + (char)(OrderType);
             }
         }
 
         QString sshOrderTypeString(uint8_t OrderType) const
         {
-            if (OrderType == '1'){
-                return QStringLiteral("市价单");
-            }else if (OrderType == '2'){
-                return QStringLiteral("限价单");
-            }else if (OrderType == '2'){
-                return QStringLiteral("本方最优");
+            if (OrderType == 'A'){
+                return QStringLiteral("新增委托订单");
+            }else if (OrderType == 'D'){
+                return QStringLiteral("删除委托订单");
             }else{
-                return QStringLiteral("未知类型") + QString::number(OrderType);
+                return QStringLiteral("未知类型") + (char)(OrderType);
             }
         }
         
@@ -211,27 +221,23 @@ namespace S4
                 return QStringLiteral("买入");
             }else if (Side == '2'){
                 return QStringLiteral("卖出");
-            }else if (Side == '2'){
-                return QStringLiteral("借出");
-            }else if (Side == '2'){
-                return QStringLiteral("贷入");
+            }else if (Side == 'G'){
+                return QStringLiteral("借入");
+            }else if (Side == 'F'){
+                return QStringLiteral("出借");
             }else{
-                return QStringLiteral("未知类型") + QString::number(Side);
+                return QStringLiteral("未知类型") + (char)(Side);
             }
         }
 
         QString sshSideString(uint8_t Side) const
         {
-            if (Side == '1'){
-                return QStringLiteral("买入");
-            }else if (Side == '2'){
-                return QStringLiteral("卖出");
-            }else if (Side == '2'){
-                return QStringLiteral("借出");
-            }else if (Side == '2'){
-                return QStringLiteral("贷入");
+            if (Side == 'B'){
+                return QStringLiteral("买单");
+            }else if (Side == 'S'){
+                return QStringLiteral("卖单");
             }else{
-                return QStringLiteral("未知类型") + QString::number(Side);
+                return QStringLiteral("未知类型") + (char)(Side);
             }
         }
     };

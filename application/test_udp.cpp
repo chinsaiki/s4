@@ -20,6 +20,9 @@ int main(int argc, char** argv)
 	glb_conf::pInstance()->load("../json_template/glb_conf_ctx_t.json");
 	s4logger::pInstance()->init((void*)glb_conf::pInstance()->pLogger());
 
+	std::vector<SockUtil::nic_description_t> NICs;
+	SockUtil::listNIC(NICs);
+
 	//simpleQ_spmc_ar_test();
 
 	queue_test();
@@ -116,7 +119,7 @@ void queue_test()
 	auto recver = [&]() {
 		int n = 0;
 		udpData_arPtr_t pData;
-		udpDataQ.P_get_tryBest(pData);	//空数据会在析构时进入数据队列、被C收到，此时通过fd=-1,len=0判断是无效数据。
+		udpDataQ.P_get_tryBest(pData);	//锟斤拷锟斤拷锟捷伙拷锟斤拷锟斤拷锟斤拷时锟斤拷锟斤拷锟斤拷锟捷讹拷锟叫★拷锟斤拷C锟秸碉拷锟斤拷锟斤拷时通锟斤拷fd=-1,len=0锟叫讹拷锟斤拷锟斤拷效锟斤拷锟捷★拷
 		std::vector<udpData_arPtr_t> bulk;
 		bulk.reserve(64);
 		do {

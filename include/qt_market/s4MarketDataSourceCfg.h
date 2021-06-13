@@ -1,6 +1,7 @@
 #pragma once
 
 #include "types/s4type.h"
+#include "network/sockutil.h"
 
 #include <QWidget>
 #include <QKeyEvent>
@@ -32,9 +33,10 @@ public:
 
     struct cfg_t{
         std::string Name;
-        std::string IP;
+        std::string listen_IP;
         uint16_t Port;
         std::string SourceType;
+        std::string local_IP;
     };
 
     struct cfg_t getCfg() const;
@@ -50,6 +52,7 @@ private:
     Ui::marketDataSourceCfg *ui;
 
     bool _editable = true;
+    QList<SockUtil::nic_description_t> _NICs_info;
     
 };
 

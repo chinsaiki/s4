@@ -32,3 +32,7 @@
 *.app
 /.vscode/launch.json
 *.pyc
+
+# install
+install
+bin

@@ -12,7 +12,7 @@ namespace S4
 namespace NW
 {
 
-bool L2_udp_recver_th_native::start(const char* pLocalIp, const uint16_t port, bool UDPlite)
+bool L2_udp_recver_th_native::start(const char* pMultiCastIp, const char* pLocalIp, const uint16_t port, bool UDPlite)
 {
     std::lock_guard<std::mutex> l(_mux);
     if (_pThread)
@@ -20,13 +20,11 @@ bool L2_udp_recver_th_native::start(const char* pLocalIp, const uint16_t port, b
 
     memset(&_stats, 0, sizeof(_stats));
 
-    if (!SockUtil::isMulticastAddress(pLocalIp)){
-    	_fd = SockUtil::bindUdpSock(port, pLocalIp, UDPlite);
-	}
-	else {
-		_fd = SockUtil::bindUdpSock(port, "0.0.0.0", UDPlite);
-        if (SockUtil::joinMultiAddr(_fd, pLocalIp) != 0) {
-            LCL_ERR("joinMulticast {} fail!", pLocalIp);
+    _fd = SockUtil::bindUdpSock(port, pLocalIp, UDPlite);
+    if (SockUtil::isMulticastAddress(pMultiCastIp)){
+		_fd = SockUtil::bindUdpSock(port, pLocalIp, UDPlite);
+        if (SockUtil::joinMultiAddr(_fd, pMultiCastIp) != 0) {
+            LCL_ERR("joinMulticast {} fail!", pMultiCastIp);
             return false;
         }
     }

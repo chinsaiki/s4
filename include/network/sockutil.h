@@ -327,6 +327,22 @@ public:
 	static void makeAddr(struct sockaddr *out, const char *ip, uint16_t port);
 
     static bool isMulticastAddress(const char *ip);
+
+
+    struct nic_description_t{
+#ifdef WIN32
+        std::wstring nic_name;
+#else
+		std::string nic_name;
+#endif
+        std::string local_ip;
+        std::string nic_mac;
+        bool isEth;
+        bool isUp;
+    };
+
+    static void listNIC(std::vector<nic_description_t>& NICs);
+
 };
 
 }  // namespace S4

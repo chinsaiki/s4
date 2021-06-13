@@ -52,8 +52,6 @@ snapViewerWidgetL2Live::snapViewerWidgetL2Live(QWidget *parent) :
 
 	//市场数据源 配置面板
 	_marketDataSource = new marketDataSource(this);
-	_marketDataSource->setMaximumWidth(260);
-	_marketDataSource->setMaximumHeight(220);
 	_marketDataSource->onAdd();	//新增一个配置
 
 	//表格用于显示市场数据状态
@@ -139,7 +137,7 @@ void snapViewerWidgetL2Live::slot_startMDSource()
 #else
 	bool UDPlite = sourceCfgs[0].SourceType == "UDP-lite";
 #endif
-	_udp_recver_th->start(sourceCfgs[0].IP.c_str(), sourceCfgs[0].Port, UDPlite);
+	_udp_recver_th->start(sourceCfgs[0].listen_IP.c_str(), sourceCfgs[0].local_IP.c_str(), sourceCfgs[0].Port, UDPlite);
 	for (int i = 0; i < _tabWidget->count(); ++i) {
 		_snapMarketDataLive->addLive(mktCodeStr_to_mktCodeInt(_tabWidget->tabText(i).toStdString()));
 	}

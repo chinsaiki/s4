@@ -179,12 +179,12 @@ namespace S4
 
         QString sszExecTypeString(uint8_t ExecType) const
         {
-            if (ExecType == '1'){
+            if (ExecType == 'F'){
                 return QStringLiteral("成交");
-            }else if (ExecType == '2'){
+            }else if (ExecType == '4'){
                 return QStringLiteral("撤单");
             }else{
-                return QStringLiteral("未知类型") + QString::number(ExecType);
+                return QStringLiteral("未知类型") + (char)(ExecType);
             }
         }
 
