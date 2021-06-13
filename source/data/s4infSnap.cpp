@@ -196,7 +196,7 @@ infSnap_t* infSnapQ_t::getLastInfo(time_t clk, int ref)
 void infSnapQ_t::toDB() {
 	if (!_toDB || size()==0) return;
 
-	sqlite::DB_t db(_dbPath + mktCodeInt_to_mktCodeStr((*begin())->mktCode) + ".db");
+	sqlite::DB_t db(_dbPath);
 	if (!_pTableIO){
 		_pTableIO = std::make_shared<sqlite::s4infSnap_tableIO>();
 	}
@@ -204,16 +204,16 @@ void infSnapQ_t::toDB() {
 
 }
 
-void infSnapQ_t::fromDB(const std::string& dbFileName, int lmt_Qsize) {
+void infSnapQ_t::fromDB(int lmt_Qsize) {
 	if (!_fromDB) return;
-	string condition("");
+	string condition(" WHERE minuSec >= 91400 and minuSec <= 150100");
 	_read_order_asc = true;
 	if (lmt_Qsize != 0) {
 		condition = " order by time desc limit " + to_string(lmt_Qsize);
 		_read_order_asc = false;
 	}
 	//_loadDBQ.clear();
-	sqlite::DB_t db(_dbPath + dbFileName + ".db", SQLite::OPEN_READONLY);
+	sqlite::DB_t db(_dbPath, SQLite::OPEN_READONLY);
 	if (!_pTableIO){
 		_pTableIO = std::make_shared<sqlite::s4infSnap_tableIO>();
 	}

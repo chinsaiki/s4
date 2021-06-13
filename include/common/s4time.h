@@ -6,6 +6,8 @@
 
 #define _DOOMSDAY_ (21001231)
 
+#define STK_SNAP_NUM_MAX (3600 * 4 / 3)   //4小时，每3秒一个snap
+
 namespace S4{
 
 uint64_t nowTime_ms(void);

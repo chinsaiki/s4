@@ -231,6 +231,14 @@ public:
 		return (int)(amount / vol);
 	}
 
+	inline int up20P() const {
+		return UP_20p(last_close);
+	}
+
+	inline int dn20P() const {
+		return DN_20p(last_close);
+	}
+
 	inline int up10P() const {
 		return UP_10p(last_close);
 	}
@@ -328,21 +336,21 @@ public:
 		return (float)ask1*ask_vol1 / _KW;
 	}
 
-	inline int getAskVolOfPrice(int price)const {
-		if (price == ask1) return ask_vol1;
-		if (price == ask2) return ask_vol2;
-		if (price == ask3) return ask_vol3;
-		if (price == ask4) return ask_vol4;
-		if (price == ask5) return ask_vol5;
+	inline int getAskVolOfPrice(int priceOfLevel)const {
+		if (priceOfLevel == ask1) return ask_vol1;
+		if (priceOfLevel == ask2) return ask_vol2;
+		if (priceOfLevel == ask3) return ask_vol3;
+		if (priceOfLevel == ask4) return ask_vol4;
+		if (priceOfLevel == ask5) return ask_vol5;
 		return 0;
 	}
 
-	inline int getBidVolOfPrice(int price)const {
-		if (price == bid1) return bid_vol1;
-		if (price == bid2) return bid_vol2;
-		if (price == bid3) return bid_vol3;
-		if (price == bid4) return bid_vol4;
-		if (price == bid5) return bid_vol5;
+	inline int getBidVolOfPrice(int priceOfLevel)const {
+		if (priceOfLevel == bid1) return bid_vol1;
+		if (priceOfLevel == bid2) return bid_vol2;
+		if (priceOfLevel == bid3) return bid_vol3;
+		if (priceOfLevel == bid4) return bid_vol4;
+		if (priceOfLevel == bid5) return bid_vol5;
 		return 0;
 	}
 
@@ -412,6 +420,8 @@ public:
 	int lcl_minu;
 };
 
+typedef std::shared_ptr<infSnap_t> infSnap_ptr;
+
 namespace sqlite {
 class s4infSnap_tableIO;
 }
@@ -449,16 +459,13 @@ public:
 	void setDB(bool bToDB, bool bFromDB, const std::string & dbPath) {
 		_toDB = bToDB;
 		_fromDB = bFromDB;
-		_dbPath = dbPath;
-		if (_dbPath.back() != 92) {
-			_dbPath += "//";
-		}
+		_dbPath = dbPath;	//直到db文件
 	}
 	void set_dbTbl_name(const std::string&);
 	const std::string & get_dbTbl_name(void) const { return _dbTbleName; }
 
 	void toDB(void);
-	void fromDB(const std::string& dbFileName, int lmt_Qsize=0);
+	void fromDB(int lmt_Qsize=0);
 private:
 	bool _toDB = false;
 	bool _fromDB = false;
@@ -477,6 +484,8 @@ private:
 private:
 	std::string _dbTbleName;
 };
+
+typedef std::shared_ptr<infSnapQ_t> infSnapQ_ptr;
 
 /************************************************************************/
 /* snap tools                                                           */

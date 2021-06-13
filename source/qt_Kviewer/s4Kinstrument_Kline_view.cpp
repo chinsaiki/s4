@@ -18,8 +18,8 @@ void Kinstrument_Kline_view::setCtx(const std::shared_ptr<infKQ_t>& pInfoKQ){
         return;
 
     ctx_t ctx;
-    ctx.set_val_h_max((*pInfoKQ)[0]->high);
-    ctx.set_val_h_min((*pInfoKQ)[0]->low);
+    ctx.set_val_h_max(pInfoKQ->front()->high);
+    ctx.set_val_h_min(pInfoKQ->front()->low);
     ctx.set_val_w_max(0);
     ctx.set_val_w_min(0);
 

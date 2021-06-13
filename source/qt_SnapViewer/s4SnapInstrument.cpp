@@ -44,7 +44,7 @@ snapInstrument::snapInstrument(int snapLevels_nb, QWidget *parent) :
 	setLayout(pLayout);
 }
 
-void snapInstrument::addSnaps(const std::vector<tdx_snap_t>& vSnap)
+void snapInstrument::addSnaps(const infSnapQ_ptr& vSnap)
 {
     ((snapInstrument_table*)_table)->addSnaps(vSnap);
 }

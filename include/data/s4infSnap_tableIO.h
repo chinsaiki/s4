@@ -155,7 +155,7 @@ public:
     //warning: not clear data inside, but append DB.data to it
     virtual void load_query(SQLite::Statement& query, std::vector<std::shared_ptr<infSnap_t>>& data) override
     {
-        std::shared_ptr<infSnap_t> K_data;
+        std::shared_ptr<infSnap_t> K_data = std::make_shared<infSnap_t>();
         K_data->_date = (time_date_t)query.getColumn(0).getInt64();
 		K_data->_MinmuSec = (time_minuSec_t)query.getColumn(1).getInt64();
 		K_data->_time = (time_utcSec_t)query.getColumn(2).getInt64();
@@ -204,6 +204,8 @@ public:
 		K_data->reversed_bytes9 = (uint16_t)query.getColumn(45).getInt64();
 		K_data->active2 = (uint16_t)query.getColumn(46).getInt64();
 		K_data->lcl_time = (time_utcSec_t)query.getColumn(47).getInt64();
+
+        utc_to_date(K_data->lcl_time, &K_data->lcl_minu);
 		// K_data->lcl_time_str = (std::string)query.getColumn(48).getString();
 		// K_data->VERSION = (int)query.getColumn(49).getInt64();
         data.push_back(std::move(K_data));

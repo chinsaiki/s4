@@ -37,6 +37,7 @@ void snapInstrument_Kline_scene::paint(const KCtx_t& ctx, std::shared_ptr<data_p
 	paint_trade();
 }
 
+
 //datetime_t or time_t -> date_seq
 qreal snapInstrument_Kline_scene::label_w_to_val_w(uint64_t l) const 
 {
@@ -324,6 +325,53 @@ bool snapInstrument_Kline_scene::get_valPos(int w_seq, QPointF& val) const
     return true;
 }
 
+void snapInstrument_Kline_scene::paint(const infSnapQ_ptr& pSnaps)
+{
+    _KCtx.timeMode = timeMode_t::tSnap;
+
+    calcCtx(pSnaps);
+    initSceneCanvas();
+}
+
+void snapInstrument_Kline_scene::calcCtx(const infSnapQ_ptr& pSnaps)
+{
+    if (!pSnaps)
+        return;
+
+    ctx_t ctx;
+    // ctx.set_val_h_max(pSnaps->front()->high);
+    // ctx.set_val_h_min(pSnaps->front()->low);
+    ctx.set_val_h_max(pSnaps->front()->up20P());
+    ctx.set_val_h_min(pSnaps->front()->dn20P());
+    ctx.set_val_w_max(0);
+	ctx.set_val_w_min(0);
+
+    //time_t bgn_time = pSnaps->back()->_time;
+
+    int n = 0;
+    _label_map_w.clear();
+    _w_map_label.clear();
+    for(const auto& d : *pSnaps)
+    {
+        // if (d->high > ctx.val_h_max()){
+        //     ctx.set_val_h_max(d->high);
+        // }
+        // if (d->low < ctx.val_h_min()){
+        //     ctx.set_val_h_min(d->low);
+        // }
+        _label_map_w[d->_time] = n; //TODO
+        _w_map_label[n] = d->_time;
+        n++;
+    }
+
+    if (pSnaps->front()->_MinmuSec >= 150000){
+        ctx.set_val_w_max(n);
+    }else{
+        ctx.set_val_w_max(STK_SNAP_NUM_MAX);
+    }
+
+    setCtx(ctx);
+}
 
 } // namespace QT
 } // namespace S4

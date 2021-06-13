@@ -2,6 +2,7 @@
 
 #include "types/s4type.h"
 #include "qt_common/sharedCharArray_ptr.h"
+#include "data/s4infSnap.h"
 
 #include <QWidget>
 #include <QKeyEvent>
@@ -29,7 +30,7 @@ public:
     
 public slots:
 
-    void addSnaps(const std::vector<tdx_snap_t>&);
+    void addSnaps(const infSnapQ_ptr&);
 
 
     // void addOrders(const std::vector<ssz_sbe_order_t>&);

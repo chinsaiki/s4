@@ -2,7 +2,6 @@
 #include "qt_SnapViewer/s4SnapTableModel_snapInfo.h"
 #include "qt_SnapViewer/s4SnapTableModel_level.h"
 
-#include "qt_SnapViewer/s4SnapInstrument_Kline_view.h"
 
 #include <QGridLayout>
 #include <QHeaderView>
@@ -67,7 +66,7 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
 
     //K线
     snapInstrument_Kline_scene* scene = new snapInstrument_Kline_scene(this);
-    snapInstrument_Kline_view* Kview = new snapInstrument_Kline_view(scene, this);
+    _snap_Kview = new snapInstrument_Kline_view(scene, this);
     
 
 	//整体布局
@@ -78,7 +77,7 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
     splitter_table->setSizes({80, 50});
 
 	QSplitter* splitter = new QSplitter(Qt::Orientation::Horizontal, this);
-    splitter->addWidget(Kview);
+    splitter->addWidget(_snap_Kview);
     splitter->addWidget(splitter_table);
     splitter->setSizes({200, 50});
 
@@ -90,13 +89,17 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
 }
 
 
-void snapInstrument_tableMarket::addSnaps(const std::vector<tdx_snap_t>& vSnap)
+void snapInstrument_tableMarket::addSnaps(const infSnapQ_ptr& pSnapQ)
 {
 	QAbstractItemModel* levels = _level_tv->model();
-    ((snapTableModel_level*)levels)->refresh(vSnap.back());
+    ((snapTableModel_level*)levels)->refresh((*pSnapQ)[0]);
     
 	QAbstractItemModel* infos = _info_tv->model();
-    ((snapTableModel_snapInfo*)infos)->refresh(vSnap.back());
+    ((snapTableModel_snapInfo*)infos)->refresh((*pSnapQ)[0]);
+
+    _snap_Kview->setCtx(pSnapQ);
+    _snap_Kview->paint();
+    ((snapInstrument_Kline_scene*)(_snap_Kview->scene()))->paint(pSnapQ);
 }
 
 void snapInstrument_tableMarket::onL2Data_instrument_snap(const S4::sharedCharArray_ptr& s)

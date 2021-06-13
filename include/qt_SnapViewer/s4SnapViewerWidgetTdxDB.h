@@ -39,8 +39,6 @@ protected:
 
 	struct snap_info_t
 	{
-		std::vector<tdx_snap_t> snaps;
-		int curse;
 	};
 	std::map<QString, snap_info_t> _instrument_info_cargo;
 

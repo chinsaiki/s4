@@ -10,30 +10,38 @@ snapInstrument_Kline_view::snapInstrument_Kline_view(snapInstrument_Kline_scene*
 
 }
 
-void snapInstrument_Kline_view::setCtx(const std::shared_ptr<infKQ_t>& pInfoKQ){
-    if (!pInfoKQ || !pInfoKQ->size())
+
+void snapInstrument_Kline_view::setCtx(const std::shared_ptr<infSnapQ_t>& pInfSnapQ)
+{
+    if (!pInfSnapQ || !pInfSnapQ->size())
         return;
 
-    if (!pInfoKQ->isNewAtBack())
+    if (!pInfSnapQ->isNewAtBack())
         return;
 
     ctx_t ctx;
-    ctx.set_val_h_max((*pInfoKQ)[0]->high);
-    ctx.set_val_h_min((*pInfoKQ)[0]->low);
+    // ctx.set_val_h_max(pInfSnapQ->front()->high);
+    // ctx.set_val_h_min(pInfSnapQ->front()->low);
+    ctx.set_val_h_max(pInfSnapQ->front()->up20P());
+    ctx.set_val_h_min(pInfSnapQ->front()->dn20P());
     ctx.set_val_w_max(0);
     ctx.set_val_w_min(0);
 
-    int n = 0;
-    for(const auto& d : *pInfoKQ)
-    {
-        if (d->high > ctx.val_h_max()){
-            ctx.set_val_h_max(d->high);
-        }
-        if (d->low < ctx.val_h_min()){
-            ctx.set_val_h_min(d->low);
-        }
-        ctx.set_val_w_max(n);
-        n++;
+    // int n = 0;
+    // for(const auto& d : *pInfSnapQ)
+    // {
+    //     if (d->high > ctx.val_h_max()){
+    //         ctx.set_val_h_max(d->high);
+    //     }
+    //     if (d->low < ctx.val_h_min()){
+    //         ctx.set_val_h_min(d->low);
+    //     }
+    //     n++;
+    // }
+    if (pInfSnapQ->front()->_MinmuSec >= 150000){
+        ctx.set_val_w_max(pInfSnapQ->size());
+    }else{
+        ctx.set_val_w_max(STK_SNAP_NUM_MAX);
     }
 
     Kinstrument_view::setCtx(ctx);

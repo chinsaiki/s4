@@ -3,6 +3,7 @@
 #include <QTableView>
 #include "types/s4type.h"
 #include "types/s4convertors.h"
+#include "data/s4infSnap.h"
 #include "qt_common/s4qt_itemFormatDelegate.h"
 #include "qt_common/sharedCharArray_ptr.h"
 #include <QDateTime>
@@ -100,22 +101,22 @@ namespace S4
 
         }
 
-        void refresh(const tdx_snap_t &snap)
+        void refresh(const infSnap_ptr &snap)
         {
             std::vector<QVariant> data;
             for (auto& key : _row_names){
-                if (key == dataType_t::Price) data.push_back(iPrice_to_fPrice(snap.price));
-                if (key == dataType_t::LastClose) data.push_back(iPrice_to_fPrice(snap.last_close));
-                if (key == dataType_t::Open) data.push_back(iPrice_to_fPrice(snap.open));
-                if (key == dataType_t::High) data.push_back(iPrice_to_fPrice(snap.high));
-                if (key == dataType_t::Low) data.push_back(iPrice_to_fPrice(snap.low));
-                if (key == dataType_t::TotalVolume) data.push_back(snap.vol);
-                if (key == dataType_t::TotalAmount) data.push_back(QString::number((snap.amount)/_KW) + QStringLiteral(" 千万"));
-                if (key == dataType_t::CurrentVolume) data.push_back(snap.cur_vol);
-                if (key == dataType_t::SellVolume) data.push_back(snap.s_vol);
-                if (key == dataType_t::BuyVolume) data.push_back(snap.b_vol);
-                // if (key == dataType_t::Active) data.push_back(snap.active1);
-                if (key == dataType_t::LocalTime) data.push_back(snap.minuSec);
+                if (key == dataType_t::Price) data.push_back(iPrice_to_fPrice(snap->price));
+                if (key == dataType_t::LastClose) data.push_back(iPrice_to_fPrice(snap->last_close));
+                if (key == dataType_t::Open) data.push_back(iPrice_to_fPrice(snap->open));
+                if (key == dataType_t::High) data.push_back(iPrice_to_fPrice(snap->high));
+                if (key == dataType_t::Low) data.push_back(iPrice_to_fPrice(snap->low));
+                if (key == dataType_t::TotalVolume) data.push_back(snap->vol);
+                if (key == dataType_t::TotalAmount) data.push_back(QString::number((snap->amount)/_KW) + QStringLiteral(" 千万"));
+                if (key == dataType_t::CurrentVolume) data.push_back(snap->cur_vol);
+                if (key == dataType_t::SellVolume) data.push_back(snap->s_vol);
+                if (key == dataType_t::BuyVolume) data.push_back(snap->b_vol);
+                // if (key == dataType_t::Active) data.push_back(snap->active1);
+                if (key == dataType_t::LocalTime) data.push_back(snap->_MinmuSec);
             }
 
             refresh(data);

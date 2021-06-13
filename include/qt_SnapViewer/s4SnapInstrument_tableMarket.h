@@ -2,6 +2,7 @@
 
 #include "types/s4type.h"
 #include "qt_common/sharedCharArray_ptr.h"
+#include "qt_SnapViewer/s4SnapInstrument_Kline_view.h"
 
 #include <QWidget>
 #include <QKeyEvent>
@@ -30,7 +31,7 @@ public:
 
 public slots:
 
-    void addSnaps(const std::vector<tdx_snap_t>&);
+    void addSnaps(const infSnapQ_ptr&);
     // void addOrders(const std::vector<ssz_sbe_order_t>&);
     // void addExecs(const std::vector<ssz_sbe_exec_t>&);
     
@@ -61,10 +62,13 @@ private:
     QLabel* _order_info;
     QLabel* _exec_info;
 
+    snapInstrument_Kline_view* _snap_Kview;
 private:
 
     long long _order_cnt;
     long long _exec_cnt;
+
+
 
 };
 

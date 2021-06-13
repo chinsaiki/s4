@@ -2,6 +2,7 @@
 
 #include "qt_Kviewer/s4Kinstrument_scene.h"
 #include "qt_common/s4qt_data_if.h"
+#include "data/s4infSnap.h"
 
 
 namespace S4{
@@ -22,6 +23,9 @@ public:
     //void setMAmap(const std::shared_ptr<std::map<int, std::shared_ptr<maQ_t>>>& pMAmap);
 
     void paint(const KCtx_t&, std::shared_ptr<data_panel_t>);
+
+    void paint(const infSnapQ_ptr& pSnaps);
+
 
     //datetime_t or time_t -> date_seq
     virtual qreal label_w_to_val_w(uint64_t l) const override;
@@ -55,6 +59,9 @@ private:
 	void paint_MA(int scope, const std::shared_ptr<maQ_t>& maQ);
 
 	void paint_trade(void);
+
+    void calcCtx(const infSnapQ_ptr& pSnaps);
+
 };
 
 } // namespace QT

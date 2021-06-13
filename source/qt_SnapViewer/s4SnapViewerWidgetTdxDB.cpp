@@ -135,10 +135,10 @@ void s4SnapViewerWidgetTdxDB::openTdxSnapTab(const std::string& db_name, const s
 			return;
 		}
 
-		S4::sqlite::tdx_snap_t_dbTbl snap_tbl;
-		std::vector<tdx_snap_t> snaps;
-
-		snap_db.read_table_v2(&snap_tbl, table_name, snaps);
+		infSnapQ_ptr pSnapQ = std::make_shared<infSnapQ_t>();
+		pSnapQ->setDB(false, true, path);
+		pSnapQ->set_dbTbl_name(table_name);
+		pSnapQ->fromDB();
 
 		std::string snap_tab_name_s = db_name + "-" + table_name;
 		QString snap_tab_name(snap_tab_name_s.c_str());
@@ -157,12 +157,9 @@ void s4SnapViewerWidgetTdxDB::openTdxSnapTab(const std::string& db_name, const s
 		openSnapTab(snap_tab_name, pInstrument);
 
 		//存储
-		_instrument_info_cargo[snap_tab_name] = { snaps, 0 };
+		_instrument_info_cargo[snap_tab_name] = { };
 
-		if (snaps.size()) {
-			pInstrument->addSnaps({ snaps.front() });
-			_instrument_info_cargo[snap_tab_name].curse = 1;
-		}
+		pInstrument->addSnaps(pSnapQ);
 	}
 	catch (std::exception& e) {
 		QMessageBox::warning(NULL, "warning", "read snap table error: " + QString::fromStdString(e.what()) + "!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
@@ -174,7 +171,7 @@ void s4SnapViewerWidgetTdxDB::nextTdxSnap()
 {
 	int idx = _tabWidget->currentIndex();
 	if (idx < 0) return;
-	const QString snap_tab_name = _tabWidget->tabText(idx);
+	// const QString snap_tab_name = _tabWidget->tabText(idx);
 
 
 	//QTableView* levels_tv = (QTableWidget*)_tabWidget->currentWidget();
@@ -185,11 +182,11 @@ void s4SnapViewerWidgetTdxDB::nextTdxSnap()
 	//const QString side = model->data(indexCode).toString();
 	//ui->statusbar->showMessage(side);
 
-	if (_instrument_info_cargo.count(snap_tab_name)) {
-		if (_instrument_info_cargo[snap_tab_name].curse < (int)_instrument_info_cargo[snap_tab_name].snaps.size()) {
-			((snapInstrument*)_instrument_view_cargo[snap_tab_name])->addSnaps({ _instrument_info_cargo[snap_tab_name].snaps[_instrument_info_cargo[snap_tab_name].curse++] });
-		}
-	}
+	// if (_instrument_info_cargo.count(snap_tab_name)) {
+	// 	if (_instrument_info_cargo[snap_tab_name].curse < (int)_instrument_info_cargo[snap_tab_name].snaps.size()) {
+	// 		((snapInstrument*)_instrument_view_cargo[snap_tab_name])->addSnaps({ _instrument_info_cargo[snap_tab_name].snaps[_instrument_info_cargo[snap_tab_name].curse++] });
+	// 	}
+	// }
 }
 
 void s4SnapViewerWidgetTdxDB::closeSnapTab(int index)

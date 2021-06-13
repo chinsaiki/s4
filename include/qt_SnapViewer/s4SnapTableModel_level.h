@@ -5,6 +5,7 @@
 #include "types/s4convertors.h"
 #include "qt_common/s4qt_itemFormatDelegate.h"
 #include "qt_common/sharedCharArray_ptr.h"
+#include "data/s4infSnap.h"
 #include <QDateTime>
 #include <QTimeLine>
 #include <QDebug>
@@ -89,20 +90,20 @@ namespace S4
             return _title[section];
         }
 
-        void refresh(const tdx_snap_t &snap)
+        void refresh(const infSnap_ptr&snap)
         {
             std::vector<Level_t> ask;
             std::vector<Level_t> bid;
-            ask.push_back({ iPrice_to_fPrice(snap.ask1), snap.ask_vol1 });
-            ask.push_back({ iPrice_to_fPrice(snap.ask2), snap.ask_vol2 });
-            ask.push_back({ iPrice_to_fPrice(snap.ask3), snap.ask_vol3 });
-            ask.push_back({ iPrice_to_fPrice(snap.ask4), snap.ask_vol4 });
-            ask.push_back({ iPrice_to_fPrice(snap.ask5), snap.ask_vol5 });
-            bid.push_back({ iPrice_to_fPrice(snap.bid1), snap.bid_vol1 });
-            bid.push_back({ iPrice_to_fPrice(snap.bid2), snap.bid_vol2 });
-            bid.push_back({ iPrice_to_fPrice(snap.bid3), snap.bid_vol3 });
-            bid.push_back({ iPrice_to_fPrice(snap.bid4), snap.bid_vol4 });
-            bid.push_back({ iPrice_to_fPrice(snap.bid5), snap.bid_vol5 });
+            ask.push_back({ iPrice_to_fPrice(snap->ask1), snap->ask_vol1 });
+            ask.push_back({ iPrice_to_fPrice(snap->ask2), snap->ask_vol2 });
+            ask.push_back({ iPrice_to_fPrice(snap->ask3), snap->ask_vol3 });
+            ask.push_back({ iPrice_to_fPrice(snap->ask4), snap->ask_vol4 });
+            ask.push_back({ iPrice_to_fPrice(snap->ask5), snap->ask_vol5 });
+            bid.push_back({ iPrice_to_fPrice(snap->bid1), snap->bid_vol1 });
+            bid.push_back({ iPrice_to_fPrice(snap->bid2), snap->bid_vol2 });
+            bid.push_back({ iPrice_to_fPrice(snap->bid3), snap->bid_vol3 });
+            bid.push_back({ iPrice_to_fPrice(snap->bid4), snap->bid_vol4 });
+            bid.push_back({ iPrice_to_fPrice(snap->bid5), snap->bid_vol5 });
 
             refresh(ask, bid);
         }

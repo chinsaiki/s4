@@ -146,8 +146,8 @@ void Kinstrument_Kline_scene::calcCtx(void)
         return;
 
     ctx_t ctx;
-    ctx.set_val_h_max((*_pInfoKQ)[0]->high_fq());
-    ctx.set_val_h_min((*_pInfoKQ)[0]->low_fq());
+    ctx.set_val_h_max(_pInfoKQ->front()->high_fq());
+    ctx.set_val_h_min(_pInfoKQ->front()->low_fq());
     ctx.set_val_w_max(0);
 	ctx.set_val_w_min(0);
 

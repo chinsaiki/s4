@@ -22,7 +22,7 @@ snapInstrument_table::snapInstrument_table(int snapLeves_nb, QWidget *parent):
 	connect(this, &snapInstrument_table::signal_L2Data_exec, (snapInstrument_tableMarket*)_market, &snapInstrument_tableMarket::onL2Data_exec);
 }
 
-void snapInstrument_table::addSnaps(const std::vector<tdx_snap_t>& vSnap)
+void snapInstrument_table::addSnaps(const infSnapQ_ptr& vSnap)
 {
     ((snapInstrument_tableMarket*)_market)->addSnaps(vSnap);
 }
