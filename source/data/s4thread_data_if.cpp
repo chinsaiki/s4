@@ -858,14 +858,16 @@ void thread_data_if_t::main_run(int seq)
 			//	}
 			//}
 
-			Locker lock(_mutex);
-			_busy &= ~(1 << seq);
-			if (doPreload) {
-				_doPreload &= ~(1 << seq);
-				if (_busy == 0)
-					_preaload_ready = true;
+			if (_busy) {
+				Locker lock(_mutex);
+				_busy &= ~(1 << seq);
+				if (doPreload) {
+					_doPreload &= ~(1 << seq);
+					if (_busy == 0)
+						_preaload_ready = true;
 
-				LCL_TRAC("thSeq preload{0:d} done, busy={1:x}, preload done={2:d} at {3:d} ms!", seq, _busy, _preaload_ready, nowTime_ms());
+					LCL_TRAC("thSeq preload{0:d} done, busy={1:x}, preload done={2:d} at {3:d} ms!", seq, _busy, _preaload_ready, nowTime_ms());
+				}
 			}
 			//else {
 			//	_doOL &= ~(1 << seq);

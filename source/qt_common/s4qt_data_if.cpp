@@ -12,7 +12,10 @@ void s4qt_data_if::getInfo(const std::string & stkName, const struct S4::stkInfo
 {
 	if (_th_data_if.getNowLib() == nullptr || _th_data_if.getNowLib()->count(stkName) == 0) {
 		_th_data_if.preload({ stkName }, infoReq);
-		while (!_th_data_if.preloadReady());
+		while (!_th_data_if.preloadReady())
+		{
+			process_sleep(0.01);
+		}
 		_th_data_if.usePreload(true);
 	}
 
