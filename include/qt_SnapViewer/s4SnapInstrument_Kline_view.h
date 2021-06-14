@@ -31,6 +31,8 @@ signals:
 protected:
     virtual void mouseMoveEvent(QMouseEvent* event) override;
 
+    virtual void paintCrosshair() override;
+
 };
 
 } // namespace QT

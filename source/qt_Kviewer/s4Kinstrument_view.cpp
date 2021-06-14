@@ -509,11 +509,8 @@ void Kinstrument_view::paintLabel(QList<QGraphicsItem*>& pGroup, const QPointF& 
 
 }
 
-void Kinstrument_view::paintCrosshair()
+QGraphicsItemGroup* Kinstrument_view::paintCrosshairAt(const QPointF& scene_pos)
 {
-	if(_crossLine){
-		_scene->removeItem(_crossLine);
-	}
 	QList<QGraphicsItem*> crossLine;
 
 	QPen xPen = QPen(_colorpalette->crosshair, 1/*width*/, Qt::DashLine);
@@ -521,30 +518,44 @@ void Kinstrument_view::paintCrosshair()
 	xPen.setCosmetic(true);
 	yPen.setCosmetic(true);
 
-	if (_scene_mouse.y() >= _scene->sceneRect().y() && _scene_mouse.y() < _scene->sceneRect().y()+_scene->height()) {
+	QPointF view_pos = QGraphicsView::mapFromScene(scene_pos.x(), scene_pos.y());
+
+	if (scene_pos.y() >= _scene->sceneRect().y() && scene_pos.y() < _scene->sceneRect().y()+_scene->height()) {
 		QGraphicsLineItem* hline = new QGraphicsLineItem;
-		hline->setLine(_scene_lu.x(), _scene_mouse.y(), _scene_rd.x(), _scene_mouse.y());
+		hline->setLine(_scene_lu.x(), scene_pos.y(), _scene_rd.x(), scene_pos.y());
 		hline->setPen(xPen);
 		crossLine.append(hline);
 	}
 
-	if (_scene_mouse.x() >= _scene->sceneRect().x() && _scene_mouse.x() < _scene->sceneRect().x()+_scene->width()) {
+	if (scene_pos.x() >= _scene->sceneRect().x() && scene_pos.x() < _scene->sceneRect().x()+_scene->width()) {
 		QGraphicsLineItem* vline = new QGraphicsLineItem;
-		vline->setLine(_scene_mouse.x(), _scene_lu.y(), _scene_mouse.x(), _scene_rd.y());
+		vline->setLine(scene_pos.x(), _scene_lu.y(), scene_pos.x(), _scene_rd.y());
 		vline->setPen(yPen);
 		crossLine.append(vline);
 	}
 
+
 	{
-		QString txt_y = _scene->y_to_label_h(_scene_mouse.y());
-		paintLabel(crossLine, _view_mouse_pos, txt_y, _colorpalette->labels[0], 100);
+		QString txt_y = _scene->y_to_label_h(scene_pos.y());
+		paintLabel(crossLine, view_pos, txt_y, _colorpalette->labels[0], 100);
 	}
 
 	{
-		QString txt_x = _scene->x_to_label_w(_scene_mouse.x());
-		paintLabel(crossLine, {_view_mouse_pos.x(), double(height()-40)}, txt_x, _colorpalette->labels[0], 100, false, 0);
+		QString txt_x = _scene->x_to_label_w(scene_pos.x());
+		paintLabel(crossLine, {view_pos.x(), double(height()-40)}, txt_x, _colorpalette->labels[0], 100, false, 0);
 	}
-	_crossLine = _scene->createItemGroup(crossLine);
+
+
+	return _scene->createItemGroup(crossLine);
+}
+
+
+void Kinstrument_view::paintCrosshair()
+{
+	if(_crossLine){
+		_scene->removeItem(_crossLine);
+	}
+	_crossLine = paintCrosshairAt(_scene_mouse);
 
 }
 

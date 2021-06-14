@@ -120,13 +120,13 @@ QPointF snapInstrument_Kline_scene::get_label_near(const QPointF& scene_pos, QPo
     int label_w;
     if (_w_map_label.count(val_w)){
         label_w = _w_map_label.at(val_w);
-        scene_label_pos.setX(val_w);
+        scene_label_pos.setX(val_w_to_x(val_w));
     }else if (val_w < _w_map_label.begin()->first){
         label_w = _w_map_label.begin()->second;
-        scene_label_pos.setX(_w_map_label.begin()->first);
+        scene_label_pos.setX(val_w_to_x(_w_map_label.begin()->first));
     }else if (val_w > _w_map_label.rbegin()->first){
         label_w = _w_map_label.rbegin()->second;
-        scene_label_pos.setX(_w_map_label.rbegin()->first);
+        scene_label_pos.setX(val_w_to_x(_w_map_label.rbegin()->first));
     }else{
 		auto itr = _w_map_label.lower_bound(val_w);
         label_w = itr->second;  //第一个大于或等于
@@ -134,12 +134,13 @@ QPointF snapInstrument_Kline_scene::get_label_near(const QPointF& scene_pos, QPo
 		itr--;
 		if (abs(scene_label_pos.x() - scene_pos.x()) > abs(val_w_to_x(itr->first) - scene_pos.x())) {
 			label_w = itr->second;
-			scene_label_pos.setX(itr->first);
+			scene_label_pos.setX(val_w_to_x(itr->first));
 		}
     }
     
     qreal val_h = y_to_val_h(scene_pos.y());
-    return QPointF(label_w, val_h);
+	scene_label_pos.setY(scene_pos.y());
+	return QPointF(label_w, val_h);
 }
 
 std::shared_ptr<infKQ_t> snapInstrument_Kline_scene::check_data(void) const

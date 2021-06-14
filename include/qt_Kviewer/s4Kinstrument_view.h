@@ -55,7 +55,7 @@ public:
         // paintGridLines();   //TODO:need a new interface for painting at first.
     }
         
-    void paintGridLines();
+    virtual void paintGridLines();
 
     inline void setGridGap_h(qreal gap_h) {
         _grid_h_gap = gap_h;
@@ -142,33 +142,27 @@ protected:
 
     void setCtx_test();
 
-    void rebuildGroup(QGraphicsItemGroup*& pGroup) {
-        if (pGroup) {
-            _scene->removeItem(pGroup);				//从scene删掉元素（以及group），但没有释放内存，TODO：在组件构造时以_scene为parent？
-            //delete pGroup;							//好像解决了内存泄露
-        }
-        pGroup = _scene->createItemGroup(QList<QGraphicsItem*>{});
-    }
+    virtual void onViewChange(void);
+    virtual void onMouseChange(qreal ax, qreal ay);
+    virtual void onMouseChange(const QPointF& view_mouse);
 
-    void onViewChange(void);
-    void onMouseChange(qreal ax, qreal ay);
-    void onMouseChange(const QPointF& view_mouse);
+    virtual void zoomIn();
+    virtual void zoomOut();
 
-    void zoomIn();
-    void zoomOut();
-
-    void grabTransInfo();
-    QPointF getXYscale();
+    virtual void grabTransInfo();
+    virtual QPointF getXYscale();
 
     QGraphicsItemGroup* _crossLine = nullptr;
-    void paintCrosshair();
+    virtual void paintCrosshair();
+    QGraphicsItemGroup* paintCrosshairAt(const QPointF& scene_pos);
+
     QGraphicsItemGroup* _gridLines = nullptr;
 
     QGraphicsItemGroup* _gridLabels = nullptr;
-    void paintGridLabels();
+    virtual void paintGridLabels();
 
     //paint map from view-position to scen-position
-    void paintLabel(QList<QGraphicsItem*>& pGroup, const QPointF& view_pos, const QString& txt, const color_pair_t& color_pair, int zV,
+    virtual void paintLabel(QList<QGraphicsItem*>& pGroup, const QPointF& view_pos, const QString& txt, const color_pair_t& color_pair, int zV,
         bool onLeft = true, int shift = 20, bool auto_fit = true);
 
 private:
