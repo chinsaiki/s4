@@ -357,6 +357,7 @@ void snapInstrument_Kline_scene::calcCtx(const infSnapQ_ptr& pSnaps)
     _label_map_w.clear();
     _w_map_label.clear();
     time_t dlt_time = 0;
+    val_hiden_scope_t hs;
     for(const auto& d : *pSnaps)
     {
         // if (d->high > ctx.val_h_max()){
@@ -368,10 +369,30 @@ void snapInstrument_Kline_scene::calcCtx(const infSnapQ_ptr& pSnaps)
         dlt_time = d->_time - bgn_time;
         if (d->_MinmuSec < 130000 || pSnaps->back()->_MinmuSec>=113000){
         }else{
-            dlt_time -= 3600+1800;
+            dlt_time -= 3600+1800;  //val_w 中是不含中场休息的1.5小时的
         }
         _label_map_w[d->_time] = dlt_time;
         _w_map_label[dlt_time] = d->_time;
+
+        if (d->_MinmuSec >= 113000 && d->_MinmuSec < 113100 && !hs.bgn_valid){	//TODO: 直接根据日期算出休息时段
+            hs.bgn = d->_time;
+            hs.bgn_valid = true;
+        }
+        if (d->_MinmuSec >= 130000 && !hs.end_valid){
+			if (!hs.bgn_valid) {
+				hs.bgn_valid = true;
+				hs.bgn = d->_time - 3600 - 1800;
+			}
+            hs.end = d->_time;
+            hs.end_valid = true;
+            _val_hiden_scopes.push_back(hs);
+        }
+    }
+
+    if (hs.bgn_valid && !hs.end_valid){
+            hs.end = (*pSnaps->rbegin())->_time;
+            hs.end_valid = true;
+            _val_hiden_scopes.push_back(hs);
     }
 
     // if (pSnaps->front()->_MinmuSec >= 150000){
@@ -379,12 +400,38 @@ void snapInstrument_Kline_scene::calcCtx(const infSnapQ_ptr& pSnaps)
     // }else{
     //     ctx.set_val_w_max(STK_SNAP_NUM_MAX);
     // }
-    ctx.set_val_w_max(dlt_time);
+    ctx.set_val_w_max(dlt_time);    //画布中也不含中场休息
 
     ctx.set_val_h_10percent_pxl(2048);
     ctx.set_val_w_pxl(4);
 
     setCtx(ctx);
+}
+
+
+//time_t -> scene_x
+qreal snapInstrument_Kline_scene::val_w_to_x(qreal val) const
+{
+    //补上中场休息
+    if (_val_hiden_scopes.size()){
+        if (val >= _val_hiden_scopes[0].bgn)
+            val -= 3600 + 1800;
+    }
+	qreal x_o;
+	x_o = (val - _ctx.val_w_min()) / _w_val_pxl + sceneRect().x();	//
+	return x_o;
+}
+//scene_x -> time_t
+qreal snapInstrument_Kline_scene::x_to_val_w(qreal x) const
+{
+	time_t val = (x - sceneRect().x()) * _w_val_pxl + _ctx.val_w_min();	//dlt-Time
+    
+    //补上中场休息
+    if (_val_hiden_scopes.size()){
+        if (val >= _val_hiden_scopes[0].bgn)
+            val += 3600 + 1800;
+    }
+    return val;
 }
 
 } // namespace QT
