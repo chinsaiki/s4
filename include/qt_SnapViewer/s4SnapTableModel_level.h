@@ -90,7 +90,7 @@ namespace S4
             return _title[section];
         }
 
-        void refresh(const infSnap_ptr&snap)
+        void refresh(const infSnap_t* snap)
         {
             std::vector<Level_t> ask;
             std::vector<Level_t> bid;

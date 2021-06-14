@@ -116,7 +116,7 @@ QString snapInstrument_Kline_scene::y_to_label_h(qreal y) const
 
 QPointF snapInstrument_Kline_scene::get_label_near(const QPointF& scene_pos, QPointF& scene_label_pos) const
 {
-    int val_w = int(x_to_val_w(scene_pos.x()) + 0.5);
+    int val_w = int(x_to_val_w(scene_pos.x()));
     int label_w;
     if (_w_map_label.count(val_w)){
         label_w = _w_map_label.at(val_w);
@@ -124,12 +124,18 @@ QPointF snapInstrument_Kline_scene::get_label_near(const QPointF& scene_pos, QPo
     }else if (val_w < _w_map_label.begin()->first){
         label_w = _w_map_label.begin()->second;
         scene_label_pos.setX(_w_map_label.begin()->first);
-    }else if (val_w > _w_map_label.end()->first){
-        label_w = _w_map_label.end()->second;
-        scene_label_pos.setX(_w_map_label.end()->first);
+    }else if (val_w > _w_map_label.rbegin()->first){
+        label_w = _w_map_label.rbegin()->second;
+        scene_label_pos.setX(_w_map_label.rbegin()->first);
     }else{
-        label_w = _w_map_label.lower_bound(val_w)->second;  //第一个大于或等于
-        scene_label_pos.setX(_w_map_label.lower_bound(val_w)->first);
+		auto itr = _w_map_label.lower_bound(val_w);
+        label_w = itr->second;  //第一个大于或等于
+        scene_label_pos.setX(val_w_to_x(itr->first));
+		itr--;
+		if (abs(scene_label_pos.x() - scene_pos.x()) > abs(val_w_to_x(itr->first) - scene_pos.x())) {
+			label_w = itr->second;
+			scene_label_pos.setX(itr->first);
+		}
     }
     
     qreal val_h = y_to_val_h(scene_pos.y());

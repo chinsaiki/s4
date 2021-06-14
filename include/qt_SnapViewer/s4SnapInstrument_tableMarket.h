@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "types/s4type.h"
 #include "qt_common/sharedCharArray_ptr.h"
@@ -40,6 +40,8 @@ public slots:
     // void addExecs(const std::vector<ssz_sbe_exec_t>&);
     
 public slots:
+    void slot_mouseSnapTimeChanged(time_t time);    //鼠标移动导致需要切换快照
+
 	void onL2Data_instrument_snap(const S4::sharedCharArray_ptr&);
 	void onL2Data_index_snap(const S4::sharedCharArray_ptr&);
 	void onL2Data_order(const S4::sharedCharArray_ptr&);
@@ -72,7 +74,7 @@ private:
     long long _order_cnt;
     long long _exec_cnt;
 
-
+    infSnapQ_ptr _pSnapQ;
 
 };
 

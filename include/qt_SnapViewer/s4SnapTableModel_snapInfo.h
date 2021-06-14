@@ -101,7 +101,7 @@ namespace S4
 
         }
 
-        void refresh(const infSnap_ptr &snap)
+        void refresh(const infSnap_t* snap)
         {
             std::vector<QVariant> data;
             for (auto& key : _row_names){

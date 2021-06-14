@@ -91,11 +91,13 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
 
 void snapInstrument_tableMarket::addSnaps(const infSnapQ_ptr& pSnapQ)
 {
+    _pSnapQ = pSnapQ;
+
 	QAbstractItemModel* levels = _level_tv->model();
-    ((snapTableModel_level*)levels)->refresh((*pSnapQ)[0]);
+    ((snapTableModel_level*)levels)->refresh(pSnapQ->back().get());
     
 	QAbstractItemModel* infos = _info_tv->model();
-    ((snapTableModel_snapInfo*)infos)->refresh((*pSnapQ)[0]);
+    ((snapTableModel_snapInfo*)infos)->refresh(pSnapQ->back().get());
 
 	((snapInstrument_Kline_scene*)(_snap_Kview->scene()))->setLogCoor(false);
 	((snapInstrument_Kline_scene*)(_snap_Kview->scene()))->paint(pSnapQ);
@@ -106,7 +108,22 @@ void snapInstrument_tableMarket::addSnaps(const infSnapQ_ptr& pSnapQ)
 	_snap_Kview->setCtx(pSnapQ);
 	_snap_Kview->paint();
 
+    connect(_snap_Kview, &snapInstrument_Kline_view::signal_mouseSnapTime, this, &snapInstrument_tableMarket::slot_mouseSnapTimeChanged);
+
 }
+
+
+
+void snapInstrument_tableMarket::slot_mouseSnapTimeChanged(time_t time)
+{
+    const infSnap_t* pSnap = _pSnapQ->getInfo_abs(time);
+    
+	QAbstractItemModel* levels = _level_tv->model();
+    ((snapTableModel_level*)levels)->refresh(pSnap);
+	QAbstractItemModel* infos = _info_tv->model();
+    ((snapTableModel_snapInfo*)infos)->refresh(pSnap);
+}
+
 
 void snapInstrument_tableMarket::onL2Data_instrument_snap(const S4::sharedCharArray_ptr& s)
 {
