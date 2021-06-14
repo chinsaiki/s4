@@ -79,30 +79,17 @@ void snapInstrument_Kline_view::paint(void){
     setIsPaint(true);
 }
 
-void snapInstrument_Kline_view::slot_next_trade(int next)
+void snapInstrument_Kline_view::mouseMoveEvent(QMouseEvent* event)
 {
+    Kinstrument_view::mouseMoveEvent(event);
 
-    QPointF trad_valPos;
-    if (!_scene || !((snapInstrument_Kline_scene*)_scene)->get_trade_valPos(_seq, trad_valPos)){
+	if (!isPaint()) return;
+    if (!_scene){
         return;
     }
-
-	qreal scene_x = _scene->val_w_to_x(trad_valPos.x());
-	qreal scene_y = _scene->val_h_to_y(trad_valPos.y());
-
-	centerOn(scene_x, scene_y);
-    onViewChange();
-	std::shared_ptr<view_event_scene_center_change> e_center = std::make_shared<view_event_scene_center_change>(scene_x, scene_y);
-	emit signalViewEvent(e_center);
-
-    //TODO: jump more scope?
-    if (next >= 0) {
-        _seq++;
-    }
-    else {
-        _seq--;
-    }
-    
+    QPointF scene_label_pos;
+    QPointF label = ((snapInstrument_Kline_scene*)_scene)->get_label_near(_scene_mouse, scene_label_pos);
+    emit signal_mouseSnapTime((time_t)label.x());
 }
 
 

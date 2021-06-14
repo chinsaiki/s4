@@ -23,11 +23,14 @@ public:
     virtual void fitView(void) override;
 
 public slots:
-    //seq >=0: next; <0: last
-	void slot_next_trade(int seq);
+    
+
+signals:
+    void signal_mouseSnapTime(time_t time);
 
 protected:
-    int _seq = 0;
+    virtual void mouseMoveEvent(QMouseEvent* event) override;
+
 };
 
 } // namespace QT

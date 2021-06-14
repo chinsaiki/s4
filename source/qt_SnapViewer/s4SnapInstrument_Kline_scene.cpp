@@ -114,6 +114,27 @@ QString snapInstrument_Kline_scene::y_to_label_h(qreal y) const
     return txt;
 }
 
+QPointF snapInstrument_Kline_scene::get_label_near(const QPointF& scene_pos, QPointF& scene_label_pos) const
+{
+    int val_w = int(x_to_val_w(scene_pos.x()) + 0.5);
+    int label_w;
+    if (_w_map_label.count(val_w)){
+        label_w = _w_map_label.at(val_w);
+        scene_label_pos.setX(val_w);
+    }else if (val_w < _w_map_label.begin()->first){
+        label_w = _w_map_label.begin()->second;
+        scene_label_pos.setX(_w_map_label.begin()->first);
+    }else if (val_w > _w_map_label.end()->first){
+        label_w = _w_map_label.end()->second;
+        scene_label_pos.setX(_w_map_label.end()->first);
+    }else{
+        label_w = _w_map_label.lower_bound(val_w)->second;  //第一个大于或等于
+        scene_label_pos.setX(_w_map_label.lower_bound(val_w)->first);
+    }
+    
+    qreal val_h = y_to_val_h(scene_pos.y());
+    return QPointF(label_w, val_h);
+}
 
 std::shared_ptr<infKQ_t> snapInstrument_Kline_scene::check_data(void) const
 {
@@ -280,27 +301,6 @@ void snapInstrument_Kline_scene::paint_trade()
 
 }
 
-bool snapInstrument_Kline_scene::get_trade_valPos(int seq, QPointF& val) const
-{
-    if (!_data_panel->history.size())
-        return false;
-
-    size_t nb;
-    if (seq >= 0) {
-        nb = seq % _data_panel->history.size();
-    }
-    else {
-        nb = (-seq) % _data_panel->history.size();
-        if (nb != 0)
-            nb = _data_panel->history.size() - nb;
-
-    }
-
-    val.setX(label_w_to_val_w(_data_panel->history[nb].time_utcSec));
-    val.setY(label_w_to_best_val_h(_data_panel->history[nb].time_utcSec));
-    
-    return true;
-}
 
 bool snapInstrument_Kline_scene::get_valPos(int w_seq, QPointF& val) const
 {

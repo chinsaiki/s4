@@ -34,12 +34,12 @@ public:
 
     virtual QString y_to_label_h(qreal y) const override;
 
-    virtual bool get_trade_valPos(int trade_seq, QPointF& val) const;
-
     //w_seq: -1 = latest valid val_w
     virtual bool get_valPos(int w_seq, QPointF& val) const override;
 
 	virtual qreal label_w_to_best_val_h(uint64_t l) const;
+
+    virtual QPointF get_label_near(const QPointF& scene_pos, QPointF& scene_label_pos) const;
 private:
     std::map<uint64_t, int> _label_map_w;
     std::map<int, uint64_t> _w_map_label;
