@@ -46,6 +46,11 @@ bool L2_udp_recver_th_native::start(const char* pMultiCastIp, const char* pLocal
 		return false;
     }
 
+    if (SockUtil::setRecvBuf(_fd, 16*1024*1024) != 0){
+        LCL_ERR("setRecvBuf fail!");
+    }
+    
+
     _pThread = std::make_shared<std::thread>(
         [&](){
             recv_thread();

@@ -174,6 +174,28 @@ std::string ms_to_str(uint64_t ms)
 }
 
 
+/**** L2 帧数据中的时间戳转换工具 ***/
+std::string ssz_L2_timeString(uint64_t TransactTime)
+{
+	int ms = int(TransactTime % 1000);
+	int ss = int((TransactTime % (1000 * 100)) / 1000);
+	int mm = int((TransactTime % (1000 * 100 * 100)) / (1000 * 100));
+	int hh = int((TransactTime % (1000 * 100 * 100 * 100)) / (1000 * 100 * 100));
+	char s[128];
+	sprintf(s, "%02d:%02d:%02d.%d", hh, mm, ss, ms);
+	return s;
+}
+
+std::string ssh_L2_timeString(uint64_t TransactTime)
+{
+	int ms = int(TransactTime % 100);
+	int ss = int((TransactTime % (100 * 100)) / 100);
+	int mm = int((TransactTime % (100 * 100 * 100)) / (100 * 100));
+	int hh = int((TransactTime % (100 * 100 * 100 * 100)) / (100 * 100 * 100));
+	char s[128];
+	sprintf(s, "%02d:%02d:%02d.%d", hh, mm, ss, ms);
+	return s;
+}
 
 rptTime::rptTime() :
 	m_target(""),

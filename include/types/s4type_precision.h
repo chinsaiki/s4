@@ -24,7 +24,12 @@ typedef double fprice_t;
 #define L2_Qty_to_hand(x)   ((x)/(100.0*L2_Qty_precision))
 
 //上海//TODO
-
+inline
+std::string priceString(float p){
+    char price_s[64];
+    sprintf(price_s, "%0.2f", p);
+    return price_s;
+}
 
 //5% 板价格
 #define UP_5p(x) ((price_t)((x)*1.05+0.5))

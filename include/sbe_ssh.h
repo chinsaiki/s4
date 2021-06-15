@@ -58,7 +58,7 @@ struct SBE_SSH_instrument_snap_t
     //int32_t         DnLimitPx;  // SH 无此字段
     struct price_level_t   BidLevel[10];
     struct price_level_t   AskLevel[10];
-    uint32_t         DataTimeStamp;
+    uint32_t         DataTimeStamp; //秒
     uint8_t          Resv[4];
 }PACKED;
 

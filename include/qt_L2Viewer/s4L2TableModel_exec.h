@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <QTableView>
+#include "common/s4time.h"
 #include "types/s4type.h"
 #include "types/s4convertors.h"
 #include "qt_common/s4qt_itemFormatDelegate.h"
@@ -49,10 +50,10 @@ namespace S4
         struct unionExec_t{
             int64_t         BidApplSeqNum;
             int64_t         OfferApplSeqNum;
-            int32_t         LastPx;
+            float           LastPx;
             int64_t         LastQty;
             QString         ExecType;
-            uint64_t        TransactTime;
+            QString        TransactTime;
             enum class unionType_t unionType;
         };
 
@@ -85,7 +86,7 @@ namespace S4
             switch (index.column()) {
             case 0: return QVariant::fromValue(exec.BidApplSeqNum);
             case 1: return QVariant::fromValue(exec.OfferApplSeqNum);
-            case 2: return exec.LastPx;
+            case 2: return priceString(exec.LastPx).c_str();
             case 3: return QVariant::fromValue(exec.LastQty);
             case 4: return exec.ExecType;
             case 5: return QVariant::fromValue(exec.TransactTime);
@@ -115,7 +116,7 @@ namespace S4
                 data.LastPx = L2_iPrice_tick_to_fPrice(pExec->LastPx);
                 data.LastQty = L2_Qty_to_hand(pExec->LastQty);
                 data.ExecType = sshExecTypeString(pExec->TradeBSFlag);
-                data.TransactTime = pExec->TradeTime;
+                data.TransactTime = ssh_L2_timeString(pExec->TradeTime).c_str();
                 
                 if (pExec->TradeBSFlag == 'B'){
                     data.unionType = unionType_t::BID;
@@ -132,7 +133,7 @@ namespace S4
                 data.LastPx = L2_iPrice_tick_to_fPrice(pExec->LastPx);
                 data.LastQty = L2_Qty_to_hand(pExec->LastQty);
                 data.ExecType = sszExecTypeString(pExec->ExecType);
-                data.TransactTime = pExec->TransactTime;
+                data.TransactTime = ssz_L2_timeString(pExec->TransactTime).c_str();
                 if (pExec->ExecType == 'F'){
                     data.unionType = unionType_t::EXECUTION;
                 }else if (pExec->ExecType == '4'){
@@ -237,6 +238,8 @@ namespace S4
                 return QStringLiteral("未知类型") + QString::number(ExecType);
             }
         }
+
+
     };
 
 }

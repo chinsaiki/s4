@@ -44,6 +44,13 @@ std::string ms_to_str(uint64_t ms);
 /**** 精度n秒 ***/
 
 
+
+/**** L2 帧数据中的时间戳转换工具 ***/
+std::string ssz_L2_timeString(uint64_t TransactTime);
+std::string ssh_L2_timeString(uint64_t TransactTime);
+
+
+/**** RAII型的时间报告工具 ***/
 class rptTime {
 public:
 	rptTime();

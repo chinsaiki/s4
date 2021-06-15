@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <QTableView>
+#include "common/s4time.h"
 #include "types/s4type.h"
 #include "types/s4convertors.h"
 #include "qt_common/s4qt_itemFormatDelegate.h"
@@ -40,11 +41,11 @@ namespace S4
 
         struct unionOrder_t{
             int64_t         OrderNo;    //
-            int32_t         Price;      //
+            float           Price;      //
             int64_t         OrderQty;
             QString         Side;       //'B', 'S'
             QString         OrdType;    //'A', 'D'
-            uint64_t        OrderTime;
+            QString         OrderTime;
             bool            isBid;
         };
 
@@ -76,7 +77,7 @@ namespace S4
             const auto& order = _data[index.row()];
             switch (index.column()) {
             case 0: return QVariant::fromValue(order.OrderNo);
-            case 1: return order.Price;
+            case 1: return priceString(order.Price).c_str();
 	        case 2: return QVariant::fromValue(order.OrderQty);
             case 3: return order.Side;
             case 4: return order.OrdType;
@@ -108,7 +109,7 @@ namespace S4
                 data.OrderQty = L2_Qty_to_hand(pOrder->OrderQty);
                 data.Side = sshSideString(pOrder->Side);
                 data.OrdType = sshOrderTypeString(pOrder->OrdType);
-                data.OrderTime = pOrder->OrderTime;
+                data.OrderTime = ssh_L2_timeString(pOrder->OrderTime).c_str();
                 data.isBid = pOrder->Side == 'B';
             }else 
             if (pH->SecurityIDSource == 102 && pH->MsgType == __MsgType_SSZ_ORDER__ && pH->MsgLen == sizeof(SBE_SSZ_ord_t)){
@@ -118,7 +119,7 @@ namespace S4
                 data.OrderQty = L2_Qty_to_hand(pOrder->OrderQty);
                 data.Side = sszSideString(pOrder->Side);
                 data.OrdType = sszOrderTypeString(pOrder->OrdType);
-                data.OrderTime = pOrder->TransactTime;
+                data.OrderTime = ssz_L2_timeString(pOrder->TransactTime).c_str();
                 data.isBid = (pOrder->Side == '1' || pOrder->Side == 'G');
             }
             

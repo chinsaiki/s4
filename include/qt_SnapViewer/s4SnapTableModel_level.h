@@ -69,7 +69,11 @@ namespace S4
             case 0:
                 return side + numberString(side_index+1);
             case 1:
-                return levle.price;
+                if (levle.price!=0){
+                    return priceString(levle.price).c_str();
+                }else{
+                    return "--";
+                }
             case 2:
                 return levle.vol;
             default:
