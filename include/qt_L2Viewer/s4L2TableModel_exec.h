@@ -38,16 +38,25 @@ namespace S4
             dataType_t::TransactTime,
         };
 
-        struct unionOrderType_t{
+        enum class unionType_t{
+            CANCEL,
+            EXECUTION,
+            BID,
+            ASK,
+            UNKNOWN
+        };
+
+        struct unionExec_t{
             int64_t         BidApplSeqNum;
             int64_t         OfferApplSeqNum;
             int32_t         LastPx;
             int64_t         LastQty;
             QString         ExecType;
             uint64_t        TransactTime;
+            enum class unionType_t unionType;
         };
 
-        QList<unionOrderType_t> _data;
+        QList<unionExec_t> _data;
 
         QTimeLine* _timeLine;
     public:
@@ -97,7 +106,7 @@ namespace S4
                 return;
             }
             const SBE_SSH_header_t* pH = (SBE_SSH_header_t*)l2data->get();
-            unionOrderType_t data;
+            unionExec_t data;
 
             if (pH->SecurityIDSource == 101 && pH->MsgType == __MsgType_SSH_EXECUTION__ && pH->MsgLen == sizeof(SBE_SSH_exe_t)){
                 const SBE_SSH_exe_t* pExec = (SBE_SSH_exe_t*)l2data->get();
@@ -107,6 +116,14 @@ namespace S4
                 data.LastQty = L2_Qty_to_hand(pExec->LastQty);
                 data.ExecType = sshExecTypeString(pExec->TradeBSFlag);
                 data.TransactTime = pExec->TradeTime;
+                
+                if (pExec->TradeBSFlag == 'B'){
+                    data.unionType = unionType_t::BID;
+                }else if (pExec->TradeBSFlag == 'S'){
+                    data.unionType = unionType_t::ASK;
+                }else{
+                    data.unionType = unionType_t::UNKNOWN;
+                }
             }else 
             if (pH->SecurityIDSource == 102 && pH->MsgType == __MsgType_SSZ_EXECUTION__ && pH->MsgLen == sizeof(SBE_SSZ_exe_t)){
                 const SBE_SSZ_exe_t* pExec = (SBE_SSZ_exe_t*)l2data->get();
@@ -116,6 +133,13 @@ namespace S4
                 data.LastQty = L2_Qty_to_hand(pExec->LastQty);
                 data.ExecType = sszExecTypeString(pExec->ExecType);
                 data.TransactTime = pExec->TransactTime;
+                if (pExec->ExecType == 'F'){
+                    data.unionType = unionType_t::EXECUTION;
+                }else if (pExec->ExecType == '4'){
+                    data.unionType = unionType_t::CANCEL;
+                }else{
+                    data.unionType = unionType_t::UNKNOWN;
+                }
             }
 
             if (_data.size() < 200){
@@ -148,19 +172,34 @@ namespace S4
     private:
         QVariant itemFadeColor(const QModelIndex& index) const
         {
-            QMap<size_t, QVariant>::const_iterator it = mapTimeout.find(index.row());
-            if (it == mapTimeout.end()) return QVariant();
-            float nTimePassed = it.value().toDateTime().msecsTo(QDateTime::currentDateTime());
-            if (nTimePassed < itemFormatDelegate::update_scope) {
-                float idx = nTimePassed / itemFormatDelegate::update_scope;
-                QColor bg = Qt::cyan;
-                uint8_t r = (255 - bg.red()) * (idx)+bg.red();
-                uint8_t g = (255 - bg.green()) * (idx)+bg.green();
-                uint8_t b = (255 - bg.blue()) * (idx)+bg.blue();
-                //bg.setAlpha(0.2);
-                return QColor(r, g, b);
+            if (index.column() != 4){   //类型
+                QMap<size_t, QVariant>::const_iterator it = mapTimeout.find(index.row());
+                if (it == mapTimeout.end()) return QVariant();
+                float nTimePassed = it.value().toDateTime().msecsTo(QDateTime::currentDateTime());
+                if (nTimePassed < itemFormatDelegate::update_scope) {
+                    float idx = nTimePassed / itemFormatDelegate::update_scope;
+                    QColor bg = Qt::cyan;
+                    uint8_t r = (255 - bg.red()) * (idx)+bg.red();
+                    uint8_t g = (255 - bg.green()) * (idx)+bg.green();
+                    uint8_t b = (255 - bg.blue()) * (idx)+bg.blue();
+                    //bg.setAlpha(0.2);
+                    return QColor(r, g, b);
+                }
+                return  QColor(255, 255, 255);
+            }else{
+                const auto& exec = _data[index.row()];
+                if (exec.unionType == unionType_t::BID){
+                    return  QColor(255, 128, 128);
+                }else if (exec.unionType == unionType_t::ASK){
+                    return  QColor(128, 255, 128);
+                }else if (exec.unionType == unionType_t::EXECUTION){
+                    return  QColor(128, 128, 255);
+                }else if (exec.unionType == unionType_t::CANCEL){
+                    return  QColor(128, 128, 128);
+                }else{
+                    return  QColor(255, 255, 128);
+                }
             }
-            return  QColor(255, 255, 255);
         }
 
         QString typeString(dataType_t t) const

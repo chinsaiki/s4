@@ -21,7 +21,8 @@ public:
 
 
     bool emitDynamicSignal(const char *signal, sharedCharArray_ptr _t1);
-    bool connectDynamicSignal(const char *signal, QObject *obj, const char *slot);
+	bool connectDynamicSignal(const char* signal, QObject* obj, const char* slot);
+	bool disconnectDynamicSignal(const char* signal, QObject* obj, const char* slot);
 
     // bool connectDynamicSlot(QObject *obj, char *signal, char *slot);
 

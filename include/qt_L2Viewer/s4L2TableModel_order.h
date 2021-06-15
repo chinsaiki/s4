@@ -38,7 +38,7 @@ namespace S4
             dataType_t::OrderTime,
         };
 
-        struct unionOrderType_t{
+        struct unionOrder_t{
             int64_t         OrderNo;    //
             int32_t         Price;      //
             int64_t         OrderQty;
@@ -48,7 +48,7 @@ namespace S4
             bool            isBid;
         };
 
-        QList<unionOrderType_t> _data;
+        QList<unionOrder_t> _data;
 
         QTimeLine* _timeLine;
     public:
@@ -99,7 +99,7 @@ namespace S4
                 return;
             }
             const SBE_SSH_header_t* pH = (SBE_SSH_header_t*)l2data->get();
-            unionOrderType_t data;
+            unionOrder_t data;
 
             if (pH->SecurityIDSource == 101 && pH->MsgType == __MsgType_SSH_ORDER__ && pH->MsgLen == sizeof(SBE_SSH_ord_t)){
                 const SBE_SSH_ord_t* pOrder = (SBE_SSH_ord_t*)l2data->get();
@@ -152,19 +152,19 @@ namespace S4
     private:
         QVariant itemFadeColor(const QModelIndex& index) const
         {
-            QMap<size_t, QVariant>::const_iterator it = mapTimeout.find(index.row());
-            if (it == mapTimeout.end()) return QVariant();
-            float nTimePassed = it.value().toDateTime().msecsTo(QDateTime::currentDateTime());
-            if (nTimePassed < itemFormatDelegate::update_scope) {
-                float idx = nTimePassed / itemFormatDelegate::update_scope;
-                QColor bg = Qt::cyan;
-                uint8_t r = (255 - bg.red()) * (idx)+bg.red();
-                uint8_t g = (255 - bg.green()) * (idx)+bg.green();
-                uint8_t b = (255 - bg.blue()) * (idx)+bg.blue();
-                //bg.setAlpha(0.2);
-                return QColor(r, g, b);
-            }
             if (index.column() != 3){   //side以外
+                QMap<size_t, QVariant>::const_iterator it = mapTimeout.find(index.row());
+                if (it == mapTimeout.end()) return QVariant();
+                float nTimePassed = it.value().toDateTime().msecsTo(QDateTime::currentDateTime());
+                if (nTimePassed < itemFormatDelegate::update_scope) {
+                    float idx = nTimePassed / itemFormatDelegate::update_scope;
+                    QColor bg = Qt::cyan;
+                    uint8_t r = (255 - bg.red()) * (idx)+bg.red();
+                    uint8_t g = (255 - bg.green()) * (idx)+bg.green();
+                    uint8_t b = (255 - bg.blue()) * (idx)+bg.blue();
+                    //bg.setAlpha(0.2);
+                    return QColor(r, g, b);
+                }
                 return  QColor(255, 255, 255);
             }else{
                 const auto& order = _data[index.row()];

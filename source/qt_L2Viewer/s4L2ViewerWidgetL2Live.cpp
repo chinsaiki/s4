@@ -30,7 +30,7 @@ Q_DECLARE_METATYPE(S4::NW::L2Stats_t)
 namespace S4 {
 namespace QT {
 
-//CREATE_LOCAL_LOGGER("qt_SnapViewer")
+CREATE_LOCAL_LOGGER("qt_L2Viewer")
 #define AIM_SECURITY_TREE_NAME QStringLiteral("双击添加代码")
 
 
@@ -163,22 +163,11 @@ void snapViewerWidgetL2Live::slot_stopMDSource()
 // 	item->setFlags(item->flags() ^ Qt::ItemIsEditable);
 // }
 
-std::vector<std::string> dynamic_ss = 
+
+
+void snapViewerWidgetL2Live::applyDynamicSS_L2(const QString& code, QWidget* pInstrument, bool doConnect)
 {
-	"L2Data_instrument_snap",
-	// "L2Data_index_snap",
-	"L2Data_order",
-	"L2Data_exec",
-};
-
-
-void snapViewerWidgetL2Live::openInstrumentTab(const QString& code)
-{
-    if (_instrument_info_cargo.count(code) == 0){
-        L2Instrument* pInstrument = new L2Instrument(10, this);
-	    qRegisterMetaType<std::string>();
-
-		for (auto& ss_name : dynamic_ss){
+		for (auto& ss_name : _dynamicSS_L2){
 			std::string signalName("signal_");
 			signalName += ss_name;
 			signalName += code.toStdString();
@@ -186,11 +175,24 @@ void snapViewerWidgetL2Live::openInstrumentTab(const QString& code)
 			std::string slotName("on");
 			slotName += ss_name;
 			slotName += "(S4::sharedCharArray_ptr)";
-			if (!_snapMarketDataLive->connectDynamicSignal(signalName.data(), pInstrument, slotName.c_str())) {
-				qDebug() << "connectDynamicSignal fail!";
+			if (doConnect){
+				if (!_snapMarketDataLive->connectDynamicSignal(signalName.data(), pInstrument, slotName.c_str())) {
+					LCL_WARN("connectDynamicSignal({}, {}) fail!", signalName, slotName);
+				}
+			}else{
+				if (!_snapMarketDataLive->disconnectDynamicSignal(signalName.data(), pInstrument, slotName.c_str())) {
+					LCL_WARN("disconnectDynamicSignal({}, {}) fail!", signalName, slotName);
+				}
 			}
-
 		}
+}
+
+void snapViewerWidgetL2Live::openInstrumentTab(const QString& code)
+{
+    if (_instrument_info_cargo.count(code) == 0){
+        L2Instrument* pInstrument = new L2Instrument(10, this);
+
+		applyDynamicSS_L2(code, pInstrument, true);
 
         openSnapTab(code, pInstrument);
         snap_info_t info;
@@ -210,12 +212,15 @@ void snapViewerWidgetL2Live::setCurrentInstrument(const QString& code)
 	}
 }
 
+//由unionTree上按下del触发
 void snapViewerWidgetL2Live::closeInstrumentTab(const QString& code)
 {
+	applyDynamicSS_L2(code, _instrument_view_cargo[code], false);
+	
     for (int i = 0; i < _tabWidget->count(); ++i) {
 		if (_tabWidget->tabText(i) == code) {
-			_tabWidget->removeTab(i);
-        }
+			s4SnapViewerWidget::closeSnapTab(i);
+		}
     }
 
 	auto it = _instrument_info_cargo.find(code);
@@ -225,9 +230,12 @@ void snapViewerWidgetL2Live::closeInstrumentTab(const QString& code)
 	}
 }
 
+//tab上的x被点击后触发，后续将触发unionTree删除关注代码
 void snapViewerWidgetL2Live::closeSnapTab(int index)
 {
 	const QString code = _tabWidget->tabText(index);
+	applyDynamicSS_L2(code, _instrument_view_cargo[code], false);
+
 	auto it = _instrument_info_cargo.find(code);
 	if (it != _instrument_info_cargo.end()) {
 		_snapMarketDataLive->delLive(it->second.code);

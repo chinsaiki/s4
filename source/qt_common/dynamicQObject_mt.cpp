@@ -57,6 +57,34 @@ bool DynamicQObject_mt::connectDynamicSignal(const char *signal, QObject *obj, c
     return false;
 }
 
+bool DynamicQObject_mt::disconnectDynamicSignal(const char* signal, QObject* obj, const char* slot)
+{
+	QString _signal(signal);
+	QString _slot(slot);
+	if (!_signal.endsWith("(S4::sharedCharArray_ptr)"))
+		return false;
+
+	QByteArray theSignal = QMetaObject::normalizedSignature(signal);
+	QByteArray theSlot = QMetaObject::normalizedSignature(slot);
+	if (!QMetaObject::checkConnectArgs(theSignal, theSlot))
+		return false;
+
+	int slotId = obj->metaObject()->indexOfSlot(theSlot);
+	if (slotId < 0)
+		return false;
+
+	int signalId = signalIndices.value(theSignal, -1);
+    if (signalId < 0) {
+        return false;
+    }
+
+    signalId = signalIndices.size();
+    signalIndices.remove(theSignal);
+    recverIndices.remove(theSignal);
+    slotIndices.remove(theSignal);
+	return true;
+}
+
 
 
 bool DynamicQObject_mt::emitDynamicSignal(const char *signal, sharedCharArray_ptr _t1)

@@ -169,20 +169,22 @@ void L2_udp_recver_th_native::recv_thread()
 
 bool L2_udp_recver_th_native::liveTrans(char* pH)
 {
+    SBE_SSH_header_t* pHeader = (SBE_SSH_header_t*)pH;
     mktCodeI_t code;
-    code = atoi(((SBE_SSH_header_t*)pH)->SecurityID);
-    if (((SBE_SSH_header_t*)pH)->SecurityIDSource == 101){
+    code = atoi((pHeader)->SecurityID);
+    if ((pHeader)->SecurityIDSource == 101){
         code += SH_PRB;
     }else{
         code += SZ_PRB;
     }
+
     if (_live_list.count(code)){
         L2Data_arPtr_t p;
         _pL2DataQ->P_get_tryBest(p);
-        p->pQdata->info.data_len = ((SBE_SSH_header_t*)pH)->MsgLen;
+        p->pQdata->info.data_len = (pHeader)->MsgLen;
         p->pQdata->info.local_time_ms = _stats.last_frame_time_ms;
         p->pQdata->info.type = L2DataType::MARKET_DATA;
-        memcpy(p->pQdata->pBuffer, pH, ((SBE_SSH_header_t*)pH)->MsgLen);
+        memcpy(p->pQdata->pBuffer, pH, (pHeader)->MsgLen);
         return true;
     }
     return false;

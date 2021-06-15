@@ -72,7 +72,19 @@ protected:
 
 	marketDataSource* _marketDataSource;
 
+
+	std::vector<std::string> _dynamicSS_L2 = 
+	{
+		"L2Data_instrument_snap",
+		// "L2Data_index_snap",
+		"L2Data_order",
+		"L2Data_exec",
+	};
+protected:
+
 	void startMDAgent();
+
+	void applyDynamicSS_L2(const QString& code, QWidget*, bool doConnect);
 };
 
 

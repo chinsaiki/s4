@@ -127,6 +127,11 @@ bool marketDataAgent::connectDynamicSignal(const char *signal, QObject *obj, con
     return _DynamicQObject.connectDynamicSignal(signal, obj, slot);
 }
 
+bool marketDataAgent::disconnectDynamicSignal(const char* signal, QObject* obj, const char* slot)
+{
+	return _DynamicQObject.disconnectDynamicSignal(signal, obj, slot);
+}
+
 
 bool marketDataAgent::emitDynamicSignal(const char *signal, sharedCharArray_ptr _t1)
 {
