@@ -367,7 +367,7 @@ void snapInstrument_Kline_scene::calcCtx(const infSnapQ_ptr& pSnaps)
         //     ctx.set_val_h_min(d->low);
         // }
         dlt_time = d->_time - bgn_time;
-        if (d->_MinmuSec < 130000 || pSnaps->back()->_MinmuSec>=113000){
+        if (d->_MinmuSec < 130000 || pSnaps->front()->_MinmuSec>=113000){
         }else{
             dlt_time -= 3600+1800;  //val_w 中是不含中场休息的1.5小时的
         }
@@ -400,7 +400,7 @@ void snapInstrument_Kline_scene::calcCtx(const infSnapQ_ptr& pSnaps)
     // }else{
     //     ctx.set_val_w_max(STK_SNAP_NUM_MAX);
     // }
-    ctx.set_val_w_max(dlt_time);    //画布中也不含中场休息
+    ctx.set_val_w_max(dlt_time);    //画布中也不含中场休息, val_w = dlt-time
 
     ctx.set_val_h_10percent_pxl(2048);
     ctx.set_val_w_pxl(4);
@@ -409,28 +409,19 @@ void snapInstrument_Kline_scene::calcCtx(const infSnapQ_ptr& pSnaps)
 }
 
 
-//time_t -> scene_x
+//dlt-t -> scene_x
 qreal snapInstrument_Kline_scene::val_w_to_x(qreal val) const
 {
-    //补上中场休息
-    if (_val_hiden_scopes.size()){
-        if (val >= _val_hiden_scopes[0].bgn)
-            val -= 3600 + 1800;
-    }
 	qreal x_o;
 	x_o = (val - _ctx.val_w_min()) / _w_val_pxl + sceneRect().x();	//
+
 	return x_o;
 }
-//scene_x -> time_t
+//scene_x -> dlt-time
 qreal snapInstrument_Kline_scene::x_to_val_w(qreal x) const
 {
 	time_t val = (x - sceneRect().x()) * _w_val_pxl + _ctx.val_w_min();	//dlt-Time
     
-    //补上中场休息
-    if (_val_hiden_scopes.size()){
-        if (val >= _val_hiden_scopes[0].bgn)
-            val += 3600 + 1800;
-    }
     return val;
 }
 
