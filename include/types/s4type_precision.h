@@ -9,7 +9,8 @@ typedef double fprice_t;
 #define fPrice_to_iPrice(x) ((price_t)(((x)+0.005)*iPrice_precision))
 #define iPrice_to_fPrice(x) ((x)*(1.0/iPrice_precision))
 
-//深圳
+/*** L2 精度 ***/
+//深圳股票
 //深圳交易所L2 逐笔价格精度
 #define L2_iPrice_tick_precision 10000
 //深圳交易所L2 快照价格精度
@@ -23,7 +24,10 @@ typedef double fprice_t;
 #define L2_iPrice_snap_to_fPrice(x) ((x)*(1.0/L2_iPrice_snap_precision))
 #define L2_Qty_to_hand(x)   ((x)/(100.0*L2_Qty_precision))
 
-//上海//TODO
+//TODO：上海股票
+
+
+//打印价格，按2位小数
 inline
 std::string priceString(float p){
     char price_s[64];

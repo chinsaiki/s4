@@ -34,11 +34,8 @@ void Kinstrument_scene::initSceneCanvas()
 		height = _ctx.val_h_10percent_pxl() * qLn(_ctx.val_h_max() / _ctx.val_h_min()) / qLn(1.0 + _grid_h_gap);
 	}
 	else {
-		height = (_ctx.val_h_max() - _ctx.val_h_min());
-		if (height > 960) {
-			height = 960;
-		}
-		else if (height < 100) {
+		height = (_ctx.val_h_max() - _ctx.val_h_min())*10.0 / _ctx.val_h_min() * _ctx.val_h_10percent_pxl();
+		if (height < 100) {
 			height = 100;
 		}
 	}

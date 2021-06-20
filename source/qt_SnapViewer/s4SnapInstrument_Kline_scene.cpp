@@ -402,7 +402,7 @@ void snapInstrument_Kline_scene::calcCtx(const infSnapQ_ptr& pSnaps)
     // }
     ctx.set_val_w_max(dlt_time);    //画布中也不含中场休息, val_w = dlt-time
 
-    ctx.set_val_h_10percent_pxl(2048);
+    ctx.set_val_h_10percent_pxl(128);
     ctx.set_val_w_pxl(4);
 
     setCtx(ctx);
