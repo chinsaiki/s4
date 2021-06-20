@@ -26,9 +26,6 @@ public:
 
     void paint(const infSnapQ_ptr& pSnaps);
 
-    virtual qreal val_w_to_x(qreal w) const override;   //分时视图删除中场休息的1.5小时
-    virtual qreal x_to_val_w(qreal x) const override;
-
     //datetime_t or time_t -> date_seq
     virtual qreal label_w_to_val_w(uint64_t l) const override;
 
@@ -63,6 +60,7 @@ private:
 	void paint_trade(void);
 
     void calcCtx(const infSnapQ_ptr& pSnaps);
+	void paint_Snap_price(const infSnapQ_ptr& pSnaps);
 
 private:
     struct val_hiden_scope_t{

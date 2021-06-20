@@ -54,7 +54,8 @@ qreal snapInstrument_Kline_scene::label_w_to_val_w(uint64_t l) const
         _l = date_to_utc(date, minu);
     }
     else {
-        throw TimerError("unsupport timeMode: not tDAY nor tMINU");
+        // throw TimerError("unsupport timeMode: not tDAY nor tMINU");
+        _l = l;
     }
 
     if (!_label_map_w.size())
@@ -337,6 +338,7 @@ void snapInstrument_Kline_scene::paint(const infSnapQ_ptr& pSnaps)
     _KCtx.timeMode = timeMode_t::tSnap;
     calcCtx(pSnaps);
     initSceneCanvas();
+    paint_Snap_price(pSnaps);
 }
 
 void snapInstrument_Kline_scene::calcCtx(const infSnapQ_ptr& pSnaps)
@@ -409,21 +411,33 @@ void snapInstrument_Kline_scene::calcCtx(const infSnapQ_ptr& pSnaps)
 }
 
 
-//dlt-t -> scene_x
-qreal snapInstrument_Kline_scene::val_w_to_x(qreal val) const
+void snapInstrument_Kline_scene::paint_Snap_price(const infSnapQ_ptr& pSnaps)
 {
-	qreal x_o;
-	x_o = (val - _ctx.val_w_min()) / _w_val_pxl + sceneRect().x();	//
+    if( !pSnaps || !pSnaps->size())
+        return;
 
-	return x_o;
+    QList<QPointF> dots;
+    for (auto& ma : *pSnaps){
+        QPointF dot;
+        dot.setX(label_w_to_val_w(ma->_time));
+        dot.setY(ma->price);
+        dots.push_back(std::move(dot));
+    }
+	KlogicCurve_t* curve = new KlogicCurve_t(this);
+	curve->setLineStyle(Qt::PenStyle::SolidLine);
+	curve->setColor(_colorpalette->curve[0]);
+	curve->setLineWidth(1);
+    curve->setDotSize(1);
+	curve->setValue(dots);
+	curve->mkGroupItems();
+	curve->setZValue(BAR_Z);
+	this->addItem(curve);
+
 }
-//scene_x -> dlt-time
-qreal snapInstrument_Kline_scene::x_to_val_w(qreal x) const
-{
-	time_t val = (x - sceneRect().x()) * _w_val_pxl + _ctx.val_w_min();	//dlt-Time
-    
-    return val;
-}
+
+
+
+
 
 } // namespace QT
 } // namespace S4

@@ -26,6 +26,8 @@ public:
 
     inline void setLineStyle(enum Qt::PenStyle style) { _style = style; };
     inline void setLineWidth(int width) { _line_width = width; }
+    inline void setDotSize(qreal size) { _dot_size = size; }
+
 
     //point.x: logic value in w; point.y: logic value in h
     inline void setValue(const QList<QPointF>& pointList, bool replace = true)
@@ -70,7 +72,7 @@ private:
     int _line_width = 1;
 
     qreal _x_max, _x_min, _y_max, _y_min;   //in scene
-
+    qreal _dot_size = 1.0;
 private:
     void removeFromGroup(QGraphicsItem* item) {};
     
