@@ -16,9 +16,7 @@ public:
     snapInstrument_Kline_view(snapInstrument_Kline_scene* scene, QWidget *parent = 0);
     virtual ~snapInstrument_Kline_view(){}
 
-    void setCtx(const std::shared_ptr<infSnapQ_t>& pInfSnapQ);
-
-    void paint(void);
+    void paint(const infSnapQ_ptr& pSnaps);
 
     virtual void fitView(void) override;
 
@@ -33,6 +31,7 @@ protected:
 
     virtual void paintCrosshair() override;
 
+	void setCtx(const std::shared_ptr<infSnapQ_t>& pInfSnapQ);
 };
 
 } // namespace QT

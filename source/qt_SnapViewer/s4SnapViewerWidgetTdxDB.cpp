@@ -53,7 +53,6 @@ s4SnapViewerWidgetTdxDB::s4SnapViewerWidgetTdxDB(QWidget *parent) :
 
 	setLayout(pLayout);
 
-	connect(_tabWidget, &QTabWidget::tabCloseRequested, this, &s4SnapViewerWidget::closeSnapTab);
 	connect(_tabWidget, &QTabWidget::tabCloseRequested, this, &s4SnapViewerWidgetTdxDB::closeSnapTab);
 
 	connect(_treeView, &QTreeView::doubleClicked, this, &s4SnapViewerWidgetTdxDB::dbTree_doubleClicked);
@@ -192,12 +191,13 @@ void s4SnapViewerWidgetTdxDB::nextTdxSnap()
 void s4SnapViewerWidgetTdxDB::closeSnapTab(int index)
 {
 	const QString tabName = _tabWidget->tabText(index);
-	_tabWidget->removeTab(index);
 
 	auto it = _instrument_info_cargo.find(tabName);
 	if (it != _instrument_info_cargo.end()) {
 		_instrument_info_cargo.erase(tabName);
 	}
+	s4SnapViewerWidget::closeSnapTab(index);
+
 }
 
 s4SnapViewerWidgetTdxDB::~s4SnapViewerWidgetTdxDB()

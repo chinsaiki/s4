@@ -79,7 +79,10 @@ void snapInstrument_Kline_view::fitView(void)
 }
 
 
-void snapInstrument_Kline_view::paint(void){
+void snapInstrument_Kline_view::paint(const infSnapQ_ptr& pSnaps){
+	setCtx(pSnaps);
+	setGridGap_w(60);
+	setGridGap_h(0.02);
     paintGridLines();
     //paintGridLabels();
     //onViewChange();

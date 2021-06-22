@@ -65,6 +65,7 @@ private:
 
 private:
 
+    void paint_last_close(price_t last_close);
 };
 
 } // namespace QT

@@ -3,6 +3,7 @@
 #include "qt_Kviewer/s4KlogicBar.h"
 #include "qt_Kviewer/s4KlogicCurve.h"
 #include "qt_Kviewer/s4KlogicTrade.h"
+#include "qt_Kviewer/s4KlogicRect.h"
 
 namespace S4{
 namespace QT{
@@ -361,6 +362,29 @@ void snapInstrument_Kline_scene::paint(const infSnapQ_ptr& pSnaps)
     calcCtx(pSnaps);
     initSceneCanvas();
     paint_Snap_price(pSnaps);
+    if (pSnaps->size()) {
+        paint_last_close(pSnaps->back()->last_close);
+    }
+}
+
+void snapInstrument_Kline_scene::paint_last_close(price_t last_close)
+{
+    if (last_close == 0)
+        return;
+    val_h_to_y(last_close);
+	logicRectData_w_t rec_scop;
+	rec_scop.val_h = (last_close + getCtx().val_h_min()) / 2;//val_h_max;
+	rec_scop.val_h_scope = last_close - getCtx().val_h_min();
+	rec_scop.val_lf = getCtx().val_w_min();
+	rec_scop.val_rt = getCtx().val_w_max();
+	rec_scop.positive = false;
+	KlogicRect_w_t* rect = new KlogicRect_w_t(this);
+	rect->setValue(rec_scop);
+	rect->setColor(_colorpalette->positive_boxes[0], _colorpalette->negtive_boxes[0]);
+	rect->setAlpha(20);
+	rect->setZValue(0);
+	rect->mkGroupItems();
+    this->addItem(rect);
 }
 
 
@@ -420,7 +444,7 @@ void snapInstrument_Kline_scene::calcCtx(const infSnapQ_ptr& pSnaps)
 
     ctx.set_val_w_max(dlt_time);    //画布中也不含中场休息, val_w = dlt-time
 
-    ctx.set_val_h_10percent_pxl(128);
+    ctx.set_val_h_10percent_pxl(2048);
     ctx.set_val_w_pxl(4);
 
     setCtx(ctx);
