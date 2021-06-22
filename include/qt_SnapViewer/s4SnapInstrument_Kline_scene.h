@@ -26,6 +26,7 @@ public:
 
     void paint(const infSnapQ_ptr& pSnaps);
 
+    virtual qreal val_w_to_near_x(qreal w) const override;
     //datetime_t or time_t -> date_seq
     virtual qreal label_w_to_val_w(uint64_t l) const override;
 
@@ -63,13 +64,6 @@ private:
 	void paint_Snap_price(const infSnapQ_ptr& pSnaps);
 
 private:
-    struct val_hiden_scope_t{
-        time_t bgn;
-        bool bgn_valid = false;
-        time_t end;
-        bool end_valid = false;
-    };
-    std::vector<val_hiden_scope_t> _val_hiden_scopes;
 
 };
 

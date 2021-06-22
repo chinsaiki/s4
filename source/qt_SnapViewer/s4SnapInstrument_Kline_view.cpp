@@ -27,26 +27,34 @@ void snapInstrument_Kline_view::setCtx(const std::shared_ptr<infSnapQ_t>& pInfSn
     ctx.set_val_w_max(0);
     ctx.set_val_w_min(0);
 
-    // int n = 0;
-    // for(const auto& d : *pInfSnapQ)
-    // {
-    //     if (d->high > ctx.val_h_max()){
-    //         ctx.set_val_h_max(d->high);
-    //     }
-    //     if (d->low < ctx.val_h_min()){
-    //         ctx.set_val_h_min(d->low);
-    //     }
-    //     n++;
-    // }
-    //if (pInfSnapQ->front()->_MinmuSec >= 150000){
-    //    ctx.set_val_w_max(pInfSnapQ->size());
-    //}else{
-    //    ctx.set_val_w_max(STK_SNAP_NUM_MAX);
-    //}
-    time_t dlt = pInfSnapQ->back()->_time - pInfSnapQ->front()->_time;
-    if (pInfSnapQ->back()->_MinmuSec > 130000 && pInfSnapQ->front()->_MinmuSec < 113000)
-        dlt -= 3600 + 1800;
-    ctx.set_val_w_max(dlt);
+    const time_minuSec_t KTP_BGN_0 = KTP_STK_PBREAK + 100;
+    const time_minuSec_t KTP_END_0 = KTP_STK_TRADE1 - 100;
+    const int KTM_0 = KTM_STK_PBREAK - 2;
+
+    const time_minuSec_t KTP_BGN_1 = KTP_STK_BREAK + 100;
+    const time_minuSec_t KTP_END_1 = KTP_STK_TRADE2 - 100;
+    const int KTM_1 = KTM_STK_BREAK - 2;
+
+    time_t bgn_time = pInfSnapQ->front()->_time;
+
+    if (pInfSnapQ->front()->_MinmuSec > KTP_END_0)
+        bgn_time -= KTM_0 * 60;
+    if (pInfSnapQ->front()->_MinmuSec > KTP_END_1)
+        bgn_time -= KTM_1 * 60;
+
+    time_t dlt_time = 0;
+    for(const auto& d : *pInfSnapQ)
+    {
+        dlt_time = d->_time - bgn_time;
+        if (d->_MinmuSec >= KTP_BGN_0 && d->_MinmuSec <= KTP_END_0) continue;
+        if (d->_MinmuSec >= KTP_BGN_1 && d->_MinmuSec <= KTP_END_1) continue;
+        if (d->_MinmuSec > KTP_END_0)
+            dlt_time -= KTM_0 * 60;
+        if (d->_MinmuSec > KTP_END_1)
+            dlt_time -= KTM_1 * 60;
+
+    }
+    ctx.set_val_w_max(dlt_time);
 
     Kinstrument_view::setCtx(ctx);
 }

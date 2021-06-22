@@ -58,6 +58,14 @@ std::string date_to_str(time_date_t date)
 	return std::move(s);
 }
 
+std::string utc_to_strMinu(time_utcSec_t utc)
+{
+	char s[64];
+	struct tm ltm = *gmtime(&utc);  //fix asia:shanghai inside
+	strftime(s, 64, "%H:%M:%S", &ltm);
+	return std::move(s);
+}
+
 //date:YYYYMMDD  minuSec=HHMMSS
 time_utcSec_t date_to_utc(time_date_t date, time_minuSec_t minuSec)
 {

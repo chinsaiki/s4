@@ -583,7 +583,7 @@ void Kinstrument_view::paintGridLines()
 	}
 
 	for (int w = _ctx.sc_val_w_min; w <= _ctx.sc_val_w_max; w += _grid_w_gap) {
-		qreal x = _scene->val_w_to_x(w);
+		qreal x = _scene->val_w_to_near_x(w);
 		QGraphicsLineItem* line = new QGraphicsLineItem(x, _scene->sceneRect().y(), x, _scene->sceneRect().y() + _scene->sceneRect().height());
 		line->setPen(yPen);
 		gridLines.append(line);
@@ -610,7 +610,7 @@ void Kinstrument_view::paintGridLabels()
 	}
 
 	for (int w = _ctx.sc_val_w_min; w <= _ctx.sc_val_w_max; w += _grid_w_gap) {
-		qreal x = _scene->val_w_to_x(w);
+		qreal x = _scene->val_w_to_near_x(w);
 		if (x < _scene_lu.x() || x > _scene_rd.x())
 			continue;
 		QString txt = _scene->x_to_label_w(x);

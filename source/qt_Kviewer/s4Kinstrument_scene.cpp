@@ -86,6 +86,11 @@ qreal Kinstrument_scene::val_w_to_x(qreal val) const
 	return x_o;
 }
 
+qreal Kinstrument_scene::val_w_to_near_x(qreal val_w) const
+{
+    return val_w_to_x(val_w);
+}
+
 qreal Kinstrument_scene::x_to_val_w(qreal x) const
 {
 	return (x - sceneRect().x()) * _w_val_pxl + _ctx.val_w_min();

@@ -109,6 +109,7 @@ public:
     //y & x is in scene-coordinate, origin at left-top
     virtual qreal val_h_to_y(qreal h) const;
     virtual qreal val_w_to_x(qreal w) const;
+    virtual qreal val_w_to_near_x(qreal w) const;
     virtual qreal y_to_val_h(qreal y) const;
     virtual qreal x_to_val_w(qreal x) const;
 

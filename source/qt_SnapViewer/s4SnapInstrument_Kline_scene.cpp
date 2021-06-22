@@ -93,9 +93,12 @@ QString snapInstrument_Kline_scene::x_to_label_w(qreal x) const
     if (_w_map_label.count(val_w)){
         if (_KCtx.timeMode == timeMode_t::tDAY){
             txt.sprintf("%s", date_to_str(utc_to_date(_w_map_label.at(val_w))).c_str());
-        }else{
+        }else if (_KCtx.timeMode == timeMode_t::tMINU) {
             txt.sprintf("%s", utc_to_str(_w_map_label.at(val_w)).c_str());
-        }
+		}
+		else if (_KCtx.timeMode == timeMode_t::tSnap) {
+			txt.sprintf("%s", utc_to_strMinu(_w_map_label.at(val_w)).c_str());
+		}
     }else{
 		if (_label_map_w.size() && _label_map_w.rbegin()->second + 1 == val_w) {
 			txt.sprintf("Dummy Next");
@@ -113,6 +116,25 @@ QString snapInstrument_Kline_scene::y_to_label_h(qreal y) const
     QString txt;
     txt.sprintf("%0.2f", val_h / 100.0);    //TODO: tdx stock price precision = 1% of Yuan 精度=分
     return txt;
+}
+
+qreal snapInstrument_Kline_scene::val_w_to_near_x(qreal val_w) const
+{
+    if (_w_map_label.count(val_w)){
+        return val_w_to_x(val_w);
+    }else if (val_w < _w_map_label.begin()->first){
+        return val_w_to_x(_w_map_label.begin()->first);
+    }else if (val_w > _w_map_label.rbegin()->first){
+        return val_w_to_x(_w_map_label.rbegin()->first);
+    }else{
+		auto itr = _w_map_label.lower_bound(val_w);
+        qreal x = (val_w_to_x(itr->first));
+		itr--;
+		if (abs(x - x_to_val_w(val_w)) > abs(val_w_to_x(itr->first) - x_to_val_w(val_w))) {
+			x = (val_w_to_x(itr->first));
+		}
+        return x;
+    }
 }
 
 QPointF snapInstrument_Kline_scene::get_label_near(const QPointF& scene_pos, QPointF& scene_label_pos) const
@@ -341,10 +363,19 @@ void snapInstrument_Kline_scene::paint(const infSnapQ_ptr& pSnaps)
     paint_Snap_price(pSnaps);
 }
 
+
 void snapInstrument_Kline_scene::calcCtx(const infSnapQ_ptr& pSnaps)
 {
     if (!pSnaps)
         return;
+
+    const time_minuSec_t KTP_BGN_0 = KTP_STK_PBREAK + 100;
+    const time_minuSec_t KTP_END_0 = KTP_STK_TRADE1 - 100;
+    const int KTM_0 = KTM_STK_PBREAK - 2;
+
+    const time_minuSec_t KTP_BGN_1 = KTP_STK_BREAK + 100;
+    const time_minuSec_t KTP_END_1 = KTP_STK_TRADE2 - 4100;
+    const int KTM_1 = KTM_STK_BREAK - 2;
 
     ctx_t ctx;
     // ctx.set_val_h_max(pSnaps->front()->high);
@@ -356,10 +387,15 @@ void snapInstrument_Kline_scene::calcCtx(const infSnapQ_ptr& pSnaps)
 
     time_t bgn_time = pSnaps->front()->_time;
 
+    if (pSnaps->front()->_MinmuSec > KTP_END_0)
+        bgn_time -= KTM_0 * 60;
+    if (pSnaps->front()->_MinmuSec > KTP_END_1)
+        bgn_time -= KTM_1 * 60;
+
+
     _label_map_w.clear();
     _w_map_label.clear();
     time_t dlt_time = 0;
-    val_hiden_scope_t hs;
     for(const auto& d : *pSnaps)
     {
         // if (d->high > ctx.val_h_max()){
@@ -369,39 +405,19 @@ void snapInstrument_Kline_scene::calcCtx(const infSnapQ_ptr& pSnaps)
         //     ctx.set_val_h_min(d->low);
         // }
         dlt_time = d->_time - bgn_time;
-        if (d->_MinmuSec < 130000 || pSnaps->front()->_MinmuSec>=113000){
-        }else{
-            dlt_time -= 3600+1800;  //val_w 中是不含中场休息的1.5小时的
-        }
+        if (d->_MinmuSec >= KTP_BGN_0 && d->_MinmuSec <= KTP_END_0) continue;
+        if (d->_MinmuSec >= KTP_BGN_1 && d->_MinmuSec <= KTP_END_1) continue;
+        if (d->_MinmuSec > KTP_END_0)
+            dlt_time -= KTM_0 * 60;
+        if (d->_MinmuSec > KTP_END_1)
+            dlt_time -= KTM_1 * 60;
+
         _label_map_w[d->_time] = dlt_time;
         _w_map_label[dlt_time] = d->_time;
 
-        if (d->_MinmuSec >= 113000 && d->_MinmuSec < 113100 && !hs.bgn_valid){	//TODO: 直接根据日期算出休息时段
-            hs.bgn = d->_time;
-            hs.bgn_valid = true;
-        }
-        if (d->_MinmuSec >= 130000 && !hs.end_valid){
-			if (!hs.bgn_valid) {
-				hs.bgn_valid = true;
-				hs.bgn = d->_time - 3600 - 1800;
-			}
-            hs.end = d->_time;
-            hs.end_valid = true;
-            _val_hiden_scopes.push_back(hs);
-        }
     }
 
-    if (hs.bgn_valid && !hs.end_valid){
-            hs.end = (*pSnaps->rbegin())->_time;
-            hs.end_valid = true;
-            _val_hiden_scopes.push_back(hs);
-    }
 
-    // if (pSnaps->front()->_MinmuSec >= 150000){
-    //     ctx.set_val_w_max(pSnaps->size());
-    // }else{
-    //     ctx.set_val_w_max(STK_SNAP_NUM_MAX);
-    // }
     ctx.set_val_w_max(dlt_time);    //画布中也不含中场休息, val_w = dlt-time
 
     ctx.set_val_h_10percent_pxl(128);
@@ -417,10 +433,20 @@ void snapInstrument_Kline_scene::paint_Snap_price(const infSnapQ_ptr& pSnaps)
         return;
 
     QList<QPointF> dots;
-    for (auto& ma : *pSnaps){
+    for (auto& pSnap : *pSnaps){
         QPointF dot;
-        dot.setX(label_w_to_val_w(ma->_time));
-        dot.setY(ma->price);
+        dot.setX(label_w_to_val_w(pSnap->_time));
+        if (pSnap->price != 0){
+            dot.setY(pSnap->price);
+        }else{
+            if (pSnap->ask1){
+                dot.setY(pSnap->ask1);
+            }else if (pSnap->bid1){
+                dot.setY(pSnap->bid1);
+            }else{
+                dot.setY(pSnap->last_close);
+            }
+        }
         dots.push_back(std::move(dot));
     }
 	KlogicCurve_t* curve = new KlogicCurve_t(this);

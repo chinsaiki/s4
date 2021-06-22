@@ -52,6 +52,7 @@ namespace S4
             };
         std::vector<QVariant> _data;
         QTimeLine* _timeLine;
+
     public:
         snapTableModel_snapInfo(QObject *parent = {}) : QAbstractTableModel{parent}
         {
@@ -120,6 +121,7 @@ namespace S4
             }
 
             refresh(data);
+
         }
 
     private:
@@ -159,7 +161,8 @@ namespace S4
                 _timeLine->start();
         }
 
-        QString typeString(dataType_t t) const
+        static
+        QString typeString(dataType_t t)
         {
             switch (t)
             {
@@ -178,6 +181,10 @@ namespace S4
             default:return "";
             }
         }
+
+        
+
+
     };
 
 }
