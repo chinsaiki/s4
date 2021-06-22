@@ -47,7 +47,7 @@ namespace S4
             dataType_t::CurrentVolume,
             dataType_t::SellVolume,
             dataType_t::BuyVolume,
-            // dataType_t::Active,
+            dataType_t::Active,
             dataType_t::TransactTime,
             };
         std::vector<QVariant> _data;
@@ -115,60 +115,12 @@ namespace S4
                 if (key == dataType_t::CurrentVolume) data.push_back(snap->cur_vol);
                 if (key == dataType_t::SellVolume) data.push_back(snap->s_vol); //主动卖出
                 if (key == dataType_t::BuyVolume) data.push_back(snap->b_vol);  //主动买入
-                // if (key == dataType_t::Active) data.push_back(snap->active1);
+                if (key == dataType_t::Active) data.push_back(snap->active1);
                 if (key == dataType_t::TransactTime) data.push_back(snap->_MinmuSec);
             }
 
             refresh(data);
         }
-
-        
-        void refreshL2(const S4::sharedCharArray_ptr& l2data){
-            size_t sbe_size = l2data->size();
-            if (sbe_size < sizeof(SBE_SSH_header_t)){
-                return;
-            }
-            const SBE_SSH_header_t* pH = (SBE_SSH_header_t*)l2data->get();
-            std::vector<QVariant> data;
-
-            if (pH->SecurityIDSource == 101 && pH->MsgType == __MsgType_SSH_INSTRUMENT_SNAP__ && pH->MsgLen == sizeof(SBE_SSH_instrument_snap_t)){
-                const SBE_SSH_instrument_snap_t* pSnap = (SBE_SSH_instrument_snap_t*)l2data->get();
-                for (auto& key : _row_names){
-                    if (key == dataType_t::Price) data.push_back(priceString(L2_iPrice_snap_to_fPrice(pSnap->LastPx)).c_str());
-                    if (key == dataType_t::LastClose) data.push_back(priceString(L2_iPrice_tick_to_fPrice(pSnap->PrevClosePx)).c_str());
-                    if (key == dataType_t::Open) data.push_back(priceString(L2_iPrice_snap_to_fPrice(pSnap->OpenPx)).c_str());
-                    if (key == dataType_t::High) data.push_back(priceString(L2_iPrice_snap_to_fPrice(pSnap->HighPx)).c_str());
-                    if (key == dataType_t::Low) data.push_back(priceString(L2_iPrice_snap_to_fPrice(pSnap->LowPx)).c_str());
-                    if (key == dataType_t::TotalVolume) data.push_back(QVariant::fromValue(pSnap->TotalVolumeTrade/L2_Qty_precision));
-                    if (key == dataType_t::TotalAmount) data.push_back(QString::number((pSnap->TotalValueTrade/L2_Amt_precision)/_KW) + QStringLiteral(" 千万"));
-                    if (key == dataType_t::CurrentVolume) data.push_back(pSnap->NumTrades);
-                    if (key == dataType_t::SellVolume) data.push_back(QVariant::fromValue(pSnap->AskWeightSize/L2_Qty_precision));
-                    if (key == dataType_t::BuyVolume) data.push_back(QVariant::fromValue(pSnap->BidWeightSize/L2_Qty_precision));
-                    // if (key == dataType_t::Active) data.push_back();
-                    if (key == dataType_t::TransactTime) data.push_back(pSnap->DataTimeStamp);
-                }
-            }else 
-            if (pH->SecurityIDSource == 102 && pH->MsgType == __MsgType_SSZ_INSTRUMENT_SNAP__ && pH->MsgLen == sizeof(SBE_SSZ_instrument_snap_t)){
-                const SBE_SSZ_instrument_snap_t* pSnap = (SBE_SSZ_instrument_snap_t*)l2data->get();
-                for (auto& key : _row_names){
-                    if (key == dataType_t::Price) data.push_back(priceString(L2_iPrice_snap_to_fPrice(pSnap->LastPx)).c_str());
-                    if (key == dataType_t::LastClose) data.push_back(priceString(L2_iPrice_tick_to_fPrice(pSnap->PrevClosePx)).c_str());
-                    if (key == dataType_t::Open) data.push_back(priceString(L2_iPrice_snap_to_fPrice(pSnap->OpenPx)).c_str());
-                    if (key == dataType_t::High) data.push_back(priceString(L2_iPrice_snap_to_fPrice(pSnap->HighPx)).c_str());
-                    if (key == dataType_t::Low) data.push_back(priceString(L2_iPrice_snap_to_fPrice(pSnap->LowPx)).c_str());
-                    if (key == dataType_t::TotalVolume) data.push_back(QVariant::fromValue(pSnap->TotalVolumeTrade/L2_Qty_precision));
-                    if (key == dataType_t::TotalAmount) data.push_back(QString::number((pSnap->TotalValueTrade/L2_Amt_precision)/_KW) + QStringLiteral(" 千万"));
-                    if (key == dataType_t::CurrentVolume) data.push_back(QString::number(pSnap->NumTrades));
-                    if (key == dataType_t::SellVolume) data.push_back(QVariant::fromValue(pSnap->AskWeightSize/L2_Qty_precision));
-                    if (key == dataType_t::BuyVolume) data.push_back(QVariant::fromValue(pSnap->BidWeightSize/L2_Qty_precision));
-                    // if (key == dataType_t::Active) data.push_back();
-                    if (key == dataType_t::TransactTime) data.push_back(ssz_L2_timeString(pSnap->TransactTime).c_str());
-		        }
-            }
-            
-            refresh(data);
-        }
-
 
     private:
         QVariant itemFadeColor(const QModelIndex& index) const
@@ -219,8 +171,8 @@ namespace S4
             case dataType_t::TotalVolume: return QStringLiteral("总量");
             case dataType_t::TotalAmount: return QStringLiteral("总额");
             case dataType_t::CurrentVolume: return QStringLiteral("现量");
-            case dataType_t::SellVolume: return QStringLiteral("委卖量");
-            case dataType_t::BuyVolume: return QStringLiteral("委买量");
+            case dataType_t::SellVolume: return QStringLiteral("主动卖出");
+            case dataType_t::BuyVolume: return QStringLiteral("主动买入");
             case dataType_t::Active: return QStringLiteral("Active");
             case dataType_t::TransactTime: return QStringLiteral("时间戳");
             default:return "";

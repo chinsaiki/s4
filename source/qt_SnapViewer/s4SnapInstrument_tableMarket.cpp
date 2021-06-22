@@ -53,7 +53,7 @@ snapInstrument_tableMarket::snapInstrument_tableMarket(int snapLeves_nb, QWidget
     _info_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
 	_info_tv->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);	//限制选择
 	_info_tv->setMaximumWidth(250);
-    connect(this, &snapInstrument_tableMarket::signal_L2Data_instrument_snap, infos, &snapTableModel_snapInfo::refreshL2);
+    // connect(this, &snapInstrument_tableMarket::signal_L2Data_instrument_snap, infos, &snapTableModel_snapInfo::refreshL2);   //snapView的snapInfo已删除此接口
     {
         const int nNumRows = infos->rowCount(QModelIndex());
         _info_tv->resizeRowsToContents();
