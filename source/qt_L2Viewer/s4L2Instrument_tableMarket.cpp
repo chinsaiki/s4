@@ -1,7 +1,7 @@
 ﻿#include "qt_L2Viewer/s4L2Instrument_tableMarket.h"
 #include "qt_L2Viewer/s4L2TableModel_order.h"
 #include "qt_L2Viewer/s4L2TableModel_exec.h"
-#include "qt_SnapViewer/s4SnapTableModel_snapInfo.h"
+#include "qt_L2Viewer/s4L2TableModel_snapInfo.h"
 #include "qt_SnapViewer/s4SnapTableModel_level.h"
 
 #include <QGridLayout>
@@ -44,7 +44,7 @@ L2Instrument_tableMarket::L2Instrument_tableMarket(int snapLeves_nb, QWidget *pa
 
     _info_tv = new QTableView(this);
     _info_tv->setItemDelegate(delegate);
-    snapTableModel_snapInfo* infos = new snapTableModel_snapInfo(_info_tv);
+    snapTableModel_snapInfo_L2* infos = new snapTableModel_snapInfo_L2(_info_tv);
     _info_tv->setModel(infos);
     _info_tv->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     _info_tv->horizontalHeader()->setVisible(false);
@@ -54,7 +54,7 @@ L2Instrument_tableMarket::L2Instrument_tableMarket(int snapLeves_nb, QWidget *pa
     _info_tv->setSelectionBehavior(QAbstractItemView::SelectRows);
 	_info_tv->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);	//限制选择
 	_info_tv->setMaximumWidth(250);
-    connect(this, &L2Instrument_tableMarket::signal_L2Data_instrument_snap, infos, &snapTableModel_snapInfo::refreshL2);
+    connect(this, &L2Instrument_tableMarket::signal_L2Data_instrument_snap, infos, &snapTableModel_snapInfo_L2::refreshL2);
     {
         const int nNumRows = infos->rowCount(QModelIndex());
         _info_tv->resizeRowsToContents();
