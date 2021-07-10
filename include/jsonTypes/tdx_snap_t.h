@@ -13,6 +13,7 @@
     "__assign_enum_fields__": {"field":"enum-type"}, # Assign specal enum-type of field, but not infer automatically as default.
                               enum-type need have implemented <enum-type>_toSting() & <enum-type>_fromString() functions.
     "__assign_set_lists__": [], # Take list in .json file as std::set<>, but not std::vector<> as default
+    "__cpp_eq_eclude__":[],     # List of variables not involved in equal compare.
     "__comment__xxx":"", # Add comment line
     "__sqlite_capable__":"", # enable sqlite tableIO autogen
     "__sqlite_primary__":"", # assign the primary key of sqlite, if not assigned, first existing col of [ 'id', 'date', 'mktCode', 'datetime', 'code'] will be assigned automatically.
@@ -463,17 +464,13 @@ struct tdx_snap_t {
 
 	bool operator ==(const tdx_snap_t& d) const
 	{
-		if (date == d.date &&
-			minuSec == d.minuSec &&
-			time == d.time &&
-			mktCode == d.mktCode &&
+		if (mktCode == d.mktCode &&
 			active1 == d.active1 &&
 			price == d.price &&
 			last_close == d.last_close &&
 			open == d.open &&
 			high == d.high &&
 			low == d.low &&
-			ms == d.ms &&
 			vol == d.vol &&
 			cur_vol == d.cur_vol &&
 			amount == d.amount &&
@@ -498,21 +495,7 @@ struct tdx_snap_t {
 			bid5 == d.bid5 &&
 			ask5 == d.ask5 &&
 			bid_vol5 == d.bid_vol5 &&
-			ask_vol5 == d.ask_vol5 &&
-			reversed_bytes0 == d.reversed_bytes0 &&
-			reversed_bytes1 == d.reversed_bytes1 &&
-			reversed_bytes2 == d.reversed_bytes2 &&
-			reversed_bytes3 == d.reversed_bytes3 &&
-			reversed_bytes4 == d.reversed_bytes4 &&
-			reversed_bytes5 == d.reversed_bytes5 &&
-			reversed_bytes6 == d.reversed_bytes6 &&
-			reversed_bytes7 == d.reversed_bytes7 &&
-			reversed_bytes8 == d.reversed_bytes8 &&
-			reversed_bytes9 == d.reversed_bytes9 &&
-			active2 == d.active2 &&
-			lcl_time == d.lcl_time &&
-			lcl_time_str == d.lcl_time_str &&
-			VERSION == d.VERSION)
+			ask_vol5 == d.ask_vol5)
 		{
 			return true;
 		}
@@ -532,7 +515,7 @@ struct tdx_snap_t {
         inline int tdx_snap_t_tester() {
 
             //std::ifstream i("G:/work2t/99_s3/s4/./json_template/tdx_snap_t.json");
-            std::string i("{    \"__sqlite_capable__\" : true,    \"__sqlite_primary__\" : \"time\",    \"__assign_type_fields__\": {        \"date\":\"time_date_t\",        \"minuSec\":\"time_minuSec_t\",        \"time\":\"time_utcSec_t\",        \"mktCode\":\"mktCodeI_t\",        \"active1\": \"uint16_t\",        \"price\": \"price_t\",        \"last_close\": \"price_t\",        \"open\": \"price_t\",        \"high\": \"price_t\",        \"low\": \"price_t\",        \"vol\": \"vol_tdx_t\",        \"cur_vol\": \"vol_tdx_t\",        \"amount\": \"amount_t\",        \"s_vol\": \"vol_tdx_t\",        \"b_vol\": \"vol_tdx_t\",        \"bid1\":\"price_t\",        \"ask1\":\"price_t\",        \"bid_vol1\":\"vol_tdx_t\",        \"ask_vol1\":\"vol_tdx_t\",        \"bid2\":\"price_t\",        \"ask2\":\"price_t\",        \"bid_vol2\":\"vol_tdx_t\",        \"ask_vol2\":\"vol_tdx_t\",        \"bid3\":\"price_t\",        \"ask3\":\"price_t\",        \"bid_vol3\":\"vol_tdx_t\",        \"ask_vol3\":\"vol_tdx_t\",        \"bid4\":\"price_t\",        \"ask4\":\"price_t\",        \"bid_vol4\":\"vol_tdx_t\",        \"ask_vol4\":\"vol_tdx_t\",        \"bid5\":\"price_t\",        \"ask5\":\"price_t\",        \"bid_vol5\":\"vol_tdx_t\",        \"ask_vol5\":\"vol_tdx_t\",        \"reversed_bytes0\":\"uint32_t\",        \"reversed_bytes1\":\"uint32_t\",        \"reversed_bytes2\":\"uint32_t\",        \"reversed_bytes3\":\"uint32_t\",        \"reversed_bytes4\":\"uint16_t\",        \"reversed_bytes5\":\"uint32_t\",        \"reversed_bytes6\":\"uint32_t\",        \"reversed_bytes7\":\"uint32_t\",        \"reversed_bytes8\":\"uint32_t\",        \"reversed_bytes9\":\"uint16_t\",        \"active2\":\"uint16_t\",        \"lcl_time\":\"time_utcSec_t\"    },	\"date\":0,	\"minuSec\":0,	\"time\":0,	\"mktCode\": 0,    \"__comment__0\": \"active1增加1，表示这期间发生过成交。如果没有成交，每次快照给出的时间戳、五档价格和委托量都是可能变动的，但active1不变。如果active1增加1，那么总量，总金额一定会变。\",	\"active1\": 0,				\"price\":0,	\"last_close\":0,	\"open\":0,	\"high\":0,	\"low\":0,	\"ms\":0,    \"__comment__1\": \"总量\",	\"vol\":0,    \"__comment__2\": \"现量\",	\"cur_vol\":0,	\"amount\": 0.0,	\"s_vol\":0,	\"b_vol\":0,	\"bid1\":0,	\"ask1\":0,	\"bid_vol1\":0,	\"ask_vol1\":0,	\"bid2\":0,	\"ask2\":0,	\"bid_vol2\":0,	\"ask_vol2\":0,	\"bid3\":0,	\"ask3\":0,	\"bid_vol3\":0,	\"ask_vol3\":0,	\"bid4\":0,	\"ask4\":0,	\"bid_vol4\":0,	\"ask_vol4\":0,	\"bid5\":0,	\"ask5\":0,	\"bid_vol5\":0,	\"ask_vol5\":0,	\"reversed_bytes0\":0,    \"__comment__3\":\"-价格*100\",	\"reversed_bytes1\":0,    \"__comment__4\":\"市场\",	\"reversed_bytes2\":0,	\"reversed_bytes3\":0,	\"reversed_bytes4\":0,	\"reversed_bytes5\":0,	\"reversed_bytes6\":0,	\"reversed_bytes7\":0,	\"reversed_bytes8\":0,    \"__comment__5\":\"涨速\",	\"reversed_bytes9\":0,    \"__comment__6\":\"活跃度\",	\"active2\":0,	\"lcl_time\":0,    \"lcl_time_str\":\"\",    \"VERSION\":0}");
+            std::string i("{    \"__sqlite_capable__\" : true,    \"__sqlite_primary__\" : \"time\",    \"__assign_type_fields__\": {        \"date\":\"time_date_t\",        \"minuSec\":\"time_minuSec_t\",        \"time\":\"time_utcSec_t\",        \"mktCode\":\"mktCodeI_t\",        \"active1\": \"uint16_t\",        \"price\": \"price_t\",        \"last_close\": \"price_t\",        \"open\": \"price_t\",        \"high\": \"price_t\",        \"low\": \"price_t\",        \"vol\": \"vol_tdx_t\",        \"cur_vol\": \"vol_tdx_t\",        \"amount\": \"amount_t\",        \"s_vol\": \"vol_tdx_t\",        \"b_vol\": \"vol_tdx_t\",        \"bid1\":\"price_t\",        \"ask1\":\"price_t\",        \"bid_vol1\":\"vol_tdx_t\",        \"ask_vol1\":\"vol_tdx_t\",        \"bid2\":\"price_t\",        \"ask2\":\"price_t\",        \"bid_vol2\":\"vol_tdx_t\",        \"ask_vol2\":\"vol_tdx_t\",        \"bid3\":\"price_t\",        \"ask3\":\"price_t\",        \"bid_vol3\":\"vol_tdx_t\",        \"ask_vol3\":\"vol_tdx_t\",        \"bid4\":\"price_t\",        \"ask4\":\"price_t\",        \"bid_vol4\":\"vol_tdx_t\",        \"ask_vol4\":\"vol_tdx_t\",        \"bid5\":\"price_t\",        \"ask5\":\"price_t\",        \"bid_vol5\":\"vol_tdx_t\",        \"ask_vol5\":\"vol_tdx_t\",        \"reversed_bytes0\":\"uint32_t\",        \"reversed_bytes1\":\"uint32_t\",        \"reversed_bytes2\":\"uint32_t\",        \"reversed_bytes3\":\"uint32_t\",        \"reversed_bytes4\":\"uint16_t\",        \"reversed_bytes5\":\"uint32_t\",        \"reversed_bytes6\":\"uint32_t\",        \"reversed_bytes7\":\"uint32_t\",        \"reversed_bytes8\":\"uint32_t\",        \"reversed_bytes9\":\"uint16_t\",        \"active2\":\"uint16_t\",        \"lcl_time\":\"time_utcSec_t\"    },    \"__cpp_eq_eclude__\":[        \"date\",        \"minuSec\",        \"time\",        \"ms\",        \"reversed_bytes0\",        \"reversed_bytes1\",        \"reversed_bytes2\",        \"reversed_bytes3\",        \"reversed_bytes4\",        \"reversed_bytes5\",        \"reversed_bytes6\",        \"reversed_bytes7\",        \"reversed_bytes8\",        \"reversed_bytes9\",        \"active2\",        \"lcl_time\",        \"lcl_time_str\",        \"VERSION\"    ],	\"date\":0,	\"minuSec\":0,	\"time\":0,	\"mktCode\": 0,    \"__comment__0\": \"active1增加1，表示这期间发生过成交。如果没有成交，每次快照给出的时间戳、五档价格和委托量都是可能变动的，但active1不变。如果active1增加1，那么总量，总金额一定会变。\",	\"active1\": 0,				\"price\":0,	\"last_close\":0,	\"open\":0,	\"high\":0,	\"low\":0,	\"ms\":0,    \"__comment__1\": \"总量\",	\"vol\":0,    \"__comment__2\": \"现量\",	\"cur_vol\":0,	\"amount\": 0.0,	\"s_vol\":0,	\"b_vol\":0,	\"bid1\":0,	\"ask1\":0,	\"bid_vol1\":0,	\"ask_vol1\":0,	\"bid2\":0,	\"ask2\":0,	\"bid_vol2\":0,	\"ask_vol2\":0,	\"bid3\":0,	\"ask3\":0,	\"bid_vol3\":0,	\"ask_vol3\":0,	\"bid4\":0,	\"ask4\":0,	\"bid_vol4\":0,	\"ask_vol4\":0,	\"bid5\":0,	\"ask5\":0,	\"bid_vol5\":0,	\"ask_vol5\":0,	\"reversed_bytes0\":0,    \"__comment__3\":\"-价格*100\",	\"reversed_bytes1\":0,    \"__comment__4\":\"市场\",	\"reversed_bytes2\":0,	\"reversed_bytes3\":0,	\"reversed_bytes4\":0,	\"reversed_bytes5\":0,	\"reversed_bytes6\":0,	\"reversed_bytes7\":0,	\"reversed_bytes8\":0,    \"__comment__5\":\"涨速\",	\"reversed_bytes9\":0,    \"__comment__6\":\"活跃度\",	\"active2\":0,	\"lcl_time\":0,    \"lcl_time_str\":\"\",    \"VERSION\":0}");
             nlohmann::json json_var;
             //i >> json_var; //from file
             json_var = nlohmann::json::parse(i);  //from string

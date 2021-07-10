@@ -22,6 +22,7 @@ cpp_headers = \
     "__assign_enum_fields__": {{"field":"enum-type"}}, # Assign specal enum-type of field, but not infer automatically as default.
                               enum-type need have implemented <enum-type>_toSting() & <enum-type>_fromString() functions.
     "__assign_set_lists__": [], # Take list in .json file as std::set<>, but not std::vector<> as default
+    "__cpp_eq_eclude__":[],     # List of variables not involved in equal compare.
     "__comment__xxx":"", # Add comment line
     "__sqlite_capable__":"", # enable sqlite tableIO autogen
     "__sqlite_primary__":"", # assign the primary key of sqlite, if not assigned, first existing col of [ 'id', 'date', 'mktCode', 'datetime', 'code'] will be assigned automatically.
@@ -50,7 +51,8 @@ keep_words = [
     '__assign_enum_fields__',
     '__assign_set_lists__', 
     '__sqlite_capable__', 
-    '__sqlite_primary__'
+    '__sqlite_primary__',
+    '__cpp_eq_eclude__'
 ]
 
 def determin_value_type(value):
@@ -283,9 +285,17 @@ def dict_to_struct(cpp_vari, json_vari, type_name, json_dict, namespace_list = [
 
 def get_eq(type_name, json_dict):
     cols_list = []
+
+    if ('__cpp_eq_eclude__' in json_dict):
+        skip_list = json_dict['__cpp_eq_eclude__']
+    else:
+        skip_list = []
         
     for key_name in json_dict:
         if key_name in keep_words or key_name.find("__comment__")==0:
+            continue
+
+        if key_name in skip_list:
             continue
 
         key_value = json_dict[key_name]
