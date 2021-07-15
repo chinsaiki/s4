@@ -1,3 +1,5 @@
+#pragma once
+
 #include "httplib.h"
 #include "parse_url.h"
 
@@ -25,14 +27,14 @@ bool download(const std::string& url, std::string& download_data)
 		  {"Cache-Control", "max-age=0"},
 	};
 	httplib::Result res =
-		http_client.Get(req_path.c_str(), header, [](uint64_t len, uint64_t total) {
-		printf("\r%lld / %lld bytes => %d%% complete",
-			len, total,
-			(int)((len * 100 / total)));
-		return true; // return 'false' if you want to cancel the request.
-	}
-	);
-		//http_client.Get(req_path.c_str(), header);
+	//	http_client.Get(req_path.c_str(), header, [](uint64_t len, uint64_t total) {
+	//	printf("\r%lld / %lld bytes => %d%% complete",
+	//		len, total,
+	//		(int)((len * 100 / total)));
+	//	return true; // return 'false' if you want to cancel the request.
+	//}
+	//);
+		http_client.Get(req_path.c_str(), header);
 
 	if ((res == nullptr) || res->status != 200) {
 		// LCL_ERR("downloaded {} failed!", url);

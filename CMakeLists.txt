@@ -32,6 +32,7 @@ message(STATUS "CMAKE_CURRENT_BINARY_DIR = ${CMAKE_CURRENT_BINARY_DIR}")
 
 ## Thirdparty
 add_subdirectory("thirdparty")
+add_definitions(-DCPPHTTPLIB_ZLIB_SUPPORT=on)
 
 ## CMake module path
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
