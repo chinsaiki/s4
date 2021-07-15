@@ -21,6 +21,7 @@
                 "G:\\Qt\\5.11.1\\msvc2017_64\\include\\QtSql",
                 "G:\\Qt\\5.11.1\\msvc2017_64\\include\\QtGui",
                 "${workspaceFolder}/thirdparty/json/include",
+                "${workspaceFolder}/thirdparty/cpp-httplib",
                 "${workspaceFolder}/thirdparty/spdlog/include",
                 "${workspaceFolder}/thirdparty/SQLiteCpp/include"
             ],

@@ -9,7 +9,7 @@
 #ifdef max
 #undef max
 #endif
-#include "tus/httplib.h"
+#include "httplib.h"
 using namespace std;
 
 CREATE_LOCAL_LOGGER("tus_basic")
@@ -34,9 +34,10 @@ bool downloadBasic(const std::string& date, std::vector<tushare_basic_t>& basicO
 	}
 
 	httplib::Client m_tushare("file.tushare.org", 80);
-	m_tushare.set_timeout_sec(20);
+	m_tushare.set_connection_timeout(5);
+	m_tushare.set_read_timeout(20);
 
-	std::shared_ptr<httplib::Response> res =
+	httplib::Result res =
 		m_tushare.Get(url, [](uint64_t len, uint64_t total) {
 		printf("\r%d / %d bytes => %d%% complete",
 			(int)len, (int)total,
@@ -46,7 +47,7 @@ bool downloadBasic(const std::string& date, std::vector<tushare_basic_t>& basicO
 	);
 	printf("\n");
 
-	if (res==NULL || res->status != 200) {
+	if (res==nullptr || res->status != 200) {
 		LCL_ERR("downloaded {} failed!", url);
 		if (res) {
 			LCL_ERR(" ret={} ", res->status);

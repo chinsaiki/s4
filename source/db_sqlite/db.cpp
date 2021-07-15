@@ -102,20 +102,34 @@ std::vector<std::string> DB_t::get_colum_list(const std::string& table_name)
 }
 
 
+//s3stk_shIDX0.db3   : sh000000 ~ sh500000     //index, used=0~993
+//s3stk_shETF0.db3   : sh500000 ~ sh600000     //etf, used=510010~sh519997; sh588000~sh588405
+//s3stk_shSTK0.db3   : sh600000 ~ sh600999     //stk
+//s3stk_shSTK1.db3   : sh601000 ~ sh603999     //stk
+//s3stk_shSTK2.db3   : sh604000 ~ sh679999     //stk final ~ sh605577
+//s3stk_shKCB0.db3   : sh680000 ~ sh689999     //kc 688000 ~ sh689009
+//s3stk_shIDX1.db3   : sh690000 ~              //index, sh880001 ~ sh880993
 
-//s3stk_sh0.db3  : sh000000 ~sh600999
-//s3stk_sh1.db3 : sh601000 ~
-//
-//s3stk_sz0.db3 : sz000000 ~sz002399
-//s3stk_sz1.db3 : sz002400 ~sz299999
-//s3stk_sz2.db3 : sz300000 ~
+//s3stk_szSTK0.db3 : sz000000 ~ sz002399       //stk
+//s3stk_szSTK1.db3 : sz002400 ~ sz099999       //stk final ~ sz003816
+//s3stk_szETF0.db3 : sz100000 ~ sz299999       //etf used=sz159001~sz169201
+//s3stk_szCYB0.db3 : sz300000 ~ sz389999       //stk final ~ sz301040
+//s3stk_szIDX0.db3 : sz390000 ~                //index, sz395001 ~ sz399998
 history_data_DB_group_t::history_data_DB_group_t(const std::string & path, const int Mode)
 {
-	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("sh0"), std::make_shared<DB_t>(path + "s3stk_sh0.db", Mode)));
-	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("sh1"), std::make_shared<DB_t>(path + "s3stk_sh1.db", Mode)));
-	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("sz0"), std::make_shared<DB_t>(path + "s3stk_sz0.db", Mode)));
-	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("sz1"), std::make_shared<DB_t>(path + "s3stk_sz1.db", Mode)));
-	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("sz2"), std::make_shared<DB_t>(path + "s3stk_sz2.db", Mode)));
+	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("shIDX0"), std::make_shared<DB_t>(path + "s4stk_shIDX0.db", Mode)));
+	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("shETF0"), std::make_shared<DB_t>(path + "s4stk_shETF0.db", Mode)));
+	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("shSTK0"), std::make_shared<DB_t>(path + "s4stk_shSTK0.db", Mode)));
+	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("shSTK1"), std::make_shared<DB_t>(path + "s4stk_shSTK1.db", Mode)));
+	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("shSTK2"), std::make_shared<DB_t>(path + "s4stk_shSTK2.db", Mode)));
+	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("shKCB0"), std::make_shared<DB_t>(path + "s4stk_shKCB0.db", Mode)));
+	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("shIDX1"), std::make_shared<DB_t>(path + "s4stk_shIDX1.db", Mode)));
+
+	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("szSTK0"), std::make_shared<DB_t>(path + "s4stk_szSTK0.db", Mode)));
+	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("szSTK1"), std::make_shared<DB_t>(path + "s4stk_szSTK1.db", Mode)));
+	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("szETF0"), std::make_shared<DB_t>(path + "s4stk_szETF0.db", Mode)));
+	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("szCYB0"), std::make_shared<DB_t>(path + "s4stk_szCYB0.db", Mode)));
+	_dbLib.insert(std::pair<const std::string, std::shared_ptr<DB_t>>(std::string("szIDX0"), std::make_shared<DB_t>(path + "s4stk_szIDX0.db", Mode)));
 }
 
 const std::string history_data_DB_group_t::mapTable_to_db(const std::string& tblName) const
@@ -124,25 +138,46 @@ const std::string history_data_DB_group_t::mapTable_to_db(const std::string& tbl
 	if (mk != "sz" && mk != "sh") {
 		throw SqliteDBError("Unknow market name:" + mk + " in tableName:" + tblName);
 	}
-	int ins = static_cast<int>(IntConvertor::convert(tblName.substr(2, 6)));
+	int ins = static_cast<int>(IntConvertor::convert(tblName.substr(2, 8)));
 
 	if (mk == "sh") {
-		if (ins < 601000) {
-			return "sh0";
+		if (ins < 500000) {
+			return "shIDX0";
 		}
-		else {
-			return "sh1";
+		else if (ins < 600000) {
+			return "shETF0";
 		}
+		else if (ins < 600999) {
+			return "shSTK0";
+		}
+		else if (ins < 603999) {
+			return "shSTK1";
+		}
+		else if (ins < 679999) {
+			return "shSTK2";
+		}
+		else if (ins < 689999) {
+			return "shKCB0";
+		}
+        else {
+            return "shIDX1";
+        }
 	}
 	else if (mk == "sz") {
 		if (ins < 2400) {
-			return "sz0";
+			return "szSTK0";
 		}
-		else if (ins < 300000) {
-			return "sz1";
+		else if (ins < 99999) {
+			return "szSTK1";
+		}
+		else if (ins < 299999) {
+			return "szETF0";
+		}
+		else if (ins < 389999) {
+			return "szCYB0";
 		}
 		else {
-			return "sz2";
+			return "szIDX0";
 		}
 	}
 

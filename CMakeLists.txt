@@ -295,6 +295,8 @@ if(NOT AI_basic_MODULE)
     add_executable(${APP_TARGET} ${APP_HEADER_FILES} ${APP_INLINE_FILES} application/${APP_SOURCE_FILE})
     target_link_libraries(${APP_TARGET} ${LINKLIBS})
     set_target_properties(${APP_TARGET} PROPERTIES FOLDER application)
+    target_include_directories(${APP_TARGET} PUBLIC "${global_include};")
+
 
     if (${APP_NAME} MATCHES "^test")
       message(STATUS "No deploy:${APP_NAME}")
