@@ -274,8 +274,22 @@ def dict_to_struct(cpp_vari, json_vari, type_name, json_dict, namespace_list = [
 
                     to_str.extend(sub_str)
                 else:
-                    print("unsupported list type for {}:{}".format(key_name, key_value))
-                    exit(-1)
+                    if key_name in __assign_type_fields__:
+                        key_type = __assign_type_fields__[key_name]
+                        print("use assigned type %s = %s" % (key_name, key_type) )
+                    else:
+                        print("unsupported list type for {}:{}".format(key_name, key_value))
+                        exit(-1)
+                    
+                    main_str.append("\t{} {};\t//\t{}".format(key_type, key_name, key_value))
+
+                    from_str.append('try{')
+                    from_str.append('\t{0}.{2} = {1}{4}.at("{2}").get<{3}>();'.format(cpp_vari, json_vari, key_name, key_type, json_vari_suffix))
+
+                    from_str.append("}catch(...){")
+                    from_str.append("}")
+
+                    to_str.append('{}["{}"] = {}.{};'.format(json_vari, key_name, cpp_vari, key_name))
         else:
             print("unsupported type for {}:{}".format(key_name, key_value))
             exit(-1)

@@ -48,7 +48,7 @@
             {
                 "bgnDate":0,
                 "endDate":21000000,
-                "path":"../db/snap/snap_test.db"
+                "path":"../db/snap/"
             }
         ]
     }

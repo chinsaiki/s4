@@ -1,12 +1,17 @@
 #include "common/s4logger.h"
 #include "common/s4conf.h"
 
+#include "jsonTypes/his_ifeng_raw_t.h"
+
 CREATE_LOCAL_LOGGER("test_logger")
 
 
 int main(int argc, char** argv)
 {
 	INFO("console only at begning.");
+    
+    his_ifeng_raw_t_tester();
+
 	WARN("Going to take place of default logger setting");
 
 	S4::glb_conf_ctx_t::logger_t p;
