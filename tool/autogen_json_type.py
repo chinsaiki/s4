@@ -38,6 +38,7 @@ json_cpp_headers = cpp_headers + \
 #include "common/s4json_util.h"
 #include "common/s4logger.h"
 #include "types/s4type.h"
+#include "types/s4convertors.h"
 
 #include <set>
 #include <list>
@@ -150,18 +151,35 @@ def dict_to_struct(cpp_vari, json_vari, type_name, json_dict, namespace_list = [
             else:
                 main_str.append("\t{} {};\t//\t{}".format(key_type, key_name, key_value))
 
-            from_str.append('try{')
+            from_str.append('if({0}{1}.find("{2}") != {0}{1}.end()){{'.format(json_vari, json_vari_suffix, key_name))
+            from_str.append('\ttry{')
             if key_name in __assign_enum_fields__:
-                from_str.append('\t{0}.{2} = {3}_fromString({1}{4}.at("{2}").get<std::string>());'.format(cpp_vari, json_vari, key_name, key_type, json_vari_suffix))
+                from_str.append('\t\t{0}.{2} = {3}_fromString({1}{4}.at("{2}").get<std::string>());'.format(cpp_vari, json_vari, key_name, key_type, json_vari_suffix))
             else:
-                from_str.append('\t{0}.{2} = {1}{4}.at("{2}").get<{3}>();'.format(cpp_vari, json_vari, key_name, key_type, json_vari_suffix))
+                from_str.append('\t\tconst auto& json_var_{0} = {1}{2}.at("{0}");'.format(key_name, json_vari, json_vari_suffix))
+                if key_type == "std::string":
+                    from_str.append('\t\tjson_var_{0}.get_to({1}.{0});'.format(key_name, cpp_vari))
+                elif key_type == "double" or key_type == "float":
+                    from_str.append('\t\tif (json_var_{0}.is_string())'.format(key_name))
+                    from_str.append('\t\t    {1}.{0} = DoubleConvertor::convert(json_var_{0}.get<std::string>());'.format(key_name, cpp_vari))
+                    from_str.append('\t\telse')
+                    from_str.append('\t\t    json_var_{0}.get_to({1}.{0});'.format(key_name, cpp_vari))
+                elif key_type.find("int") == 0 or key_type.find("uint") == 0 or key_type.find("unsigned") == 0:
+                    from_str.append('\t\tif (json_var_{0}.is_string())'.format(key_name))
+                    from_str.append('\t\t    {1}.{0} = IntConvertor::convert(json_var_{0}.get<std::string>());'.format(key_name, cpp_vari))
+                    from_str.append('\t\telse')
+                    from_str.append('\t\t    json_var_{0}.get_to({1}.{0});'.format(key_name, cpp_vari))
+                else:
+                    from_str.append('\t\tjson_var_{0}.get_to({1}.{0});'.format(key_name, cpp_vari))
+            from_str.append("\t}catch(const std::exception& e){")
+            from_str.append('\t\tERR("Convert \\"{}\\" to \\"{}\\" fail! e={{:}}", e.what());'.format(key_name, key_type))
+            from_str.append('\t\tthrow e;')
+            from_str.append("\t}")
 
             if key_name not in __optional_fields__:
-                from_str.append("}catch(const std::exception& e){")
-                from_str.append('\tERR("{{:}} not found in json! e={{:}}", "{}", e.what());'.format(key_name))
-                from_str.append('\tthrow e;')
-            else:
-                from_str.append("}catch(...){")
+                from_str.append("}else{")
+                from_str.append('\tERR("\\"{}\\" not found in json!");'.format(key_name))
+                from_str.append('\treturn false;')
             from_str.append("}")
 
             if key_name in __assign_enum_fields__:

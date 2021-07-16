@@ -26,6 +26,7 @@
 #include "common/s4json_util.h"
 #include "common/s4logger.h"
 #include "types/s4type.h"
+#include "types/s4convertors.h"
 
 #include <set>
 #include <list>
@@ -47,8 +48,8 @@ struct sina_today_t {
 	std::string open;	//	56.020
 	std::string high;	//	56.150
 	std::string low;	//	55.050
-	int volume;	//	26114656
-	int amount;	//	1445777487
+	int64_t volume;	//	26114656
+	int64_t amount;	//	1445777487
 	std::string ticktime;	//	15:29:59
 	double per;	//	82.343
 	double pb;	//	4.324
@@ -59,125 +60,272 @@ struct sina_today_t {
 	/* from json */
 	static bool from_json(const nlohmann::json& json_var, sina_today_t& sina_today_t_var){
 		try{
-			try{
-				sina_today_t_var.symbol = json_var.at("symbol").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "symbol", e.what());
-				throw e;
+			if(json_var.find("symbol") != json_var.end()){
+				try{
+					const auto& json_var_symbol = json_var.at("symbol");
+					json_var_symbol.get_to(sina_today_t_var.symbol);
+				}catch(const std::exception& e){
+					ERR("Convert \"symbol\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"symbol\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.code = json_var.at("code").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "code", e.what());
-				throw e;
+			if(json_var.find("code") != json_var.end()){
+				try{
+					const auto& json_var_code = json_var.at("code");
+					json_var_code.get_to(sina_today_t_var.code);
+				}catch(const std::exception& e){
+					ERR("Convert \"code\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"code\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.name = json_var.at("name").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "name", e.what());
-				throw e;
+			if(json_var.find("name") != json_var.end()){
+				try{
+					const auto& json_var_name = json_var.at("name");
+					json_var_name.get_to(sina_today_t_var.name);
+				}catch(const std::exception& e){
+					ERR("Convert \"name\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"name\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.trade = json_var.at("trade").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "trade", e.what());
-				throw e;
+			if(json_var.find("trade") != json_var.end()){
+				try{
+					const auto& json_var_trade = json_var.at("trade");
+					json_var_trade.get_to(sina_today_t_var.trade);
+				}catch(const std::exception& e){
+					ERR("Convert \"trade\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"trade\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.pricechange = json_var.at("pricechange").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "pricechange", e.what());
-				throw e;
+			if(json_var.find("pricechange") != json_var.end()){
+				try{
+					const auto& json_var_pricechange = json_var.at("pricechange");
+					if (json_var_pricechange.is_string())
+					    sina_today_t_var.pricechange = DoubleConvertor::convert(json_var_pricechange.get<std::string>());
+					else
+					    json_var_pricechange.get_to(sina_today_t_var.pricechange);
+				}catch(const std::exception& e){
+					ERR("Convert \"pricechange\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"pricechange\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.changepercent = json_var.at("changepercent").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "changepercent", e.what());
-				throw e;
+			if(json_var.find("changepercent") != json_var.end()){
+				try{
+					const auto& json_var_changepercent = json_var.at("changepercent");
+					if (json_var_changepercent.is_string())
+					    sina_today_t_var.changepercent = DoubleConvertor::convert(json_var_changepercent.get<std::string>());
+					else
+					    json_var_changepercent.get_to(sina_today_t_var.changepercent);
+				}catch(const std::exception& e){
+					ERR("Convert \"changepercent\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"changepercent\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.buy = json_var.at("buy").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "buy", e.what());
-				throw e;
+			if(json_var.find("buy") != json_var.end()){
+				try{
+					const auto& json_var_buy = json_var.at("buy");
+					json_var_buy.get_to(sina_today_t_var.buy);
+				}catch(const std::exception& e){
+					ERR("Convert \"buy\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"buy\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.sell = json_var.at("sell").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "sell", e.what());
-				throw e;
+			if(json_var.find("sell") != json_var.end()){
+				try{
+					const auto& json_var_sell = json_var.at("sell");
+					json_var_sell.get_to(sina_today_t_var.sell);
+				}catch(const std::exception& e){
+					ERR("Convert \"sell\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"sell\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.settlement = json_var.at("settlement").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "settlement", e.what());
-				throw e;
+			if(json_var.find("settlement") != json_var.end()){
+				try{
+					const auto& json_var_settlement = json_var.at("settlement");
+					json_var_settlement.get_to(sina_today_t_var.settlement);
+				}catch(const std::exception& e){
+					ERR("Convert \"settlement\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"settlement\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.open = json_var.at("open").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "open", e.what());
-				throw e;
+			if(json_var.find("open") != json_var.end()){
+				try{
+					const auto& json_var_open = json_var.at("open");
+					json_var_open.get_to(sina_today_t_var.open);
+				}catch(const std::exception& e){
+					ERR("Convert \"open\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"open\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.high = json_var.at("high").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "high", e.what());
-				throw e;
+			if(json_var.find("high") != json_var.end()){
+				try{
+					const auto& json_var_high = json_var.at("high");
+					json_var_high.get_to(sina_today_t_var.high);
+				}catch(const std::exception& e){
+					ERR("Convert \"high\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"high\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.low = json_var.at("low").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "low", e.what());
-				throw e;
+			if(json_var.find("low") != json_var.end()){
+				try{
+					const auto& json_var_low = json_var.at("low");
+					json_var_low.get_to(sina_today_t_var.low);
+				}catch(const std::exception& e){
+					ERR("Convert \"low\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"low\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.volume = json_var.at("volume").get<int>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "volume", e.what());
-				throw e;
+			if(json_var.find("volume") != json_var.end()){
+				try{
+					const auto& json_var_volume = json_var.at("volume");
+					if (json_var_volume.is_string())
+					    sina_today_t_var.volume = IntConvertor::convert(json_var_volume.get<std::string>());
+					else
+					    json_var_volume.get_to(sina_today_t_var.volume);
+				}catch(const std::exception& e){
+					ERR("Convert \"volume\" to \"int64_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"volume\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.amount = json_var.at("amount").get<int>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "amount", e.what());
-				throw e;
+			if(json_var.find("amount") != json_var.end()){
+				try{
+					const auto& json_var_amount = json_var.at("amount");
+					if (json_var_amount.is_string())
+					    sina_today_t_var.amount = IntConvertor::convert(json_var_amount.get<std::string>());
+					else
+					    json_var_amount.get_to(sina_today_t_var.amount);
+				}catch(const std::exception& e){
+					ERR("Convert \"amount\" to \"int64_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"amount\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.ticktime = json_var.at("ticktime").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "ticktime", e.what());
-				throw e;
+			if(json_var.find("ticktime") != json_var.end()){
+				try{
+					const auto& json_var_ticktime = json_var.at("ticktime");
+					json_var_ticktime.get_to(sina_today_t_var.ticktime);
+				}catch(const std::exception& e){
+					ERR("Convert \"ticktime\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"ticktime\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.per = json_var.at("per").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "per", e.what());
-				throw e;
+			if(json_var.find("per") != json_var.end()){
+				try{
+					const auto& json_var_per = json_var.at("per");
+					if (json_var_per.is_string())
+					    sina_today_t_var.per = DoubleConvertor::convert(json_var_per.get<std::string>());
+					else
+					    json_var_per.get_to(sina_today_t_var.per);
+				}catch(const std::exception& e){
+					ERR("Convert \"per\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"per\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.pb = json_var.at("pb").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "pb", e.what());
-				throw e;
+			if(json_var.find("pb") != json_var.end()){
+				try{
+					const auto& json_var_pb = json_var.at("pb");
+					if (json_var_pb.is_string())
+					    sina_today_t_var.pb = DoubleConvertor::convert(json_var_pb.get<std::string>());
+					else
+					    json_var_pb.get_to(sina_today_t_var.pb);
+				}catch(const std::exception& e){
+					ERR("Convert \"pb\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"pb\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.mktcap = json_var.at("mktcap").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "mktcap", e.what());
-				throw e;
+			if(json_var.find("mktcap") != json_var.end()){
+				try{
+					const auto& json_var_mktcap = json_var.at("mktcap");
+					if (json_var_mktcap.is_string())
+					    sina_today_t_var.mktcap = DoubleConvertor::convert(json_var_mktcap.get<std::string>());
+					else
+					    json_var_mktcap.get_to(sina_today_t_var.mktcap);
+				}catch(const std::exception& e){
+					ERR("Convert \"mktcap\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"mktcap\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.nmc = json_var.at("nmc").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "nmc", e.what());
-				throw e;
+			if(json_var.find("nmc") != json_var.end()){
+				try{
+					const auto& json_var_nmc = json_var.at("nmc");
+					if (json_var_nmc.is_string())
+					    sina_today_t_var.nmc = DoubleConvertor::convert(json_var_nmc.get<std::string>());
+					else
+					    json_var_nmc.get_to(sina_today_t_var.nmc);
+				}catch(const std::exception& e){
+					ERR("Convert \"nmc\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"nmc\" not found in json!");
+				return false;
 			}
-			try{
-				sina_today_t_var.turnoverratio = json_var.at("turnoverratio").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "turnoverratio", e.what());
-				throw e;
+			if(json_var.find("turnoverratio") != json_var.end()){
+				try{
+					const auto& json_var_turnoverratio = json_var.at("turnoverratio");
+					if (json_var_turnoverratio.is_string())
+					    sina_today_t_var.turnoverratio = DoubleConvertor::convert(json_var_turnoverratio.get<std::string>());
+					else
+					    json_var_turnoverratio.get_to(sina_today_t_var.turnoverratio);
+				}catch(const std::exception& e){
+					ERR("Convert \"turnoverratio\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"turnoverratio\" not found in json!");
+				return false;
 			}
 		}catch (const std::exception& e){
 			ERR("parse json {:} \nfail:{:}", json_var.dump(4), e.what());
@@ -256,7 +404,7 @@ struct sina_today_t {
         inline int sina_today_t_tester() {
 
             //std::ifstream i("G:/work2t/99_s3/s4/./json_template/sina_today_t.json");
-            std::string i("{    \"symbol\": \"sh688981\",    \"code\": \"688981\",    \"name\": \"\u4e2d\u82af\u56fd\u9645\",    \"trade\": \"55.170\",    \"pricechange\": -0.83,    \"changepercent\": -1.482,    \"buy\": \"55.170\",    \"sell\": \"55.180\",    \"settlement\": \"56.000\",    \"open\": \"56.020\",    \"high\": \"56.150\",    \"low\": \"55.050\",    \"volume\": 26114656,    \"amount\": 1445777487,    \"ticktime\": \"15:29:59\",    \"per\": 82.343,    \"pb\": 4.324,    \"mktcap\": 43590427.323642,    \"nmc\": 6044717.601,    \"turnoverratio\": 2.38348}");
+            std::string i("{    \"__assign_type_fields__\": {        \"volume\":\"int64_t\",         \"amount\":\"int64_t\"    },    \"symbol\": \"sh688981\",    \"code\": \"688981\",    \"name\": \"\u4e2d\u82af\u56fd\u9645\",    \"trade\": \"55.170\",    \"pricechange\": -0.83,    \"changepercent\": -1.482,    \"buy\": \"55.170\",    \"sell\": \"55.180\",    \"settlement\": \"56.000\",    \"open\": \"56.020\",    \"high\": \"56.150\",    \"low\": \"55.050\",    \"volume\": 26114656,    \"amount\": 1445777487,    \"ticktime\": \"15:29:59\",    \"per\": 82.343,    \"pb\": 4.324,    \"mktcap\": 43590427.323642,    \"nmc\": 6044717.601,    \"turnoverratio\": 2.38348}");
             nlohmann::json json_var;
             //i >> json_var; //from file
             json_var = nlohmann::json::parse(i);  //from string

@@ -26,6 +26,7 @@
 #include "common/s4json_util.h"
 #include "common/s4logger.h"
 #include "types/s4type.h"
+#include "types/s4convertors.h"
 
 #include <set>
 #include <list>
@@ -44,29 +45,62 @@ struct nw_load_instrument_t {
 	/* from json */
 	static bool from_json(const nlohmann::json& json_var, nw_load_instrument_t& nw_load_instrument_t_var){
 		try{
-			try{
-				nw_load_instrument_t_var.command = json_var.at("command").get<int>();
-			}catch(...){
+			if(json_var.find("command") != json_var.end()){
+				try{
+					const auto& json_var_command = json_var.at("command");
+					if (json_var_command.is_string())
+					    nw_load_instrument_t_var.command = IntConvertor::convert(json_var_command.get<std::string>());
+					else
+					    json_var_command.get_to(nw_load_instrument_t_var.command);
+				}catch(const std::exception& e){
+					ERR("Convert \"command\" to \"int\" fail! e={:}", e.what());
+					throw e;
+				}
 			}
-			try{
-				nw_load_instrument_t_var.seq = json_var.at("seq").get<int>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "seq", e.what());
-				throw e;
+			if(json_var.find("seq") != json_var.end()){
+				try{
+					const auto& json_var_seq = json_var.at("seq");
+					if (json_var_seq.is_string())
+					    nw_load_instrument_t_var.seq = IntConvertor::convert(json_var_seq.get<std::string>());
+					else
+					    json_var_seq.get_to(nw_load_instrument_t_var.seq);
+				}catch(const std::exception& e){
+					ERR("Convert \"seq\" to \"int\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"seq\" not found in json!");
+				return false;
 			}
-			try{
-				nw_load_instrument_t_var.mktCode = json_var.at("mktCode").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "mktCode", e.what());
-				throw e;
+			if(json_var.find("mktCode") != json_var.end()){
+				try{
+					const auto& json_var_mktCode = json_var.at("mktCode");
+					json_var_mktCode.get_to(nw_load_instrument_t_var.mktCode);
+				}catch(const std::exception& e){
+					ERR("Convert \"mktCode\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"mktCode\" not found in json!");
+				return false;
 			}
-			try{
-				nw_load_instrument_t_var.stgName = json_var.at("stgName").get<std::string>();
-			}catch(...){
+			if(json_var.find("stgName") != json_var.end()){
+				try{
+					const auto& json_var_stgName = json_var.at("stgName");
+					json_var_stgName.get_to(nw_load_instrument_t_var.stgName);
+				}catch(const std::exception& e){
+					ERR("Convert \"stgName\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
 			}
-			try{
-				nw_load_instrument_t_var.tableName = json_var.at("tableName").get<std::string>();
-			}catch(...){
+			if(json_var.find("tableName") != json_var.end()){
+				try{
+					const auto& json_var_tableName = json_var.at("tableName");
+					json_var_tableName.get_to(nw_load_instrument_t_var.tableName);
+				}catch(const std::exception& e){
+					ERR("Convert \"tableName\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
 			}
 		}catch (const std::exception& e){
 			ERR("parse json {:} \nfail:{:}", json_var.dump(4), e.what());

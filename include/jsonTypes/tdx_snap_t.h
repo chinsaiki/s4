@@ -26,6 +26,7 @@
 #include "common/s4json_util.h"
 #include "common/s4logger.h"
 #include "types/s4type.h"
+#include "types/s4convertors.h"
 
 #include <set>
 #include <list>
@@ -96,305 +97,647 @@ struct tdx_snap_t {
 	/* from json */
 	static bool from_json(const nlohmann::json& json_var, tdx_snap_t& tdx_snap_t_var){
 		try{
-			try{
-				tdx_snap_t_var.date = json_var.at("date").get<time_date_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "date", e.what());
-				throw e;
+			if(json_var.find("date") != json_var.end()){
+				try{
+					const auto& json_var_date = json_var.at("date");
+					json_var_date.get_to(tdx_snap_t_var.date);
+				}catch(const std::exception& e){
+					ERR("Convert \"date\" to \"time_date_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"date\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.minuSec = json_var.at("minuSec").get<time_minuSec_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "minuSec", e.what());
-				throw e;
+			if(json_var.find("minuSec") != json_var.end()){
+				try{
+					const auto& json_var_minuSec = json_var.at("minuSec");
+					json_var_minuSec.get_to(tdx_snap_t_var.minuSec);
+				}catch(const std::exception& e){
+					ERR("Convert \"minuSec\" to \"time_minuSec_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"minuSec\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.time = json_var.at("time").get<time_utcSec_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "time", e.what());
-				throw e;
+			if(json_var.find("time") != json_var.end()){
+				try{
+					const auto& json_var_time = json_var.at("time");
+					json_var_time.get_to(tdx_snap_t_var.time);
+				}catch(const std::exception& e){
+					ERR("Convert \"time\" to \"time_utcSec_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"time\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.mktCode = json_var.at("mktCode").get<mktCodeI_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "mktCode", e.what());
-				throw e;
+			if(json_var.find("mktCode") != json_var.end()){
+				try{
+					const auto& json_var_mktCode = json_var.at("mktCode");
+					json_var_mktCode.get_to(tdx_snap_t_var.mktCode);
+				}catch(const std::exception& e){
+					ERR("Convert \"mktCode\" to \"mktCodeI_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"mktCode\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.active1 = json_var.at("active1").get<uint16_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "active1", e.what());
-				throw e;
+			if(json_var.find("active1") != json_var.end()){
+				try{
+					const auto& json_var_active1 = json_var.at("active1");
+					if (json_var_active1.is_string())
+					    tdx_snap_t_var.active1 = IntConvertor::convert(json_var_active1.get<std::string>());
+					else
+					    json_var_active1.get_to(tdx_snap_t_var.active1);
+				}catch(const std::exception& e){
+					ERR("Convert \"active1\" to \"uint16_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"active1\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.price = json_var.at("price").get<price_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "price", e.what());
-				throw e;
+			if(json_var.find("price") != json_var.end()){
+				try{
+					const auto& json_var_price = json_var.at("price");
+					json_var_price.get_to(tdx_snap_t_var.price);
+				}catch(const std::exception& e){
+					ERR("Convert \"price\" to \"price_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"price\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.last_close = json_var.at("last_close").get<price_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "last_close", e.what());
-				throw e;
+			if(json_var.find("last_close") != json_var.end()){
+				try{
+					const auto& json_var_last_close = json_var.at("last_close");
+					json_var_last_close.get_to(tdx_snap_t_var.last_close);
+				}catch(const std::exception& e){
+					ERR("Convert \"last_close\" to \"price_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"last_close\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.open = json_var.at("open").get<price_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "open", e.what());
-				throw e;
+			if(json_var.find("open") != json_var.end()){
+				try{
+					const auto& json_var_open = json_var.at("open");
+					json_var_open.get_to(tdx_snap_t_var.open);
+				}catch(const std::exception& e){
+					ERR("Convert \"open\" to \"price_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"open\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.high = json_var.at("high").get<price_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "high", e.what());
-				throw e;
+			if(json_var.find("high") != json_var.end()){
+				try{
+					const auto& json_var_high = json_var.at("high");
+					json_var_high.get_to(tdx_snap_t_var.high);
+				}catch(const std::exception& e){
+					ERR("Convert \"high\" to \"price_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"high\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.low = json_var.at("low").get<price_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "low", e.what());
-				throw e;
+			if(json_var.find("low") != json_var.end()){
+				try{
+					const auto& json_var_low = json_var.at("low");
+					json_var_low.get_to(tdx_snap_t_var.low);
+				}catch(const std::exception& e){
+					ERR("Convert \"low\" to \"price_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"low\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.ms = json_var.at("ms").get<int>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "ms", e.what());
-				throw e;
+			if(json_var.find("ms") != json_var.end()){
+				try{
+					const auto& json_var_ms = json_var.at("ms");
+					if (json_var_ms.is_string())
+					    tdx_snap_t_var.ms = IntConvertor::convert(json_var_ms.get<std::string>());
+					else
+					    json_var_ms.get_to(tdx_snap_t_var.ms);
+				}catch(const std::exception& e){
+					ERR("Convert \"ms\" to \"int\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"ms\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.vol = json_var.at("vol").get<vol_tdx_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "vol", e.what());
-				throw e;
+			if(json_var.find("vol") != json_var.end()){
+				try{
+					const auto& json_var_vol = json_var.at("vol");
+					json_var_vol.get_to(tdx_snap_t_var.vol);
+				}catch(const std::exception& e){
+					ERR("Convert \"vol\" to \"vol_tdx_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"vol\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.cur_vol = json_var.at("cur_vol").get<vol_tdx_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "cur_vol", e.what());
-				throw e;
+			if(json_var.find("cur_vol") != json_var.end()){
+				try{
+					const auto& json_var_cur_vol = json_var.at("cur_vol");
+					json_var_cur_vol.get_to(tdx_snap_t_var.cur_vol);
+				}catch(const std::exception& e){
+					ERR("Convert \"cur_vol\" to \"vol_tdx_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"cur_vol\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.amount = json_var.at("amount").get<amount_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "amount", e.what());
-				throw e;
+			if(json_var.find("amount") != json_var.end()){
+				try{
+					const auto& json_var_amount = json_var.at("amount");
+					json_var_amount.get_to(tdx_snap_t_var.amount);
+				}catch(const std::exception& e){
+					ERR("Convert \"amount\" to \"amount_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"amount\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.s_vol = json_var.at("s_vol").get<vol_tdx_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "s_vol", e.what());
-				throw e;
+			if(json_var.find("s_vol") != json_var.end()){
+				try{
+					const auto& json_var_s_vol = json_var.at("s_vol");
+					json_var_s_vol.get_to(tdx_snap_t_var.s_vol);
+				}catch(const std::exception& e){
+					ERR("Convert \"s_vol\" to \"vol_tdx_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"s_vol\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.b_vol = json_var.at("b_vol").get<vol_tdx_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "b_vol", e.what());
-				throw e;
+			if(json_var.find("b_vol") != json_var.end()){
+				try{
+					const auto& json_var_b_vol = json_var.at("b_vol");
+					json_var_b_vol.get_to(tdx_snap_t_var.b_vol);
+				}catch(const std::exception& e){
+					ERR("Convert \"b_vol\" to \"vol_tdx_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"b_vol\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.bid1 = json_var.at("bid1").get<price_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "bid1", e.what());
-				throw e;
+			if(json_var.find("bid1") != json_var.end()){
+				try{
+					const auto& json_var_bid1 = json_var.at("bid1");
+					json_var_bid1.get_to(tdx_snap_t_var.bid1);
+				}catch(const std::exception& e){
+					ERR("Convert \"bid1\" to \"price_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"bid1\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.ask1 = json_var.at("ask1").get<price_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "ask1", e.what());
-				throw e;
+			if(json_var.find("ask1") != json_var.end()){
+				try{
+					const auto& json_var_ask1 = json_var.at("ask1");
+					json_var_ask1.get_to(tdx_snap_t_var.ask1);
+				}catch(const std::exception& e){
+					ERR("Convert \"ask1\" to \"price_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"ask1\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.bid_vol1 = json_var.at("bid_vol1").get<vol_tdx_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "bid_vol1", e.what());
-				throw e;
+			if(json_var.find("bid_vol1") != json_var.end()){
+				try{
+					const auto& json_var_bid_vol1 = json_var.at("bid_vol1");
+					json_var_bid_vol1.get_to(tdx_snap_t_var.bid_vol1);
+				}catch(const std::exception& e){
+					ERR("Convert \"bid_vol1\" to \"vol_tdx_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"bid_vol1\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.ask_vol1 = json_var.at("ask_vol1").get<vol_tdx_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "ask_vol1", e.what());
-				throw e;
+			if(json_var.find("ask_vol1") != json_var.end()){
+				try{
+					const auto& json_var_ask_vol1 = json_var.at("ask_vol1");
+					json_var_ask_vol1.get_to(tdx_snap_t_var.ask_vol1);
+				}catch(const std::exception& e){
+					ERR("Convert \"ask_vol1\" to \"vol_tdx_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"ask_vol1\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.bid2 = json_var.at("bid2").get<price_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "bid2", e.what());
-				throw e;
+			if(json_var.find("bid2") != json_var.end()){
+				try{
+					const auto& json_var_bid2 = json_var.at("bid2");
+					json_var_bid2.get_to(tdx_snap_t_var.bid2);
+				}catch(const std::exception& e){
+					ERR("Convert \"bid2\" to \"price_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"bid2\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.ask2 = json_var.at("ask2").get<price_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "ask2", e.what());
-				throw e;
+			if(json_var.find("ask2") != json_var.end()){
+				try{
+					const auto& json_var_ask2 = json_var.at("ask2");
+					json_var_ask2.get_to(tdx_snap_t_var.ask2);
+				}catch(const std::exception& e){
+					ERR("Convert \"ask2\" to \"price_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"ask2\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.bid_vol2 = json_var.at("bid_vol2").get<vol_tdx_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "bid_vol2", e.what());
-				throw e;
+			if(json_var.find("bid_vol2") != json_var.end()){
+				try{
+					const auto& json_var_bid_vol2 = json_var.at("bid_vol2");
+					json_var_bid_vol2.get_to(tdx_snap_t_var.bid_vol2);
+				}catch(const std::exception& e){
+					ERR("Convert \"bid_vol2\" to \"vol_tdx_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"bid_vol2\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.ask_vol2 = json_var.at("ask_vol2").get<vol_tdx_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "ask_vol2", e.what());
-				throw e;
+			if(json_var.find("ask_vol2") != json_var.end()){
+				try{
+					const auto& json_var_ask_vol2 = json_var.at("ask_vol2");
+					json_var_ask_vol2.get_to(tdx_snap_t_var.ask_vol2);
+				}catch(const std::exception& e){
+					ERR("Convert \"ask_vol2\" to \"vol_tdx_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"ask_vol2\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.bid3 = json_var.at("bid3").get<price_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "bid3", e.what());
-				throw e;
+			if(json_var.find("bid3") != json_var.end()){
+				try{
+					const auto& json_var_bid3 = json_var.at("bid3");
+					json_var_bid3.get_to(tdx_snap_t_var.bid3);
+				}catch(const std::exception& e){
+					ERR("Convert \"bid3\" to \"price_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"bid3\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.ask3 = json_var.at("ask3").get<price_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "ask3", e.what());
-				throw e;
+			if(json_var.find("ask3") != json_var.end()){
+				try{
+					const auto& json_var_ask3 = json_var.at("ask3");
+					json_var_ask3.get_to(tdx_snap_t_var.ask3);
+				}catch(const std::exception& e){
+					ERR("Convert \"ask3\" to \"price_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"ask3\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.bid_vol3 = json_var.at("bid_vol3").get<vol_tdx_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "bid_vol3", e.what());
-				throw e;
+			if(json_var.find("bid_vol3") != json_var.end()){
+				try{
+					const auto& json_var_bid_vol3 = json_var.at("bid_vol3");
+					json_var_bid_vol3.get_to(tdx_snap_t_var.bid_vol3);
+				}catch(const std::exception& e){
+					ERR("Convert \"bid_vol3\" to \"vol_tdx_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"bid_vol3\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.ask_vol3 = json_var.at("ask_vol3").get<vol_tdx_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "ask_vol3", e.what());
-				throw e;
+			if(json_var.find("ask_vol3") != json_var.end()){
+				try{
+					const auto& json_var_ask_vol3 = json_var.at("ask_vol3");
+					json_var_ask_vol3.get_to(tdx_snap_t_var.ask_vol3);
+				}catch(const std::exception& e){
+					ERR("Convert \"ask_vol3\" to \"vol_tdx_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"ask_vol3\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.bid4 = json_var.at("bid4").get<price_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "bid4", e.what());
-				throw e;
+			if(json_var.find("bid4") != json_var.end()){
+				try{
+					const auto& json_var_bid4 = json_var.at("bid4");
+					json_var_bid4.get_to(tdx_snap_t_var.bid4);
+				}catch(const std::exception& e){
+					ERR("Convert \"bid4\" to \"price_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"bid4\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.ask4 = json_var.at("ask4").get<price_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "ask4", e.what());
-				throw e;
+			if(json_var.find("ask4") != json_var.end()){
+				try{
+					const auto& json_var_ask4 = json_var.at("ask4");
+					json_var_ask4.get_to(tdx_snap_t_var.ask4);
+				}catch(const std::exception& e){
+					ERR("Convert \"ask4\" to \"price_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"ask4\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.bid_vol4 = json_var.at("bid_vol4").get<vol_tdx_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "bid_vol4", e.what());
-				throw e;
+			if(json_var.find("bid_vol4") != json_var.end()){
+				try{
+					const auto& json_var_bid_vol4 = json_var.at("bid_vol4");
+					json_var_bid_vol4.get_to(tdx_snap_t_var.bid_vol4);
+				}catch(const std::exception& e){
+					ERR("Convert \"bid_vol4\" to \"vol_tdx_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"bid_vol4\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.ask_vol4 = json_var.at("ask_vol4").get<vol_tdx_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "ask_vol4", e.what());
-				throw e;
+			if(json_var.find("ask_vol4") != json_var.end()){
+				try{
+					const auto& json_var_ask_vol4 = json_var.at("ask_vol4");
+					json_var_ask_vol4.get_to(tdx_snap_t_var.ask_vol4);
+				}catch(const std::exception& e){
+					ERR("Convert \"ask_vol4\" to \"vol_tdx_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"ask_vol4\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.bid5 = json_var.at("bid5").get<price_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "bid5", e.what());
-				throw e;
+			if(json_var.find("bid5") != json_var.end()){
+				try{
+					const auto& json_var_bid5 = json_var.at("bid5");
+					json_var_bid5.get_to(tdx_snap_t_var.bid5);
+				}catch(const std::exception& e){
+					ERR("Convert \"bid5\" to \"price_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"bid5\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.ask5 = json_var.at("ask5").get<price_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "ask5", e.what());
-				throw e;
+			if(json_var.find("ask5") != json_var.end()){
+				try{
+					const auto& json_var_ask5 = json_var.at("ask5");
+					json_var_ask5.get_to(tdx_snap_t_var.ask5);
+				}catch(const std::exception& e){
+					ERR("Convert \"ask5\" to \"price_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"ask5\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.bid_vol5 = json_var.at("bid_vol5").get<vol_tdx_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "bid_vol5", e.what());
-				throw e;
+			if(json_var.find("bid_vol5") != json_var.end()){
+				try{
+					const auto& json_var_bid_vol5 = json_var.at("bid_vol5");
+					json_var_bid_vol5.get_to(tdx_snap_t_var.bid_vol5);
+				}catch(const std::exception& e){
+					ERR("Convert \"bid_vol5\" to \"vol_tdx_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"bid_vol5\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.ask_vol5 = json_var.at("ask_vol5").get<vol_tdx_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "ask_vol5", e.what());
-				throw e;
+			if(json_var.find("ask_vol5") != json_var.end()){
+				try{
+					const auto& json_var_ask_vol5 = json_var.at("ask_vol5");
+					json_var_ask_vol5.get_to(tdx_snap_t_var.ask_vol5);
+				}catch(const std::exception& e){
+					ERR("Convert \"ask_vol5\" to \"vol_tdx_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"ask_vol5\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.reversed_bytes0 = json_var.at("reversed_bytes0").get<uint32_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "reversed_bytes0", e.what());
-				throw e;
+			if(json_var.find("reversed_bytes0") != json_var.end()){
+				try{
+					const auto& json_var_reversed_bytes0 = json_var.at("reversed_bytes0");
+					if (json_var_reversed_bytes0.is_string())
+					    tdx_snap_t_var.reversed_bytes0 = IntConvertor::convert(json_var_reversed_bytes0.get<std::string>());
+					else
+					    json_var_reversed_bytes0.get_to(tdx_snap_t_var.reversed_bytes0);
+				}catch(const std::exception& e){
+					ERR("Convert \"reversed_bytes0\" to \"uint32_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"reversed_bytes0\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.reversed_bytes1 = json_var.at("reversed_bytes1").get<uint32_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "reversed_bytes1", e.what());
-				throw e;
+			if(json_var.find("reversed_bytes1") != json_var.end()){
+				try{
+					const auto& json_var_reversed_bytes1 = json_var.at("reversed_bytes1");
+					if (json_var_reversed_bytes1.is_string())
+					    tdx_snap_t_var.reversed_bytes1 = IntConvertor::convert(json_var_reversed_bytes1.get<std::string>());
+					else
+					    json_var_reversed_bytes1.get_to(tdx_snap_t_var.reversed_bytes1);
+				}catch(const std::exception& e){
+					ERR("Convert \"reversed_bytes1\" to \"uint32_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"reversed_bytes1\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.reversed_bytes2 = json_var.at("reversed_bytes2").get<uint32_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "reversed_bytes2", e.what());
-				throw e;
+			if(json_var.find("reversed_bytes2") != json_var.end()){
+				try{
+					const auto& json_var_reversed_bytes2 = json_var.at("reversed_bytes2");
+					if (json_var_reversed_bytes2.is_string())
+					    tdx_snap_t_var.reversed_bytes2 = IntConvertor::convert(json_var_reversed_bytes2.get<std::string>());
+					else
+					    json_var_reversed_bytes2.get_to(tdx_snap_t_var.reversed_bytes2);
+				}catch(const std::exception& e){
+					ERR("Convert \"reversed_bytes2\" to \"uint32_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"reversed_bytes2\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.reversed_bytes3 = json_var.at("reversed_bytes3").get<uint32_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "reversed_bytes3", e.what());
-				throw e;
+			if(json_var.find("reversed_bytes3") != json_var.end()){
+				try{
+					const auto& json_var_reversed_bytes3 = json_var.at("reversed_bytes3");
+					if (json_var_reversed_bytes3.is_string())
+					    tdx_snap_t_var.reversed_bytes3 = IntConvertor::convert(json_var_reversed_bytes3.get<std::string>());
+					else
+					    json_var_reversed_bytes3.get_to(tdx_snap_t_var.reversed_bytes3);
+				}catch(const std::exception& e){
+					ERR("Convert \"reversed_bytes3\" to \"uint32_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"reversed_bytes3\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.reversed_bytes4 = json_var.at("reversed_bytes4").get<uint16_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "reversed_bytes4", e.what());
-				throw e;
+			if(json_var.find("reversed_bytes4") != json_var.end()){
+				try{
+					const auto& json_var_reversed_bytes4 = json_var.at("reversed_bytes4");
+					if (json_var_reversed_bytes4.is_string())
+					    tdx_snap_t_var.reversed_bytes4 = IntConvertor::convert(json_var_reversed_bytes4.get<std::string>());
+					else
+					    json_var_reversed_bytes4.get_to(tdx_snap_t_var.reversed_bytes4);
+				}catch(const std::exception& e){
+					ERR("Convert \"reversed_bytes4\" to \"uint16_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"reversed_bytes4\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.reversed_bytes5 = json_var.at("reversed_bytes5").get<uint32_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "reversed_bytes5", e.what());
-				throw e;
+			if(json_var.find("reversed_bytes5") != json_var.end()){
+				try{
+					const auto& json_var_reversed_bytes5 = json_var.at("reversed_bytes5");
+					if (json_var_reversed_bytes5.is_string())
+					    tdx_snap_t_var.reversed_bytes5 = IntConvertor::convert(json_var_reversed_bytes5.get<std::string>());
+					else
+					    json_var_reversed_bytes5.get_to(tdx_snap_t_var.reversed_bytes5);
+				}catch(const std::exception& e){
+					ERR("Convert \"reversed_bytes5\" to \"uint32_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"reversed_bytes5\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.reversed_bytes6 = json_var.at("reversed_bytes6").get<uint32_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "reversed_bytes6", e.what());
-				throw e;
+			if(json_var.find("reversed_bytes6") != json_var.end()){
+				try{
+					const auto& json_var_reversed_bytes6 = json_var.at("reversed_bytes6");
+					if (json_var_reversed_bytes6.is_string())
+					    tdx_snap_t_var.reversed_bytes6 = IntConvertor::convert(json_var_reversed_bytes6.get<std::string>());
+					else
+					    json_var_reversed_bytes6.get_to(tdx_snap_t_var.reversed_bytes6);
+				}catch(const std::exception& e){
+					ERR("Convert \"reversed_bytes6\" to \"uint32_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"reversed_bytes6\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.reversed_bytes7 = json_var.at("reversed_bytes7").get<uint32_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "reversed_bytes7", e.what());
-				throw e;
+			if(json_var.find("reversed_bytes7") != json_var.end()){
+				try{
+					const auto& json_var_reversed_bytes7 = json_var.at("reversed_bytes7");
+					if (json_var_reversed_bytes7.is_string())
+					    tdx_snap_t_var.reversed_bytes7 = IntConvertor::convert(json_var_reversed_bytes7.get<std::string>());
+					else
+					    json_var_reversed_bytes7.get_to(tdx_snap_t_var.reversed_bytes7);
+				}catch(const std::exception& e){
+					ERR("Convert \"reversed_bytes7\" to \"uint32_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"reversed_bytes7\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.reversed_bytes8 = json_var.at("reversed_bytes8").get<uint32_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "reversed_bytes8", e.what());
-				throw e;
+			if(json_var.find("reversed_bytes8") != json_var.end()){
+				try{
+					const auto& json_var_reversed_bytes8 = json_var.at("reversed_bytes8");
+					if (json_var_reversed_bytes8.is_string())
+					    tdx_snap_t_var.reversed_bytes8 = IntConvertor::convert(json_var_reversed_bytes8.get<std::string>());
+					else
+					    json_var_reversed_bytes8.get_to(tdx_snap_t_var.reversed_bytes8);
+				}catch(const std::exception& e){
+					ERR("Convert \"reversed_bytes8\" to \"uint32_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"reversed_bytes8\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.reversed_bytes9 = json_var.at("reversed_bytes9").get<uint16_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "reversed_bytes9", e.what());
-				throw e;
+			if(json_var.find("reversed_bytes9") != json_var.end()){
+				try{
+					const auto& json_var_reversed_bytes9 = json_var.at("reversed_bytes9");
+					if (json_var_reversed_bytes9.is_string())
+					    tdx_snap_t_var.reversed_bytes9 = IntConvertor::convert(json_var_reversed_bytes9.get<std::string>());
+					else
+					    json_var_reversed_bytes9.get_to(tdx_snap_t_var.reversed_bytes9);
+				}catch(const std::exception& e){
+					ERR("Convert \"reversed_bytes9\" to \"uint16_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"reversed_bytes9\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.active2 = json_var.at("active2").get<uint16_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "active2", e.what());
-				throw e;
+			if(json_var.find("active2") != json_var.end()){
+				try{
+					const auto& json_var_active2 = json_var.at("active2");
+					if (json_var_active2.is_string())
+					    tdx_snap_t_var.active2 = IntConvertor::convert(json_var_active2.get<std::string>());
+					else
+					    json_var_active2.get_to(tdx_snap_t_var.active2);
+				}catch(const std::exception& e){
+					ERR("Convert \"active2\" to \"uint16_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"active2\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.lcl_time = json_var.at("lcl_time").get<time_utcSec_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "lcl_time", e.what());
-				throw e;
+			if(json_var.find("lcl_time") != json_var.end()){
+				try{
+					const auto& json_var_lcl_time = json_var.at("lcl_time");
+					json_var_lcl_time.get_to(tdx_snap_t_var.lcl_time);
+				}catch(const std::exception& e){
+					ERR("Convert \"lcl_time\" to \"time_utcSec_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"lcl_time\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.lcl_time_str = json_var.at("lcl_time_str").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "lcl_time_str", e.what());
-				throw e;
+			if(json_var.find("lcl_time_str") != json_var.end()){
+				try{
+					const auto& json_var_lcl_time_str = json_var.at("lcl_time_str");
+					json_var_lcl_time_str.get_to(tdx_snap_t_var.lcl_time_str);
+				}catch(const std::exception& e){
+					ERR("Convert \"lcl_time_str\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"lcl_time_str\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_snap_t_var.VERSION = json_var.at("VERSION").get<int>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "VERSION", e.what());
-				throw e;
+			if(json_var.find("VERSION") != json_var.end()){
+				try{
+					const auto& json_var_VERSION = json_var.at("VERSION");
+					if (json_var_VERSION.is_string())
+					    tdx_snap_t_var.VERSION = IntConvertor::convert(json_var_VERSION.get<std::string>());
+					else
+					    json_var_VERSION.get_to(tdx_snap_t_var.VERSION);
+				}catch(const std::exception& e){
+					ERR("Convert \"VERSION\" to \"int\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"VERSION\" not found in json!");
+				return false;
 			}
 		}catch (const std::exception& e){
 			ERR("parse json {:} \nfail:{:}", json_var.dump(4), e.what());

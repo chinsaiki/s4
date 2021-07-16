@@ -26,6 +26,7 @@
 #include "common/s4json_util.h"
 #include "common/s4logger.h"
 #include "types/s4type.h"
+#include "types/s4convertors.h"
 
 #include <set>
 #include <list>
@@ -62,143 +63,335 @@ struct tushare_basic_t {
 	/* from json */
 	static bool from_json(const nlohmann::json& json_var, tushare_basic_t& tushare_basic_t_var){
 		try{
-			try{
-				tushare_basic_t_var.code = json_var.at("code").get<pureCodeI_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "code", e.what());
-				throw e;
+			if(json_var.find("code") != json_var.end()){
+				try{
+					const auto& json_var_code = json_var.at("code");
+					json_var_code.get_to(tushare_basic_t_var.code);
+				}catch(const std::exception& e){
+					ERR("Convert \"code\" to \"pureCodeI_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"code\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.name = json_var.at("name").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "name", e.what());
-				throw e;
+			if(json_var.find("name") != json_var.end()){
+				try{
+					const auto& json_var_name = json_var.at("name");
+					json_var_name.get_to(tushare_basic_t_var.name);
+				}catch(const std::exception& e){
+					ERR("Convert \"name\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"name\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.industry = json_var.at("industry").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "industry", e.what());
-				throw e;
+			if(json_var.find("industry") != json_var.end()){
+				try{
+					const auto& json_var_industry = json_var.at("industry");
+					json_var_industry.get_to(tushare_basic_t_var.industry);
+				}catch(const std::exception& e){
+					ERR("Convert \"industry\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"industry\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.area = json_var.at("area").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "area", e.what());
-				throw e;
+			if(json_var.find("area") != json_var.end()){
+				try{
+					const auto& json_var_area = json_var.at("area");
+					json_var_area.get_to(tushare_basic_t_var.area);
+				}catch(const std::exception& e){
+					ERR("Convert \"area\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"area\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.pe = json_var.at("pe").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "pe", e.what());
-				throw e;
+			if(json_var.find("pe") != json_var.end()){
+				try{
+					const auto& json_var_pe = json_var.at("pe");
+					if (json_var_pe.is_string())
+					    tushare_basic_t_var.pe = DoubleConvertor::convert(json_var_pe.get<std::string>());
+					else
+					    json_var_pe.get_to(tushare_basic_t_var.pe);
+				}catch(const std::exception& e){
+					ERR("Convert \"pe\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"pe\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.outstanding = json_var.at("outstanding").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "outstanding", e.what());
-				throw e;
+			if(json_var.find("outstanding") != json_var.end()){
+				try{
+					const auto& json_var_outstanding = json_var.at("outstanding");
+					if (json_var_outstanding.is_string())
+					    tushare_basic_t_var.outstanding = DoubleConvertor::convert(json_var_outstanding.get<std::string>());
+					else
+					    json_var_outstanding.get_to(tushare_basic_t_var.outstanding);
+				}catch(const std::exception& e){
+					ERR("Convert \"outstanding\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"outstanding\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.totals = json_var.at("totals").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "totals", e.what());
-				throw e;
+			if(json_var.find("totals") != json_var.end()){
+				try{
+					const auto& json_var_totals = json_var.at("totals");
+					if (json_var_totals.is_string())
+					    tushare_basic_t_var.totals = DoubleConvertor::convert(json_var_totals.get<std::string>());
+					else
+					    json_var_totals.get_to(tushare_basic_t_var.totals);
+				}catch(const std::exception& e){
+					ERR("Convert \"totals\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"totals\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.totalAssets = json_var.at("totalAssets").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "totalAssets", e.what());
-				throw e;
+			if(json_var.find("totalAssets") != json_var.end()){
+				try{
+					const auto& json_var_totalAssets = json_var.at("totalAssets");
+					if (json_var_totalAssets.is_string())
+					    tushare_basic_t_var.totalAssets = DoubleConvertor::convert(json_var_totalAssets.get<std::string>());
+					else
+					    json_var_totalAssets.get_to(tushare_basic_t_var.totalAssets);
+				}catch(const std::exception& e){
+					ERR("Convert \"totalAssets\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"totalAssets\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.liquidAssets = json_var.at("liquidAssets").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "liquidAssets", e.what());
-				throw e;
+			if(json_var.find("liquidAssets") != json_var.end()){
+				try{
+					const auto& json_var_liquidAssets = json_var.at("liquidAssets");
+					if (json_var_liquidAssets.is_string())
+					    tushare_basic_t_var.liquidAssets = DoubleConvertor::convert(json_var_liquidAssets.get<std::string>());
+					else
+					    json_var_liquidAssets.get_to(tushare_basic_t_var.liquidAssets);
+				}catch(const std::exception& e){
+					ERR("Convert \"liquidAssets\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"liquidAssets\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.fixedAssets = json_var.at("fixedAssets").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "fixedAssets", e.what());
-				throw e;
+			if(json_var.find("fixedAssets") != json_var.end()){
+				try{
+					const auto& json_var_fixedAssets = json_var.at("fixedAssets");
+					if (json_var_fixedAssets.is_string())
+					    tushare_basic_t_var.fixedAssets = DoubleConvertor::convert(json_var_fixedAssets.get<std::string>());
+					else
+					    json_var_fixedAssets.get_to(tushare_basic_t_var.fixedAssets);
+				}catch(const std::exception& e){
+					ERR("Convert \"fixedAssets\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"fixedAssets\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.reserved = json_var.at("reserved").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "reserved", e.what());
-				throw e;
+			if(json_var.find("reserved") != json_var.end()){
+				try{
+					const auto& json_var_reserved = json_var.at("reserved");
+					if (json_var_reserved.is_string())
+					    tushare_basic_t_var.reserved = DoubleConvertor::convert(json_var_reserved.get<std::string>());
+					else
+					    json_var_reserved.get_to(tushare_basic_t_var.reserved);
+				}catch(const std::exception& e){
+					ERR("Convert \"reserved\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"reserved\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.reservedPerShare = json_var.at("reservedPerShare").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "reservedPerShare", e.what());
-				throw e;
+			if(json_var.find("reservedPerShare") != json_var.end()){
+				try{
+					const auto& json_var_reservedPerShare = json_var.at("reservedPerShare");
+					if (json_var_reservedPerShare.is_string())
+					    tushare_basic_t_var.reservedPerShare = DoubleConvertor::convert(json_var_reservedPerShare.get<std::string>());
+					else
+					    json_var_reservedPerShare.get_to(tushare_basic_t_var.reservedPerShare);
+				}catch(const std::exception& e){
+					ERR("Convert \"reservedPerShare\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"reservedPerShare\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.esp = json_var.at("esp").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "esp", e.what());
-				throw e;
+			if(json_var.find("esp") != json_var.end()){
+				try{
+					const auto& json_var_esp = json_var.at("esp");
+					if (json_var_esp.is_string())
+					    tushare_basic_t_var.esp = DoubleConvertor::convert(json_var_esp.get<std::string>());
+					else
+					    json_var_esp.get_to(tushare_basic_t_var.esp);
+				}catch(const std::exception& e){
+					ERR("Convert \"esp\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"esp\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.bvps = json_var.at("bvps").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "bvps", e.what());
-				throw e;
+			if(json_var.find("bvps") != json_var.end()){
+				try{
+					const auto& json_var_bvps = json_var.at("bvps");
+					if (json_var_bvps.is_string())
+					    tushare_basic_t_var.bvps = DoubleConvertor::convert(json_var_bvps.get<std::string>());
+					else
+					    json_var_bvps.get_to(tushare_basic_t_var.bvps);
+				}catch(const std::exception& e){
+					ERR("Convert \"bvps\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"bvps\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.pb = json_var.at("pb").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "pb", e.what());
-				throw e;
+			if(json_var.find("pb") != json_var.end()){
+				try{
+					const auto& json_var_pb = json_var.at("pb");
+					if (json_var_pb.is_string())
+					    tushare_basic_t_var.pb = DoubleConvertor::convert(json_var_pb.get<std::string>());
+					else
+					    json_var_pb.get_to(tushare_basic_t_var.pb);
+				}catch(const std::exception& e){
+					ERR("Convert \"pb\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"pb\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.timeToMarket = json_var.at("timeToMarket").get<time_date_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "timeToMarket", e.what());
-				throw e;
+			if(json_var.find("timeToMarket") != json_var.end()){
+				try{
+					const auto& json_var_timeToMarket = json_var.at("timeToMarket");
+					json_var_timeToMarket.get_to(tushare_basic_t_var.timeToMarket);
+				}catch(const std::exception& e){
+					ERR("Convert \"timeToMarket\" to \"time_date_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"timeToMarket\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.undp = json_var.at("undp").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "undp", e.what());
-				throw e;
+			if(json_var.find("undp") != json_var.end()){
+				try{
+					const auto& json_var_undp = json_var.at("undp");
+					if (json_var_undp.is_string())
+					    tushare_basic_t_var.undp = DoubleConvertor::convert(json_var_undp.get<std::string>());
+					else
+					    json_var_undp.get_to(tushare_basic_t_var.undp);
+				}catch(const std::exception& e){
+					ERR("Convert \"undp\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"undp\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.perundp = json_var.at("perundp").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "perundp", e.what());
-				throw e;
+			if(json_var.find("perundp") != json_var.end()){
+				try{
+					const auto& json_var_perundp = json_var.at("perundp");
+					if (json_var_perundp.is_string())
+					    tushare_basic_t_var.perundp = DoubleConvertor::convert(json_var_perundp.get<std::string>());
+					else
+					    json_var_perundp.get_to(tushare_basic_t_var.perundp);
+				}catch(const std::exception& e){
+					ERR("Convert \"perundp\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"perundp\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.rev = json_var.at("rev").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "rev", e.what());
-				throw e;
+			if(json_var.find("rev") != json_var.end()){
+				try{
+					const auto& json_var_rev = json_var.at("rev");
+					if (json_var_rev.is_string())
+					    tushare_basic_t_var.rev = DoubleConvertor::convert(json_var_rev.get<std::string>());
+					else
+					    json_var_rev.get_to(tushare_basic_t_var.rev);
+				}catch(const std::exception& e){
+					ERR("Convert \"rev\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"rev\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.profit = json_var.at("profit").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "profit", e.what());
-				throw e;
+			if(json_var.find("profit") != json_var.end()){
+				try{
+					const auto& json_var_profit = json_var.at("profit");
+					if (json_var_profit.is_string())
+					    tushare_basic_t_var.profit = DoubleConvertor::convert(json_var_profit.get<std::string>());
+					else
+					    json_var_profit.get_to(tushare_basic_t_var.profit);
+				}catch(const std::exception& e){
+					ERR("Convert \"profit\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"profit\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.gpr = json_var.at("gpr").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "gpr", e.what());
-				throw e;
+			if(json_var.find("gpr") != json_var.end()){
+				try{
+					const auto& json_var_gpr = json_var.at("gpr");
+					if (json_var_gpr.is_string())
+					    tushare_basic_t_var.gpr = DoubleConvertor::convert(json_var_gpr.get<std::string>());
+					else
+					    json_var_gpr.get_to(tushare_basic_t_var.gpr);
+				}catch(const std::exception& e){
+					ERR("Convert \"gpr\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"gpr\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.npr = json_var.at("npr").get<double>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "npr", e.what());
-				throw e;
+			if(json_var.find("npr") != json_var.end()){
+				try{
+					const auto& json_var_npr = json_var.at("npr");
+					if (json_var_npr.is_string())
+					    tushare_basic_t_var.npr = DoubleConvertor::convert(json_var_npr.get<std::string>());
+					else
+					    json_var_npr.get_to(tushare_basic_t_var.npr);
+				}catch(const std::exception& e){
+					ERR("Convert \"npr\" to \"double\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"npr\" not found in json!");
+				return false;
 			}
-			try{
-				tushare_basic_t_var.holders = json_var.at("holders").get<int>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "holders", e.what());
-				throw e;
+			if(json_var.find("holders") != json_var.end()){
+				try{
+					const auto& json_var_holders = json_var.at("holders");
+					if (json_var_holders.is_string())
+					    tushare_basic_t_var.holders = IntConvertor::convert(json_var_holders.get<std::string>());
+					else
+					    json_var_holders.get_to(tushare_basic_t_var.holders);
+				}catch(const std::exception& e){
+					ERR("Convert \"holders\" to \"int\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"holders\" not found in json!");
+				return false;
 			}
 		}catch (const std::exception& e){
 			ERR("parse json {:} \nfail:{:}", json_var.dump(4), e.what());

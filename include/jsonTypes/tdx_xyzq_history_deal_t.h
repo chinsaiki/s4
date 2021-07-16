@@ -26,6 +26,7 @@
 #include "common/s4json_util.h"
 #include "common/s4logger.h"
 #include "types/s4type.h"
+#include "types/s4convertors.h"
 
 #include <set>
 #include <list>
@@ -54,95 +55,188 @@ struct tdx_xyzq_history_deal_t {
 	/* from json */
 	static bool from_json(const nlohmann::json& json_var, tdx_xyzq_history_deal_t& tdx_xyzq_history_deal_t_var){
 		try{
-			try{
-				tdx_xyzq_history_deal_t_var.date = json_var.at("date").get<time_date_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "date", e.what());
-				throw e;
+			if(json_var.find("date") != json_var.end()){
+				try{
+					const auto& json_var_date = json_var.at("date");
+					json_var_date.get_to(tdx_xyzq_history_deal_t_var.date);
+				}catch(const std::exception& e){
+					ERR("Convert \"date\" to \"time_date_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"date\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_xyzq_history_deal_t_var.time_format = json_var.at("time_format").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "time_format", e.what());
-				throw e;
+			if(json_var.find("time_format") != json_var.end()){
+				try{
+					const auto& json_var_time_format = json_var.at("time_format");
+					json_var_time_format.get_to(tdx_xyzq_history_deal_t_var.time_format);
+				}catch(const std::exception& e){
+					ERR("Convert \"time_format\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"time_format\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_xyzq_history_deal_t_var.time_utcSec = json_var.at("time_utcSec").get<time_utcSec_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "time_utcSec", e.what());
-				throw e;
+			if(json_var.find("time_utcSec") != json_var.end()){
+				try{
+					const auto& json_var_time_utcSec = json_var.at("time_utcSec");
+					json_var_time_utcSec.get_to(tdx_xyzq_history_deal_t_var.time_utcSec);
+				}catch(const std::exception& e){
+					ERR("Convert \"time_utcSec\" to \"time_utcSec_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"time_utcSec\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_xyzq_history_deal_t_var.stock_code = json_var.at("stock_code").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "stock_code", e.what());
-				throw e;
+			if(json_var.find("stock_code") != json_var.end()){
+				try{
+					const auto& json_var_stock_code = json_var.at("stock_code");
+					json_var_stock_code.get_to(tdx_xyzq_history_deal_t_var.stock_code);
+				}catch(const std::exception& e){
+					ERR("Convert \"stock_code\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"stock_code\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_xyzq_history_deal_t_var.stock_name = json_var.at("stock_name").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "stock_name", e.what());
-				throw e;
+			if(json_var.find("stock_name") != json_var.end()){
+				try{
+					const auto& json_var_stock_name = json_var.at("stock_name");
+					json_var_stock_name.get_to(tdx_xyzq_history_deal_t_var.stock_name);
+				}catch(const std::exception& e){
+					ERR("Convert \"stock_name\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"stock_name\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_xyzq_history_deal_t_var.id = json_var.at("id").get<int64_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "id", e.what());
-				throw e;
+			if(json_var.find("id") != json_var.end()){
+				try{
+					const auto& json_var_id = json_var.at("id");
+					if (json_var_id.is_string())
+					    tdx_xyzq_history_deal_t_var.id = IntConvertor::convert(json_var_id.get<std::string>());
+					else
+					    json_var_id.get_to(tdx_xyzq_history_deal_t_var.id);
+				}catch(const std::exception& e){
+					ERR("Convert \"id\" to \"int64_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"id\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_xyzq_history_deal_t_var.opt_type = json_var.at("opt_type").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "opt_type", e.what());
-				throw e;
+			if(json_var.find("opt_type") != json_var.end()){
+				try{
+					const auto& json_var_opt_type = json_var.at("opt_type");
+					json_var_opt_type.get_to(tdx_xyzq_history_deal_t_var.opt_type);
+				}catch(const std::exception& e){
+					ERR("Convert \"opt_type\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"opt_type\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_xyzq_history_deal_t_var.deal_price = json_var.at("deal_price").get<fprice_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "deal_price", e.what());
-				throw e;
+			if(json_var.find("deal_price") != json_var.end()){
+				try{
+					const auto& json_var_deal_price = json_var.at("deal_price");
+					json_var_deal_price.get_to(tdx_xyzq_history_deal_t_var.deal_price);
+				}catch(const std::exception& e){
+					ERR("Convert \"deal_price\" to \"fprice_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"deal_price\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_xyzq_history_deal_t_var.deal_vol = json_var.at("deal_vol").get<vol_share_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "deal_vol", e.what());
-				throw e;
+			if(json_var.find("deal_vol") != json_var.end()){
+				try{
+					const auto& json_var_deal_vol = json_var.at("deal_vol");
+					json_var_deal_vol.get_to(tdx_xyzq_history_deal_t_var.deal_vol);
+				}catch(const std::exception& e){
+					ERR("Convert \"deal_vol\" to \"vol_share_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"deal_vol\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_xyzq_history_deal_t_var.deal_amount = json_var.at("deal_amount").get<amount_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "deal_amount", e.what());
-				throw e;
+			if(json_var.find("deal_amount") != json_var.end()){
+				try{
+					const auto& json_var_deal_amount = json_var.at("deal_amount");
+					json_var_deal_amount.get_to(tdx_xyzq_history_deal_t_var.deal_amount);
+				}catch(const std::exception& e){
+					ERR("Convert \"deal_amount\" to \"amount_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"deal_amount\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_xyzq_history_deal_t_var.commission = json_var.at("commission").get<amount_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "commission", e.what());
-				throw e;
+			if(json_var.find("commission") != json_var.end()){
+				try{
+					const auto& json_var_commission = json_var.at("commission");
+					json_var_commission.get_to(tdx_xyzq_history_deal_t_var.commission);
+				}catch(const std::exception& e){
+					ERR("Convert \"commission\" to \"amount_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"commission\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_xyzq_history_deal_t_var.stamp_duty = json_var.at("stamp_duty").get<amount_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "stamp_duty", e.what());
-				throw e;
+			if(json_var.find("stamp_duty") != json_var.end()){
+				try{
+					const auto& json_var_stamp_duty = json_var.at("stamp_duty");
+					json_var_stamp_duty.get_to(tdx_xyzq_history_deal_t_var.stamp_duty);
+				}catch(const std::exception& e){
+					ERR("Convert \"stamp_duty\" to \"amount_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"stamp_duty\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_xyzq_history_deal_t_var.transfer_fee = json_var.at("transfer_fee").get<amount_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "transfer_fee", e.what());
-				throw e;
+			if(json_var.find("transfer_fee") != json_var.end()){
+				try{
+					const auto& json_var_transfer_fee = json_var.at("transfer_fee");
+					json_var_transfer_fee.get_to(tdx_xyzq_history_deal_t_var.transfer_fee);
+				}catch(const std::exception& e){
+					ERR("Convert \"transfer_fee\" to \"amount_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"transfer_fee\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_xyzq_history_deal_t_var.other_fees = json_var.at("other_fees").get<amount_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "other_fees", e.what());
-				throw e;
+			if(json_var.find("other_fees") != json_var.end()){
+				try{
+					const auto& json_var_other_fees = json_var.at("other_fees");
+					json_var_other_fees.get_to(tdx_xyzq_history_deal_t_var.other_fees);
+				}catch(const std::exception& e){
+					ERR("Convert \"other_fees\" to \"amount_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"other_fees\" not found in json!");
+				return false;
 			}
-			try{
-				tdx_xyzq_history_deal_t_var.remarks = json_var.at("remarks").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "remarks", e.what());
-				throw e;
+			if(json_var.find("remarks") != json_var.end()){
+				try{
+					const auto& json_var_remarks = json_var.at("remarks");
+					json_var_remarks.get_to(tdx_xyzq_history_deal_t_var.remarks);
+				}catch(const std::exception& e){
+					ERR("Convert \"remarks\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"remarks\" not found in json!");
+				return false;
 			}
 		}catch (const std::exception& e){
 			ERR("parse json {:} \nfail:{:}", json_var.dump(4), e.what());

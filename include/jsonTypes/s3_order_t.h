@@ -26,6 +26,7 @@
 #include "common/s4json_util.h"
 #include "common/s4logger.h"
 #include "types/s4type.h"
+#include "types/s4convertors.h"
 
 #include <set>
 #include <list>
@@ -52,83 +53,182 @@ struct s3_order_t {
 	/* from json */
 	static bool from_json(const nlohmann::json& json_var, s3_order_t& s3_order_t_var){
 		try{
-			try{
-				s3_order_t_var.StgName = json_var.at("StgName").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "StgName", e.what());
-				throw e;
+			if(json_var.find("StgName") != json_var.end()){
+				try{
+					const auto& json_var_StgName = json_var.at("StgName");
+					json_var_StgName.get_to(s3_order_t_var.StgName);
+				}catch(const std::exception& e){
+					ERR("Convert \"StgName\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"StgName\" not found in json!");
+				return false;
 			}
-			try{
-				s3_order_t_var.ID = json_var.at("ID").get<int64_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "ID", e.what());
-				throw e;
+			if(json_var.find("ID") != json_var.end()){
+				try{
+					const auto& json_var_ID = json_var.at("ID");
+					if (json_var_ID.is_string())
+					    s3_order_t_var.ID = IntConvertor::convert(json_var_ID.get<std::string>());
+					else
+					    json_var_ID.get_to(s3_order_t_var.ID);
+				}catch(const std::exception& e){
+					ERR("Convert \"ID\" to \"int64_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"ID\" not found in json!");
+				return false;
 			}
-			try{
-				s3_order_t_var.InsName = json_var.at("InsName").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "InsName", e.what());
-				throw e;
+			if(json_var.find("InsName") != json_var.end()){
+				try{
+					const auto& json_var_InsName = json_var.at("InsName");
+					json_var_InsName.get_to(s3_order_t_var.InsName);
+				}catch(const std::exception& e){
+					ERR("Convert \"InsName\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"InsName\" not found in json!");
+				return false;
 			}
-			try{
-				s3_order_t_var.time = json_var.at("time").get<time_utcSec_t>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "time", e.what());
-				throw e;
+			if(json_var.find("time") != json_var.end()){
+				try{
+					const auto& json_var_time = json_var.at("time");
+					json_var_time.get_to(s3_order_t_var.time);
+				}catch(const std::exception& e){
+					ERR("Convert \"time\" to \"time_utcSec_t\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"time\" not found in json!");
+				return false;
 			}
-			try{
-				s3_order_t_var.optType = json_var.at("optType").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "optType", e.what());
-				throw e;
+			if(json_var.find("optType") != json_var.end()){
+				try{
+					const auto& json_var_optType = json_var.at("optType");
+					json_var_optType.get_to(s3_order_t_var.optType);
+				}catch(const std::exception& e){
+					ERR("Convert \"optType\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"optType\" not found in json!");
+				return false;
 			}
-			try{
-				s3_order_t_var.status = json_var.at("status").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "status", e.what());
-				throw e;
+			if(json_var.find("status") != json_var.end()){
+				try{
+					const auto& json_var_status = json_var.at("status");
+					json_var_status.get_to(s3_order_t_var.status);
+				}catch(const std::exception& e){
+					ERR("Convert \"status\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"status\" not found in json!");
+				return false;
 			}
-			try{
-				s3_order_t_var.open = json_var.at("open").get<int>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "open", e.what());
-				throw e;
+			if(json_var.find("open") != json_var.end()){
+				try{
+					const auto& json_var_open = json_var.at("open");
+					if (json_var_open.is_string())
+					    s3_order_t_var.open = IntConvertor::convert(json_var_open.get<std::string>());
+					else
+					    json_var_open.get_to(s3_order_t_var.open);
+				}catch(const std::exception& e){
+					ERR("Convert \"open\" to \"int\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"open\" not found in json!");
+				return false;
 			}
-			try{
-				s3_order_t_var.take = json_var.at("take").get<int>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "take", e.what());
-				throw e;
+			if(json_var.find("take") != json_var.end()){
+				try{
+					const auto& json_var_take = json_var.at("take");
+					if (json_var_take.is_string())
+					    s3_order_t_var.take = IntConvertor::convert(json_var_take.get<std::string>());
+					else
+					    json_var_take.get_to(s3_order_t_var.take);
+				}catch(const std::exception& e){
+					ERR("Convert \"take\" to \"int\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"take\" not found in json!");
+				return false;
 			}
-			try{
-				s3_order_t_var.stop = json_var.at("stop").get<int>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "stop", e.what());
-				throw e;
+			if(json_var.find("stop") != json_var.end()){
+				try{
+					const auto& json_var_stop = json_var.at("stop");
+					if (json_var_stop.is_string())
+					    s3_order_t_var.stop = IntConvertor::convert(json_var_stop.get<std::string>());
+					else
+					    json_var_stop.get_to(s3_order_t_var.stop);
+				}catch(const std::exception& e){
+					ERR("Convert \"stop\" to \"int\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"stop\" not found in json!");
+				return false;
 			}
-			try{
-				s3_order_t_var.close = json_var.at("close").get<int>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "close", e.what());
-				throw e;
+			if(json_var.find("close") != json_var.end()){
+				try{
+					const auto& json_var_close = json_var.at("close");
+					if (json_var_close.is_string())
+					    s3_order_t_var.close = IntConvertor::convert(json_var_close.get<std::string>());
+					else
+					    json_var_close.get_to(s3_order_t_var.close);
+				}catch(const std::exception& e){
+					ERR("Convert \"close\" to \"int\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"close\" not found in json!");
+				return false;
 			}
-			try{
-				s3_order_t_var.openA = json_var.at("openA").get<int>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "openA", e.what());
-				throw e;
+			if(json_var.find("openA") != json_var.end()){
+				try{
+					const auto& json_var_openA = json_var.at("openA");
+					if (json_var_openA.is_string())
+					    s3_order_t_var.openA = IntConvertor::convert(json_var_openA.get<std::string>());
+					else
+					    json_var_openA.get_to(s3_order_t_var.openA);
+				}catch(const std::exception& e){
+					ERR("Convert \"openA\" to \"int\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"openA\" not found in json!");
+				return false;
 			}
-			try{
-				s3_order_t_var.closeA = json_var.at("closeA").get<int>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "closeA", e.what());
-				throw e;
+			if(json_var.find("closeA") != json_var.end()){
+				try{
+					const auto& json_var_closeA = json_var.at("closeA");
+					if (json_var_closeA.is_string())
+					    s3_order_t_var.closeA = IntConvertor::convert(json_var_closeA.get<std::string>());
+					else
+					    json_var_closeA.get_to(s3_order_t_var.closeA);
+				}catch(const std::exception& e){
+					ERR("Convert \"closeA\" to \"int\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"closeA\" not found in json!");
+				return false;
 			}
-			try{
-				s3_order_t_var.datetime = json_var.at("datetime").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "datetime", e.what());
-				throw e;
+			if(json_var.find("datetime") != json_var.end()){
+				try{
+					const auto& json_var_datetime = json_var.at("datetime");
+					json_var_datetime.get_to(s3_order_t_var.datetime);
+				}catch(const std::exception& e){
+					ERR("Convert \"datetime\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"datetime\" not found in json!");
+				return false;
 			}
 		}catch (const std::exception& e){
 			ERR("parse json {:} \nfail:{:}", json_var.dump(4), e.what());

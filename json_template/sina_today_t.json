@@ -1,4 +1,9 @@
 {
+    "__assign_type_fields__": {
+        "volume":"int64_t", 
+        "amount":"int64_t"
+    },
+
     "symbol": "sh688981",
     "code": "688981",
     "name": "\u4e2d\u82af\u56fd\u9645",

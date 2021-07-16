@@ -26,6 +26,7 @@
 #include "common/s4json_util.h"
 #include "common/s4logger.h"
 #include "types/s4type.h"
+#include "types/s4convertors.h"
 
 #include <set>
 #include <list>
@@ -80,125 +81,253 @@ struct glb_conf_ctx_t {
 	static bool from_json(const nlohmann::json& json_var, glb_conf_ctx_t& glb_conf_ctx_t_var){
 		try{
 			const nlohmann::json& json_var_logger = json_var["logger"];
-			try{
-				glb_conf_ctx_t_var.logger.enable_console = json_var_logger.at("enable_console").get<bool>();
-			}catch(...){
+			if(json_var_logger.find("enable_console") != json_var_logger.end()){
+				try{
+					const auto& json_var_enable_console = json_var_logger.at("enable_console");
+					json_var_enable_console.get_to(glb_conf_ctx_t_var.logger.enable_console);
+				}catch(const std::exception& e){
+					ERR("Convert \"enable_console\" to \"bool\" fail! e={:}", e.what());
+					throw e;
+				}
 			}
-			try{
-				glb_conf_ctx_t_var.logger.enable_file_all = json_var_logger.at("enable_file_all").get<bool>();
-			}catch(...){
+			if(json_var_logger.find("enable_file_all") != json_var_logger.end()){
+				try{
+					const auto& json_var_enable_file_all = json_var_logger.at("enable_file_all");
+					json_var_enable_file_all.get_to(glb_conf_ctx_t_var.logger.enable_file_all);
+				}catch(const std::exception& e){
+					ERR("Convert \"enable_file_all\" to \"bool\" fail! e={:}", e.what());
+					throw e;
+				}
 			}
-			try{
-				glb_conf_ctx_t_var.logger.enable_file_all_pure = json_var_logger.at("enable_file_all_pure").get<bool>();
-			}catch(...){
+			if(json_var_logger.find("enable_file_all_pure") != json_var_logger.end()){
+				try{
+					const auto& json_var_enable_file_all_pure = json_var_logger.at("enable_file_all_pure");
+					json_var_enable_file_all_pure.get_to(glb_conf_ctx_t_var.logger.enable_file_all_pure);
+				}catch(const std::exception& e){
+					ERR("Convert \"enable_file_all_pure\" to \"bool\" fail! e={:}", e.what());
+					throw e;
+				}
 			}
-			try{
-				glb_conf_ctx_t_var.logger.enable_file_err = json_var_logger.at("enable_file_err").get<bool>();
-			}catch(...){
+			if(json_var_logger.find("enable_file_err") != json_var_logger.end()){
+				try{
+					const auto& json_var_enable_file_err = json_var_logger.at("enable_file_err");
+					json_var_enable_file_err.get_to(glb_conf_ctx_t_var.logger.enable_file_err);
+				}catch(const std::exception& e){
+					ERR("Convert \"enable_file_err\" to \"bool\" fail! e={:}", e.what());
+					throw e;
+				}
 			}
-			try{
-				glb_conf_ctx_t_var.logger.enable_file_err_pure = json_var_logger.at("enable_file_err_pure").get<bool>();
-			}catch(...){
+			if(json_var_logger.find("enable_file_err_pure") != json_var_logger.end()){
+				try{
+					const auto& json_var_enable_file_err_pure = json_var_logger.at("enable_file_err_pure");
+					json_var_enable_file_err_pure.get_to(glb_conf_ctx_t_var.logger.enable_file_err_pure);
+				}catch(const std::exception& e){
+					ERR("Convert \"enable_file_err_pure\" to \"bool\" fail! e={:}", e.what());
+					throw e;
+				}
 			}
-			try{
-				glb_conf_ctx_t_var.logger.level = json_var_logger.at("level").get<spdlog::level::level_enum>();
-			}catch(...){
+			if(json_var_logger.find("level") != json_var_logger.end()){
+				try{
+					const auto& json_var_level = json_var_logger.at("level");
+					json_var_level.get_to(glb_conf_ctx_t_var.logger.level);
+				}catch(const std::exception& e){
+					ERR("Convert \"level\" to \"spdlog::level::level_enum\" fail! e={:}", e.what());
+					throw e;
+				}
 			}
-			try{
-				glb_conf_ctx_t_var.logger.max_file_size_MB = json_var_logger.at("max_file_size_MB").get<size_t>();
-			}catch(...){
+			if(json_var_logger.find("max_file_size_MB") != json_var_logger.end()){
+				try{
+					const auto& json_var_max_file_size_MB = json_var_logger.at("max_file_size_MB");
+					json_var_max_file_size_MB.get_to(glb_conf_ctx_t_var.logger.max_file_size_MB);
+				}catch(const std::exception& e){
+					ERR("Convert \"max_file_size_MB\" to \"size_t\" fail! e={:}", e.what());
+					throw e;
+				}
 			}
-			try{
-				glb_conf_ctx_t_var.logger.max_files = json_var_logger.at("max_files").get<size_t>();
-			}catch(...){
+			if(json_var_logger.find("max_files") != json_var_logger.end()){
+				try{
+					const auto& json_var_max_files = json_var_logger.at("max_files");
+					json_var_max_files.get_to(glb_conf_ctx_t_var.logger.max_files);
+				}catch(const std::exception& e){
+					ERR("Convert \"max_files\" to \"size_t\" fail! e={:}", e.what());
+					throw e;
+				}
 			}
-			try{
-				glb_conf_ctx_t_var.logger.save_path = json_var_logger.at("save_path").get<std::string>();
-			}catch(...){
+			if(json_var_logger.find("save_path") != json_var_logger.end()){
+				try{
+					const auto& json_var_save_path = json_var_logger.at("save_path");
+					json_var_save_path.get_to(glb_conf_ctx_t_var.logger.save_path);
+				}catch(const std::exception& e){
+					ERR("Convert \"save_path\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
 			}
-			try{
-				glb_conf_ctx_t_var.logger.file_preamble = json_var_logger.at("file_preamble").get<std::string>();
-			}catch(...){
+			if(json_var_logger.find("file_preamble") != json_var_logger.end()){
+				try{
+					const auto& json_var_file_preamble = json_var_logger.at("file_preamble");
+					json_var_file_preamble.get_to(glb_conf_ctx_t_var.logger.file_preamble);
+				}catch(const std::exception& e){
+					ERR("Convert \"file_preamble\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
 			}
 			const nlohmann::json& json_var_network = json_var["network"];
-			try{
-				glb_conf_ctx_t_var.network.db_viewer_ip = json_var_network.at("db_viewer_ip").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "db_viewer_ip", e.what());
-				throw e;
+			if(json_var_network.find("db_viewer_ip") != json_var_network.end()){
+				try{
+					const auto& json_var_db_viewer_ip = json_var_network.at("db_viewer_ip");
+					json_var_db_viewer_ip.get_to(glb_conf_ctx_t_var.network.db_viewer_ip);
+				}catch(const std::exception& e){
+					ERR("Convert \"db_viewer_ip\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"db_viewer_ip\" not found in json!");
+				return false;
 			}
-			try{
-				glb_conf_ctx_t_var.network.db_viewer_port = json_var_network.at("db_viewer_port").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "db_viewer_port", e.what());
-				throw e;
+			if(json_var_network.find("db_viewer_port") != json_var_network.end()){
+				try{
+					const auto& json_var_db_viewer_port = json_var_network.at("db_viewer_port");
+					json_var_db_viewer_port.get_to(glb_conf_ctx_t_var.network.db_viewer_port);
+				}catch(const std::exception& e){
+					ERR("Convert \"db_viewer_port\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"db_viewer_port\" not found in json!");
+				return false;
 			}
 			const nlohmann::json& json_var_db = json_var["db"];
-			try{
-				glb_conf_ctx_t_var.db.root = json_var_db.at("root").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "root", e.what());
-				throw e;
+			if(json_var_db.find("root") != json_var_db.end()){
+				try{
+					const auto& json_var_root = json_var_db.at("root");
+					json_var_root.get_to(glb_conf_ctx_t_var.db.root);
+				}catch(const std::exception& e){
+					ERR("Convert \"root\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"root\" not found in json!");
+				return false;
 			}
-			try{
-				glb_conf_ctx_t_var.db.history_broker = json_var_db.at("history_broker").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "history_broker", e.what());
-				throw e;
+			if(json_var_db.find("history_broker") != json_var_db.end()){
+				try{
+					const auto& json_var_history_broker = json_var_db.at("history_broker");
+					json_var_history_broker.get_to(glb_conf_ctx_t_var.db.history_broker);
+				}catch(const std::exception& e){
+					ERR("Convert \"history_broker\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"history_broker\" not found in json!");
+				return false;
 			}
-			try{
-				glb_conf_ctx_t_var.db.history_trade = json_var_db.at("history_trade").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "history_trade", e.what());
-				throw e;
+			if(json_var_db.find("history_trade") != json_var_db.end()){
+				try{
+					const auto& json_var_history_trade = json_var_db.at("history_trade");
+					json_var_history_trade.get_to(glb_conf_ctx_t_var.db.history_trade);
+				}catch(const std::exception& e){
+					ERR("Convert \"history_trade\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"history_trade\" not found in json!");
+				return false;
 			}
-			try{
-				glb_conf_ctx_t_var.db.tus_basic = json_var_db.at("tus_basic").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "tus_basic", e.what());
-				throw e;
+			if(json_var_db.find("tus_basic") != json_var_db.end()){
+				try{
+					const auto& json_var_tus_basic = json_var_db.at("tus_basic");
+					json_var_tus_basic.get_to(glb_conf_ctx_t_var.db.tus_basic);
+				}catch(const std::exception& e){
+					ERR("Convert \"tus_basic\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"tus_basic\" not found in json!");
+				return false;
 			}
-			try{
-				glb_conf_ctx_t_var.db.s3_root = json_var_db.at("s3_root").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "s3_root", e.what());
-				throw e;
+			if(json_var_db.find("s3_root") != json_var_db.end()){
+				try{
+					const auto& json_var_s3_root = json_var_db.at("s3_root");
+					json_var_s3_root.get_to(glb_conf_ctx_t_var.db.s3_root);
+				}catch(const std::exception& e){
+					ERR("Convert \"s3_root\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"s3_root\" not found in json!");
+				return false;
 			}
-			try{
-				glb_conf_ctx_t_var.db.s3_history = json_var_db.at("s3_history").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "s3_history", e.what());
-				throw e;
+			if(json_var_db.find("s3_history") != json_var_db.end()){
+				try{
+					const auto& json_var_s3_history = json_var_db.at("s3_history");
+					json_var_s3_history.get_to(glb_conf_ctx_t_var.db.s3_history);
+				}catch(const std::exception& e){
+					ERR("Convert \"s3_history\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"s3_history\" not found in json!");
+				return false;
 			}
 			const nlohmann::json& json_var_tdx = json_var["tdx"];
-			try{
-				glb_conf_ctx_t_var.tdx.root = json_var_tdx.at("root").get<std::string>();
-			}catch(const std::exception& e){
-				ERR("{:} not found in json! e={:}", "root", e.what());
-				throw e;
+			if(json_var_tdx.find("root") != json_var_tdx.end()){
+				try{
+					const auto& json_var_root = json_var_tdx.at("root");
+					json_var_root.get_to(glb_conf_ctx_t_var.tdx.root);
+				}catch(const std::exception& e){
+					ERR("Convert \"root\" to \"std::string\" fail! e={:}", e.what());
+					throw e;
+				}
+			}else{
+				ERR("\"root\" not found in json!");
+				return false;
 			}
 			const nlohmann::json& json_var_snap = json_var["snap"];
 			try{
 				const nlohmann::json& json_var_snap_DB_list = json_var_snap.at("DB_list");
 				for(auto& json_var_snap_DB_list_x: json_var_snap_DB_list.items()){
 					glb_conf_ctx_t::snap_t::DB_list_t glb_conf_ctx_t_var_snap_DB_list;
-					try{
-						glb_conf_ctx_t_var_snap_DB_list.bgnDate = json_var_snap_DB_list_x.value().at("bgnDate").get<int>();
-					}catch(const std::exception& e){
-						ERR("{:} not found in json! e={:}", "bgnDate", e.what());
-						throw e;
+					if(json_var_snap_DB_list_x.value().find("bgnDate") != json_var_snap_DB_list_x.value().end()){
+						try{
+							const auto& json_var_bgnDate = json_var_snap_DB_list_x.value().at("bgnDate");
+							if (json_var_bgnDate.is_string())
+							    glb_conf_ctx_t_var_snap_DB_list.bgnDate = IntConvertor::convert(json_var_bgnDate.get<std::string>());
+							else
+							    json_var_bgnDate.get_to(glb_conf_ctx_t_var_snap_DB_list.bgnDate);
+						}catch(const std::exception& e){
+							ERR("Convert \"bgnDate\" to \"int\" fail! e={:}", e.what());
+							throw e;
+						}
+					}else{
+						ERR("\"bgnDate\" not found in json!");
+						return false;
 					}
-					try{
-						glb_conf_ctx_t_var_snap_DB_list.endDate = json_var_snap_DB_list_x.value().at("endDate").get<int>();
-					}catch(const std::exception& e){
-						ERR("{:} not found in json! e={:}", "endDate", e.what());
-						throw e;
+					if(json_var_snap_DB_list_x.value().find("endDate") != json_var_snap_DB_list_x.value().end()){
+						try{
+							const auto& json_var_endDate = json_var_snap_DB_list_x.value().at("endDate");
+							if (json_var_endDate.is_string())
+							    glb_conf_ctx_t_var_snap_DB_list.endDate = IntConvertor::convert(json_var_endDate.get<std::string>());
+							else
+							    json_var_endDate.get_to(glb_conf_ctx_t_var_snap_DB_list.endDate);
+						}catch(const std::exception& e){
+							ERR("Convert \"endDate\" to \"int\" fail! e={:}", e.what());
+							throw e;
+						}
+					}else{
+						ERR("\"endDate\" not found in json!");
+						return false;
 					}
-					try{
-						glb_conf_ctx_t_var_snap_DB_list.path = json_var_snap_DB_list_x.value().at("path").get<std::string>();
-					}catch(const std::exception& e){
-						ERR("{:} not found in json! e={:}", "path", e.what());
-						throw e;
+					if(json_var_snap_DB_list_x.value().find("path") != json_var_snap_DB_list_x.value().end()){
+						try{
+							const auto& json_var_path = json_var_snap_DB_list_x.value().at("path");
+							json_var_path.get_to(glb_conf_ctx_t_var_snap_DB_list.path);
+						}catch(const std::exception& e){
+							ERR("Convert \"path\" to \"std::string\" fail! e={:}", e.what());
+							throw e;
+						}
+					}else{
+						ERR("\"path\" not found in json!");
+						return false;
 					}
 					glb_conf_ctx_t_var.snap.DB_list.emplace_back(glb_conf_ctx_t_var_snap_DB_list);
 				}
